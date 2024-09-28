@@ -35,7 +35,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
               height: 260,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  color: Theme.of(context).colorScheme.tertiary),
+                  color: Theme.of(context).colorScheme.onTertiary),
             ),
             Container(
               height: 250,
@@ -51,7 +51,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                     ),
                   ],
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  color: Theme.of(context).colorScheme.onSecondary),
+                  color: Theme.of(context).colorScheme.tertiary),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

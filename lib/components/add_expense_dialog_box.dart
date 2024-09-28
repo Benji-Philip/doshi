@@ -45,7 +45,7 @@ class ThisContainerFinal extends StatelessWidget {
           padLeft: 8,
           padRight: 0,
           padTop: 8,
-          color: Theme.of(context).colorScheme.tertiary,
+          color: Theme.of(context).colorScheme.onTertiary,
         ),
         ThisContainerOfTheDialogBox(
           opacity: 1,
@@ -53,7 +53,7 @@ class ThisContainerFinal extends StatelessWidget {
           padLeft: 0,
           padRight: 8,
           padTop: 0,
-          color: Theme.of(context).colorScheme.onSecondary,
+          color: Theme.of(context).colorScheme.tertiary,
         )
       ],
     );
@@ -261,7 +261,7 @@ class _ThisContainerOfTheDialogBoxState
                             alignment: Alignment.center,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.tertiary,
+                                color: Theme.of(context).colorScheme.onTertiary,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(25))),
                             child: Padding(

@@ -41,6 +41,17 @@ List<Entry> sortExpensesByMonth(List<Entry> listOfExpenses) {
   return currentEntries;
 }
 
+List<Entry> sortExpensesByGivenMonth(List<Entry> listOfExpenses, DateTime givenMonth) {
+  List<Entry> currentEntries = [];
+  for (var i = 0; i < listOfExpenses.length; i++) {
+    if (DateFormat('MMMMyyyy').format(listOfExpenses[i].dateTime) ==
+        DateFormat('MMMMyyyy').format(givenMonth)) {
+      currentEntries.add(listOfExpenses[i]);
+    }
+  }
+  return currentEntries;
+}
+
 class CategoryAnalysisEntry {
   String? categoryName;
   late int categoryNumber;

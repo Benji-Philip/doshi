@@ -80,7 +80,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ],
                         borderRadius:
                             const BorderRadius.all(Radius.circular(25)),
-                        color: Theme.of(context).colorScheme.tertiary),
+                        color: Theme.of(context).colorScheme.onTertiary),
                   ),
                   Container(
                     height: 100,
@@ -88,7 +88,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(25)),
-                        color: Theme.of(context).colorScheme.onSecondary),
+                        color: Theme.of(context).colorScheme.tertiary),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -260,8 +260,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(100)),
-                                color:
-                                    Theme.of(context).colorScheme.background),
+                                color: Theme.of(context).colorScheme.surface),
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
@@ -299,7 +298,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(100)),
-                              color: Theme.of(context).colorScheme.background),
+                              color: Theme.of(context).colorScheme.surface),
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 10.0),
@@ -405,6 +404,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                       }
                       if (scrollOffset < -pageSwitchScrollLimit &&
                           canChangePage) {
+                        ref.read(analysisOfExpenses.notifier).state = [];
+                        ref.read(analysisOfExpenses.notifier).state =
+                            entriesDatabaseNotifier.analysisOfCategories;
+                        ref.read(dateToDisplay.notifier).state = DateTime.now();
                         if (ref.read(currentPage) == "Home") {
                           HapticFeedback.heavyImpact();
                           ref
@@ -423,32 +426,36 @@ class _HomePageState extends ConsumerState<HomePage> {
                     }
                     return true;
                   },
-                  child: CustomScrollView(
-                      physics: BouncingScrollPhysics(
-                          parent: canChangePage
-                              ? const AlwaysScrollableScrollPhysics()
-                              : const NeverScrollableScrollPhysics()),
-                      controller: _scrollController,
-                      slivers: ref.watch(currentPage) == "Home"
-                          ? thisMonthPage(
-                              scrollOffset,
-                              _spaceFromTop,
-                              context,
-                              width,
-                              height,
-                              amountInVault,
-                              ref,
-                              entriesDatabaseNotifier,
-                              currentEntries,
-                              entriesDatabaseNotifier.analysisOfCategories)
-                          : analysisPage(
-                              _spaceFromTop,
-                              context,
-                              width,
-                              height,
-                              ref,
-                              entriesDatabaseNotifier.analysisOfCategories,
-                              entriesDatabaseNotifier)),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final watcher = ref.watch(analysisOfExpenses);
+                      return CustomScrollView(
+                          physics: BouncingScrollPhysics(
+                              parent: canChangePage
+                                  ? const AlwaysScrollableScrollPhysics()
+                                  : const NeverScrollableScrollPhysics()),
+                          controller: _scrollController,
+                          slivers: ref.watch(currentPage) == "Home"
+                              ? thisMonthPage(
+                                  scrollOffset,
+                                  _spaceFromTop,
+                                  context,
+                                  width,
+                                  height,
+                                  amountInVault,
+                                  ref,
+                                  entriesDatabaseNotifier,
+                                  currentEntries,
+                                  entriesDatabaseNotifier.analysisOfCategories)
+                              : analysisPage(
+                                  _spaceFromTop,
+                                  context,
+                                  width,
+                                  height,
+                                  ref,
+                                  entriesDatabaseNotifier));
+                    }
+                  ),
                 ),
               ),
             ],

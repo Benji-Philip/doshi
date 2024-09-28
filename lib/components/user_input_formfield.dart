@@ -59,7 +59,7 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
                     labelStyle: GoogleFonts.montserrat(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.tertiary),
+                        color: Theme.of(context).colorScheme.onTertiary),
                     focusedBorder: OutlineInputBorder(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),

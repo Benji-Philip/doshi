@@ -6,6 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+final dateToDisplay = StateProvider((ref) => DateTime.now());
+
+
+  final analysisOfExpenses =
+      StateProvider((ref) => ref.read(entryDatabaseProvider.notifier).analysisOfCategories);
+
+
 final appOpened = StateProvider((ref) => false);
 final exceedVault = StateProvider((ref) => false);
 final exceedSavings = StateProvider((ref) => false);

@@ -57,7 +57,7 @@ List<Widget> thisMonthPage(
                     },
                     child: const Padding(
                       padding: EdgeInsets.only(right: 10.0),
-                      child: Icon(Icons.save_alt_rounded),
+                      child: Icon(Icons.save_rounded),
                     )),
               ),
             ),
@@ -356,7 +356,7 @@ List<Widget> thisMonthPage(
                                   fontSize: 21,
                                   fontWeight: FontWeight.w700,
                                   color:
-                                      Theme.of(context).colorScheme.background),
+                                      Theme.of(context).colorScheme.surface),
                             ),
                           ),
                         ),
@@ -375,6 +375,6 @@ List<Widget> thisMonthPage(
       height: 150,
     ))
   ];
-  homePage.insertAll(2, historyPage(spaceFromTop, width, ref, currentEntries));
+  homePage.insertAll(3, historyPage(spaceFromTop, width, ref, currentEntries));
   return homePage;
 }

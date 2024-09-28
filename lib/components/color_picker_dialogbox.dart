@@ -29,7 +29,7 @@ class _MyColorPickerState extends State<MyColorPicker> {
           return Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.onSecondary),
+                  color: Theme.of(context).colorScheme.tertiary),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

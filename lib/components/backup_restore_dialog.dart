@@ -1,3 +1,4 @@
+import 'package:doshi/components/my_button.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  color: Theme.of(context).colorScheme.onSecondary),
+                  color: Theme.of(context).colorScheme.tertiary),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
@@ -62,9 +63,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                   "Backup",
                                   softWrap: true,
                                   style: GoogleFonts.montserrat(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .background,
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
                                       fontSize: 28,
                                       fontWeight: FontWeight.w700),
                                 ),
@@ -110,6 +110,23 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: MyButton(
+                borderRadius: 50,
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.of(context).pop();
+                },
+                width: 50,
+                height: 50,
+                iconSize: 32,
+                myIcon: Icons.close_rounded,
+                iconColor: Colors.white,
+                buttonColor: Colors.redAccent,
+                splashColor: Colors.red.shade900,
               ),
             ),
           ],

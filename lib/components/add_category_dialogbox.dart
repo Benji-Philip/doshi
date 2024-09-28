@@ -25,12 +25,12 @@ class _AddCategoryState extends State<AddCategory> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Dialog(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         child: Container(
           decoration: BoxDecoration(
               border: Border.all(
-                  color: Theme.of(context).colorScheme.tertiary, width: 5),
-              color: Theme.of(context).colorScheme.onSecondary,
+                  color: Theme.of(context).colorScheme.onTertiary, width: 5),
+              color: Theme.of(context).colorScheme.tertiary,
               borderRadius: const BorderRadius.all(Radius.circular(25))),
           child: SingleChildScrollView(
             child: Form(

@@ -32,7 +32,7 @@ class UserInputDialog extends StatelessWidget {
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(25),
                     topRight: Radius.circular(25)),
-                color: Theme.of(context).colorScheme.tertiary),
+                color: Theme.of(context).colorScheme.onTertiary),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -58,8 +58,8 @@ class UserInputDialog extends StatelessWidget {
                   textProvider: textProvider,
                   commonTextEditingController: commonTextEditingController,
                   labelColor: Colors.amber,
-                  borderColor: Theme.of(context).colorScheme.tertiary,
-                  borderColorOnFocus: Theme.of(context).colorScheme.tertiary,
+                  borderColor: Theme.of(context).colorScheme.onTertiary,
+                  borderColorOnFocus: Theme.of(context).colorScheme.onTertiary,
                   label: label),
             ),
           ),

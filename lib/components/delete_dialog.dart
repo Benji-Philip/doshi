@@ -21,7 +21,7 @@ class DeleteEntryDialogBox extends ConsumerWidget {
               height: 210,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  color: Theme.of(context).colorScheme.tertiary),
+                  color: Theme.of(context).colorScheme.onTertiary),
             ),
             Container(
               height: 200,
@@ -37,25 +37,27 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                     ),
                   ],
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  color: Theme.of(context).colorScheme.onSecondary),
+                  color: Theme.of(context).colorScheme.tertiary),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(left: 24.0, bottom: 16),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
                       height: 80,
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          "Delete?",
+                          "Confirm delete?",
+                          softWrap: true,
                           style: GoogleFonts.montserrat(
-                              fontSize: 50,
+                              fontSize: 56,
                               fontWeight: FontWeight.w700,
                               color: Theme.of(context).colorScheme.primary,
                               decorationColor:
-                                  Theme.of(context).colorScheme.onPrimary),
+                                  Theme.of(context).colorScheme.tertiary),
                         ),
                       ),
                     ),
@@ -63,7 +65,7 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 14.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         GestureDetector(
                           onTap: () {
@@ -71,18 +73,40 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                             Navigator.of(context).pop();
                           },
                           child: Container(
-                              alignment: Alignment.center,
-                              width: MediaQuery.of(context).size.width / 3.1,
-                              height: 50,
-                              decoration: const BoxDecoration(
-                                  color: Colors.redAccent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(50))),
-                              child: const Icon(
-                                Icons.close_rounded,
-                                size: 40,
-                                color: Colors.white,
-                              )),
+                            alignment: Alignment.center,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(50))),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12.0, vertical: 4),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                height: 80,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    "cancel",
+                                    softWrap: true,
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 56,
+                                        fontWeight: FontWeight.w700,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        decorationColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 24,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -93,18 +117,36 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                             Navigator.of(context).pop();
                           },
                           child: Container(
-                              alignment: Alignment.center,
-                              width: MediaQuery.of(context).size.width / 3.1,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(50))),
-                              child: Icon(
-                                Icons.check_rounded,
-                                size: 40,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              )),
+                            alignment: Alignment.center,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                                color: Colors.red,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50))),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 4),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                height: 80,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    "delete",
+                                    softWrap: true,
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 56,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        decorationColor: Colors.red),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 24,
                         ),
                       ],
                     ),

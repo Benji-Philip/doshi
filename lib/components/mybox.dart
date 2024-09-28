@@ -20,7 +20,7 @@ class MyBox extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         border:
-            Border.all(color: Theme.of(context).colorScheme.tertiary, width: 5),
+            Border.all(color: Theme.of(context).colorScheme.onTertiary, width: 5),
         borderRadius: const BorderRadius.all(Radius.circular(20)),
       ),
       child: Padding(
