@@ -5,7 +5,6 @@ import 'package:doshi/components/backup_restore_dialog.dart';
 import 'package:doshi/components/break_savings_dialog.dart';
 import 'package:doshi/components/mybox.dart';
 import 'package:doshi/components/take_picture_screen.dart';
-import 'package:doshi/isar/app_settings_database.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/sort_entries.dart';
@@ -83,7 +82,7 @@ List<Widget> thisMonthPage(
             Padding(
                 padding: const EdgeInsets.only(bottom: 24.0, top: 0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
                       height: 130,
@@ -113,7 +112,7 @@ List<Widget> thisMonthPage(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  width: width * 0.5,
+                                  width: width * 0.52,
                                   height: 60,
                                   child: FittedBox(
                                     fit: BoxFit.contain,
