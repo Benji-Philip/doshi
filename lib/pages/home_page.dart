@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:doshi/components/add_expense_dialog_box.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/isar/entry.dart';
@@ -11,7 +12,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+  final CameraDescription camera;
+  const HomePage({super.key,required this.camera});
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
@@ -428,6 +430,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   },
                   child: Consumer(
                     builder: (context, ref, child) {
+                      // ignore: unused_local_variable
                       final watcher = ref.watch(analysisOfExpenses);
                       return CustomScrollView(
                           physics: BouncingScrollPhysics(
@@ -446,7 +449,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ref,
                                   entriesDatabaseNotifier,
                                   currentEntries,
-                                  entriesDatabaseNotifier.analysisOfCategories)
+                                  entriesDatabaseNotifier.analysisOfCategories,
+                                  widget.camera)
                               : analysisPage(
                                   _spaceFromTop,
                                   context,

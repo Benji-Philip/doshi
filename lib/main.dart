@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:doshi/isar/app_settings_database.dart';
 import 'package:doshi/isar/category_database.dart';
 import 'package:doshi/isar/entries_database.dart';
@@ -13,7 +14,7 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -21,11 +22,25 @@ void main() async {
   await AppSettingsDatabaseNotifier.initialise();
   await EntryDatabaseNotifier.initialise();
   await CategoryDatabaseNotifier.initialise();
-  runApp(const ProviderScope(child: MyApp()));
+
+  // Obtain a list of the available cameras on the device.
+  final cameras = await availableCameras();
+  // Get a specific camera from the list of available cameras.
+  final firstCamera = cameras.firstWhere(
+    (camera) => camera.lensDirection == CameraLensDirection.front,
+  );
+  runApp(ProviderScope(
+      child: MyApp(
+    camera: firstCamera,
+  )));
 }
 
 class MyApp extends ConsumerStatefulWidget {
-  const MyApp({super.key});
+  final CameraDescription camera;
+  const MyApp({
+    super.key,
+    required this.camera,
+  });
 
   @override
   ConsumerState<MyApp> createState() => _MyAppState();
@@ -92,9 +107,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       localizationsDelegates: const [
-    MonthYearPickerLocalizations.delegate,],
+        MonthYearPickerLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      home: HomePage(camera: widget.camera),
       theme: darkMode,
       darkTheme: darkMode,
     );

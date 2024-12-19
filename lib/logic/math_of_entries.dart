@@ -100,6 +100,6 @@ double expenditurePerWeek(double amountInVault, List<Entry> listOfExpenses) {
     }
   }
   double sumUptoThisWeek = amountInVault + sumOfEntries(expensesThisWeek);
-  double weeklyExpenditureForecast = sumUptoThisWeek / (weeksLeft);
+  double weeklyExpenditureForecast = sumUptoThisWeek / (weeksLeft<0?1:weeksLeft);
   return weeklyExpenditureForecast;
 }

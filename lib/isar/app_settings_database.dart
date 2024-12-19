@@ -10,6 +10,9 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
 
   AppSettingsDatabaseNotifier() : super([]);
 
+  // 1 = FirstAppOpen&SecondAppOpen
+  // 2 = SelfiePath
+
   //default entries
   final firstAppOpen = AppSettingEntry()
     ..appSettingName = "FirstAppOpen&SecondAppOpen"
@@ -32,7 +35,7 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
     String appSettingName,
     String appSettingValue,
   ) async {
-    //create new Category
+    //create new Setting
     final newAppSetting = AppSettingEntry()
       ..appSettingName = appSettingName
       ..appSettingValue = appSettingValue;
@@ -55,6 +58,10 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
     } else if (currentSettings[0].appSettingValue == "true&false") {
       editSetting(
           currentSettings[0].id, "FirstAppOpen&SecondAppOpen", "true&true");
+    }
+    if (currentSettings.length<=1) {
+      // inititating setting 2 if it doesnt exist
+      addSetting("SelfiePath", "");
     }
     state = [];
     state = currentSettings;
