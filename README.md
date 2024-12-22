@@ -1,16 +1,11 @@
-# doshi
+# Doshi
 
-A new Flutter project.
+An expense tracker app for personal use and my second app ever.
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="ss.png" width="400">
+<img src="ss1.png" width="400">
+<img src="ss2.png" width="400">
+<img src="ss3.png" width="400">
+<img src="ss5.png" width="400">

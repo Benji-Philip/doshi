@@ -236,61 +236,23 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
       ),
       body: SafeArea(
-          child: SizedBox(
-        width: width,
-        height: height,
-        child: Consumer(builder: (context, ref, child) {
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned(
-                top: canChangePage
-                    ? -scrollOffset * 0.8 - 18
-                    : -scrollOffset * 0.2 + 33,
-                left: 14,
-                child: Column(
-                  children: [
-                    Visibility(
-                      visible: canChangePage,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: width * 0.95,
-                            alignment: Alignment.centerLeft,
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(100)),
-                                color: Theme.of(context).colorScheme.surface),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Opacity(
-                                  opacity:
-                                      clampDouble(scrollOffset, -80, 0).abs() /
-                                          80,
-                                  child: Text(
-                                    ref.watch(currentPage) == "Home"
-                                        ? "Analysis"
-                                        : "Home",
-                                    style: GoogleFonts.montserrat(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontSize: 36,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
+        child: SizedBox(
+                width: width,
+                height: height,
+                child: Consumer(builder: (context, ref, child) {
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned(
+              top: canChangePage
+                  ? -scrollOffset * 0.8 - 21
+                  : -scrollOffset * 0.2 + 30,
+              left: 14,
+              child: Column(
+                children: [
+                  Visibility(
+                    visible: canChangePage,
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -298,8 +260,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                           width: width * 0.95,
                           alignment: Alignment.centerLeft,
                           decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(100)),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(100)),
                               color: Theme.of(context).colorScheme.surface),
                           child: Padding(
                             padding:
@@ -307,17 +269,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: FittedBox(
                               fit: BoxFit.contain,
                               child: Opacity(
-                                opacity: canChangePage
-                                    ? 1 -
-                                        clampDouble(scrollOffset, -80, 80)
-                                                .abs() /
-                                            80
-                                    : 1,
+                                opacity:
+                                    clampDouble(scrollOffset, -80, 0).abs() /
+                                        80,
                                 child: Text(
-                                  ref.watch(currentPage),
+                                  ref.watch(currentPage) == "Home"
+                                      ? "Analysis"
+                                      : "Home",
                                   style: GoogleFonts.montserrat(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary,
                                       fontSize: 36,
                                       fontWeight: FontWeight.w700),
                                 ),
@@ -327,145 +289,184 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              Positioned.fill(
-                top: scrollOffset <= 0
-                    ? _spaceFromTop -
-                        clampDouble(
-                            scrollOffset * 0.3, -height * 0.75, height * 0.75)
-                    : _spaceFromTop -
-                        clampDouble(
-                            scrollOffset * 1.5, -height * 0.75, height * 0.75),
-                child: Container(
-                  width: width,
-                  height: height,
-                  decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromARGB(255, 0, 0, 0)
-                              .withOpacity(0.3),
-                          spreadRadius: 0,
-                          blurRadius: 20,
-                          offset:
-                              const Offset(0, 0), // changes position of shadow
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: width * 0.95,
+                        alignment: Alignment.centerLeft,
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(100)),
+                            color: Theme.of(context).colorScheme.surface),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Opacity(
+                              opacity: canChangePage
+                                  ? 1 -
+                                      clampDouble(scrollOffset, -80, 80)
+                                              .abs() /
+                                          80
+                                  : 1,
+                              child: Text(
+                                ref.watch(currentPage),
+                                style: GoogleFonts.montserrat(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                          ),
                         ),
-                      ],
-                      borderRadius: const BorderRadiusDirectional.all(
-                          Radius.circular(50)),
-                      color: Theme.of(context).colorScheme.tertiary),
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              Positioned.fill(
-                top: scrollOffset <= 0
-                    ? _spaceFromTop +
-                        25 -
-                        clampDouble(
-                            scrollOffset * 0.7, -height * 0.75, height * 0.75)
-                    : _spaceFromTop +
-                        25 -
-                        clampDouble(
-                            scrollOffset, -height * 0.75, height * 0.75),
-                child: Container(
-                  width: width,
-                  height: height,
-                  decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromARGB(255, 0, 0, 0)
-                              .withOpacity(0.3),
-                          spreadRadius: 0,
-                          blurRadius: 20,
-                          offset:
-                              const Offset(0, 0), // changes position of shadow
-                        ),
-                      ],
-                      borderRadius: const BorderRadiusDirectional.all(
-                          Radius.circular(50)),
-                      color: Theme.of(context).colorScheme.onPrimary),
-                ),
-              ),
-              SizedBox(
+            ),
+            Positioned.fill(
+              top: scrollOffset <= 0
+                  ? _spaceFromTop -
+                      clampDouble(
+                          scrollOffset * 0.3, -height * 0.75, height * 0.75)
+                  : _spaceFromTop -
+                      clampDouble(
+                          scrollOffset * 1.5, -height * 0.75, height * 0.75),
+              child: Container(
                 width: width,
                 height: height,
-                child: NotificationListener(
-                  onNotification: (notif) {
-                    if (notif is ScrollUpdateNotification) {
-                      if (notif.scrollDelta == null) {
-                        return false;
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(255, 0, 0, 0)
+                            .withOpacity(0.3),
+                        spreadRadius: 0,
+                        blurRadius: 20,
+                        offset:
+                            const Offset(0, 0), // changes position of shadow
+                      ),
+                    ],
+                    borderRadius: const BorderRadiusDirectional.all(
+                        Radius.circular(50)),
+                    color: Theme.of(context).colorScheme.tertiary),
+              ),
+            ),
+            Positioned.fill(
+              top: scrollOffset <= 0
+                  ? _spaceFromTop +
+                      25 -
+                      clampDouble(
+                          scrollOffset * 0.7, -height * 0.75, height * 0.75)
+                  : _spaceFromTop +
+                      25 -
+                      clampDouble(
+                          scrollOffset, -height * 0.75, height * 0.75),
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(255, 0, 0, 0)
+                            .withOpacity(0.3),
+                        spreadRadius: 0,
+                        blurRadius: 20,
+                        offset:
+                            const Offset(0, 0), // changes position of shadow
+                      ),
+                    ],
+                    borderRadius: const BorderRadiusDirectional.all(
+                        Radius.circular(50)),
+                    color: Theme.of(context).colorScheme.onPrimary),
+              ),
+            ),
+            SizedBox(
+              width: width,
+              height: height,
+              child: NotificationListener(
+                onNotification: (notif) {
+                  if (notif is ScrollUpdateNotification) {
+                    if (notif.scrollDelta == null) {
+                      return false;
+                    }
+                    setState(() {
+                      scrollOffset = _scrollController.offset;
+                      scrollDelta = notif.scrollDelta ?? 0;
+                    });
+                    if (scrollOffset == 0.0) {
+                      setState(() {
+                        canChangePage = true;
+                      });
+                    }
+                    if (scrollOffset < -pageSwitchScrollLimit &&
+                        canChangePage) {
+                      ref.read(analysisOfExpenses.notifier).state = [];
+                      ref.read(analysisOfExpenses.notifier).state =
+                          entriesDatabaseNotifier.analysisOfCategories;
+                      ref.read(dateToDisplay.notifier).state = DateTime.now();
+                      if (ref.read(currentPage) == "Home") {
+                        HapticFeedback.heavyImpact();
+                        ref
+                            .read(currentPage.notifier)
+                            .update((state) => "Analysis");
+                      } else if (ref.read(currentPage) == "Analysis") {
+                        HapticFeedback.heavyImpact();
+                        ref
+                            .read(currentPage.notifier)
+                            .update((state) => "Home");
                       }
                       setState(() {
-                        scrollOffset = _scrollController.offset;
-                        scrollDelta = notif.scrollDelta ?? 0;
+                        canChangePage = false;
                       });
-                      if (scrollOffset == 0.0) {
-                        setState(() {
-                          canChangePage = true;
-                        });
-                      }
-                      if (scrollOffset < -pageSwitchScrollLimit &&
-                          canChangePage) {
-                        ref.read(analysisOfExpenses.notifier).state = [];
-                        ref.read(analysisOfExpenses.notifier).state =
-                            entriesDatabaseNotifier.analysisOfCategories;
-                        ref.read(dateToDisplay.notifier).state = DateTime.now();
-                        if (ref.read(currentPage) == "Home") {
-                          HapticFeedback.heavyImpact();
-                          ref
-                              .read(currentPage.notifier)
-                              .update((state) => "Analysis");
-                        } else if (ref.read(currentPage) == "Analysis") {
-                          HapticFeedback.heavyImpact();
-                          ref
-                              .read(currentPage.notifier)
-                              .update((state) => "Home");
-                        }
-                        setState(() {
-                          canChangePage = false;
-                        });
-                      }
                     }
-                    return true;
-                  },
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      // ignore: unused_local_variable
-                      final watcher = ref.watch(analysisOfExpenses);
-                      return CustomScrollView(
-                          physics: BouncingScrollPhysics(
-                              parent: canChangePage
-                                  ? const AlwaysScrollableScrollPhysics()
-                                  : const NeverScrollableScrollPhysics()),
-                          controller: _scrollController,
-                          slivers: ref.watch(currentPage) == "Home"
-                              ? thisMonthPage(
-                                  scrollOffset,
-                                  _spaceFromTop,
-                                  context,
-                                  width,
-                                  height,
-                                  amountInVault,
-                                  ref,
-                                  entriesDatabaseNotifier,
-                                  currentEntries,
-                                  entriesDatabaseNotifier.analysisOfCategories,
-                                  widget.camera)
-                              : analysisPage(
-                                  _spaceFromTop,
-                                  context,
-                                  width,
-                                  height,
-                                  ref,
-                                  entriesDatabaseNotifier));
-                    }
-                  ),
+                  }
+                  return true;
+                },
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    // ignore: unused_local_variable
+                    final watcher = ref.watch(analysisOfExpenses);
+                    return CustomScrollView(
+                        physics: BouncingScrollPhysics(
+                            parent: canChangePage
+                                ? const AlwaysScrollableScrollPhysics()
+                                : const NeverScrollableScrollPhysics()),
+                        controller: _scrollController,
+                        slivers: ref.watch(currentPage) == "Home"
+                            ? thisMonthPage(
+                                scrollOffset,
+                                _spaceFromTop,
+                                context,
+                                width,
+                                height,
+                                amountInVault,
+                                ref,
+                                entriesDatabaseNotifier,
+                                currentEntries,
+                                entriesDatabaseNotifier.analysisOfCategories,
+                                widget.camera)
+                            : analysisPage(
+                                _spaceFromTop,
+                                context,
+                                width,
+                                height,
+                                ref,
+                                entriesDatabaseNotifier));
+                  }
                 ),
               ),
-            ],
-          );
-        }),
-      )),
+            ),
+          ],
+        );
+                }),
+              ),
+      ),
     );
   }
 }
