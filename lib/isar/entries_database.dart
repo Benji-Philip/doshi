@@ -220,9 +220,13 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     final directory = await FilePicker.platform.pickFiles();
     if (directory != null) {
       showToast("Restoring");
+      final backupFile = io.File(directory.files.first.path!);
+      if (!backupFile.path.endsWith(".isar")) {
+        showToast("Invalid file type");
+        return;
+      }
       await isar.close();
       final dbPath = '${dbDir.path}/default.isar';
-      final backupFile = io.File(directory.files.first.path!);
       await backupFile.copy(dbPath);
 
       await AppSettingsDatabaseNotifier.initialise();
@@ -258,9 +262,6 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       while (await io.File(filePath).exists()) {
         count++;
         filePath = '$path/${fileName.replaceAll('.isar', '_$count.isar')}';
-
-        // Write your export logic here, e.g., copyToFile
-        // await isar.copyToFile(filePath);
       }
       await isar.copyToFile(filePath);
 
