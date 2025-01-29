@@ -27,6 +27,7 @@ List<Widget> thisMonthPage(
   List<Entry> currentEntries,
   List<CategoryAnalysisEntry> analysisOfExpensesThisMonth,
   CameraDescription camera,
+  CameraDescription backcamera,
 ) {
   List<Widget> homePage = [
     SliverToBoxAdapter(
@@ -179,42 +180,49 @@ List<Widget> thisMonthPage(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        TakePictureScreen(camera: camera)));
+                                        TakePictureScreen(camera: camera, backcamera: backcamera,)));
                           },
-                          child: Container(
-                            height: 130,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: ref.read(selfiePath) == "" &&
-                                            ref
+                          child: Stack(
+                            children: [
+                              const SizedBox(
+                                height: 130,
+                                child: Center(child: Icon(Icons.camera_enhance_rounded)),),
+                              Container(
+                                height: 130,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: ref.read(selfiePath) == "" &&
+                                                ref
+                                                    .read(appSettingsDatabaseProvider
+                                                        .notifier)
+                                                    .currentSettings
+                                                    .isNotEmpty
+                                            ? FileImage(File(ref
                                                 .read(appSettingsDatabaseProvider
                                                     .notifier)
-                                                .currentSettings
-                                                .isNotEmpty
-                                        ? FileImage(File(ref
-                                            .read(appSettingsDatabaseProvider
-                                                .notifier)
-                                            .currentSettings[1]
-                                            .appSettingValue))
-                                        : FileImage(File(ref.read(selfiePath)))),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color.fromARGB(255, 0, 0, 0)
-                                        .withOpacity(0.3),
-                                    spreadRadius: 0,
-                                    blurRadius: 20,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
-                                border: Border.all(
-                                    width: 5,
-                                    color:
-                                        Theme.of(context).colorScheme.tertiary),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(25)),
-                                color: Theme.of(context).colorScheme.onPrimary),
+                                                .currentSettings[1]
+                                                .appSettingValue))
+                                            : FileImage(File(ref.read(selfiePath)))),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color.fromARGB(255, 0, 0, 0)
+                                            .withOpacity(0.3),
+                                        spreadRadius: 0,
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                    border: Border.all(
+                                        width: 5,
+                                        color:
+                                            Theme.of(context).colorScheme.tertiary),
+                                    borderRadius:
+                                        const BorderRadius.all(Radius.circular(25)),
+                                    color: Colors.transparent),
+                              ),
+                            ],
                           ),
                         );
                       }),

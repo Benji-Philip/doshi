@@ -29,17 +29,23 @@ Future<void> main() async {
   final firstCamera = cameras.firstWhere(
     (camera) => camera.lensDirection == CameraLensDirection.front,
   );
+  final secondCamera = cameras.firstWhere(
+    (camera) => camera.lensDirection == CameraLensDirection.back,
+  );
   runApp(ProviderScope(
       child: MyApp(
     camera: firstCamera,
+    backcamera: secondCamera,
   )));
 }
 
 class MyApp extends ConsumerStatefulWidget {
   final CameraDescription camera;
+  final CameraDescription backcamera;
   const MyApp({
     super.key,
     required this.camera,
+    required this.backcamera,
   });
 
   @override
@@ -110,7 +116,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
         MonthYearPickerLocalizations.delegate,
       ],
       debugShowCheckedModeBanner: false,
-      home: HomePage(camera: widget.camera),
+      home: HomePage(camera: widget.camera, backcamera: widget.backcamera,),
       theme: darkMode,
       darkTheme: darkMode,
     );

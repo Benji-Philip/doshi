@@ -13,7 +13,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final CameraDescription camera;
-  const HomePage({super.key,required this.camera});
+  final CameraDescription backcamera;
+  const HomePage({super.key,required this.camera, required this.backcamera});
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
@@ -450,7 +451,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 entriesDatabaseNotifier,
                                 currentEntries,
                                 entriesDatabaseNotifier.analysisOfCategories,
-                                widget.camera)
+                                widget.camera,
+                                widget.backcamera)
                             : analysisPage(
                                 _spaceFromTop,
                                 context,
