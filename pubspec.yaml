@@ -63,7 +63,7 @@ dev_dependencies:
   isar_generator: ^3.1.0+1
 
 flutter_icons:
-  image_path: "lib/assets/images/vaultIcon.png"
+  image_path: "lib/assets/images/icoon.png"
   android: true
   ios: true
 
