@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/components/backup_restore_dialog.dart';
 import 'package:doshi/components/break_savings_dialog.dart';
 import 'package:doshi/components/mybox.dart';
@@ -89,143 +90,159 @@ List<Widget> thisMonthPage(
                       flex: 3,
                       child: Padding(
                         padding: const EdgeInsets.only(right: 12.0),
-                        child: Container(
-                          height: 130,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color.fromARGB(255, 0, 0, 0)
-                                      .withOpacity(0.3),
-                                  spreadRadius: 0,
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 0),
-                                ),
-                              ],
-                              border: Border.all(
-                                  width: 5,
-                                  color: Theme.of(context).colorScheme.tertiary),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(25)),
-                              color: Theme.of(context).colorScheme.onPrimary),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        amountInVault == 0.0
-                                            ? "${ref.watch(currencyProvider)}0.0"
-                                            : ref.watch(currencyProvider) +
-                                                amountInVault.toString(),
-                                        style: GoogleFonts.montserrat(
-                                            fontSize: 60,
-                                            fontWeight: FontWeight.w700,
-                                            color: amountInVault > 0.0
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
-                                                : Colors.redAccent),
+                        child: GestureDetector(onTap: () {
+                            HapticFeedback.lightImpact();
+                            setDefaultValues(ref);
+                            Navigator.of(context).push(PageRouteBuilder(
+                                opaque: false,
+                                barrierDismissible: false,
+                                pageBuilder: (BuildContext context, _, __) {
+                                  return const Hero(
+                                      tag: "addtovault",
+                                      child: AddToVaultDialogBox());
+                                }));
+                          },
+                          child: Container(
+                            height: 130,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color.fromARGB(255, 0, 0, 0)
+                                        .withOpacity(0.3),
+                                    spreadRadius: 0,
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                                border: Border.all(
+                                    width: 5,
+                                    color: Theme.of(context).colorScheme.tertiary),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(25)),
+                                color: Theme.of(context).colorScheme.onPrimary),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 60,
+                                      child: FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Text(
+                                          amountInVault == 0.0
+                                              ? "${ref.watch(currencyProvider)}0.0"
+                                              : ref.watch(currencyProvider) +
+                                                  amountInVault.toString(),
+                                          style: GoogleFonts.montserrat(
+                                              fontSize: 60,
+                                              fontWeight: FontWeight.w700,
+                                              color: amountInVault > 0.0
+                                                  ? Theme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                  : Colors.redAccent),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 8.0),
-                                        child: SizedBox(
-                                          height: 20,
-                                          child: FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Text(
-                                              amountInVault >= 0.0
-                                                  ? "- left in credit -"
-                                                  : "- left in debt -",
-                                              style: GoogleFonts.montserrat(
-                                                fontSize: 21,
-                                                fontWeight: FontWeight.w700,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
-                                                    .withOpacity(1),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 8.0),
+                                          child: SizedBox(
+                                            height: 20,
+                                            child: FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: Text(
+                                                amountInVault >= 0.0
+                                                    ? "- left in credit -"
+                                                    : "- left in debt -",
+                                                style: GoogleFonts.montserrat(
+                                                  fontSize: 21,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                      .withOpacity(1),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    Flexible(
-                      flex: 1,
-                      child: Consumer(builder: (context, ref, child) {
-                        // ignore: unused_local_variable
-                        final selfiWatcher = ref.watch(selfiePath);
-                        return GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        TakePictureScreen(camera: camera, backcamera: backcamera,)));
-                          },
-                          child: Stack(
-                            children: [
-                              const SizedBox(
-                                height: 130,
-                                child: Center(child: Icon(Icons.camera_enhance_rounded)),),
-                              Container(
-                                height: 130,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: ref.read(selfiePath) == "" &&
-                                                ref
-                                                    .read(appSettingsDatabaseProvider
-                                                        .notifier)
-                                                    .currentSettings
-                                                    .isNotEmpty
-                                            ? FileImage(File(ref
-                                                .read(appSettingsDatabaseProvider
-                                                    .notifier)
-                                                .currentSettings[1]
-                                                .appSettingValue))
-                                            : FileImage(File(ref.read(selfiePath)))),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color.fromARGB(255, 0, 0, 0)
-                                            .withOpacity(0.3),
-                                        spreadRadius: 0,
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 0),
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                        width: 5,
-                                        color:
-                                            Theme.of(context).colorScheme.tertiary),
-                                    borderRadius:
-                                        const BorderRadius.all(Radius.circular(25)),
-                                    color: Colors.transparent),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
+                    Visibility(
+                      visible: false,
+                      child: Flexible(
+                        flex: 1,
+                        child: Consumer(builder: (context, ref, child) {
+                          // ignore: unused_local_variable
+                          final selfiWatcher = ref.watch(selfiePath);
+                          return GestureDetector(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          TakePictureScreen(camera: camera, backcamera: backcamera,)));
+                            },
+                            child: Stack(
+                              children: [
+                                const SizedBox(
+                                  height: 130,
+                                  child: Center(child: Icon(Icons.camera_enhance_rounded)),),
+                                Container(
+                                  height: 130,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: ref.read(selfiePath) == "" &&
+                                                  ref
+                                                      .read(appSettingsDatabaseProvider
+                                                          .notifier)
+                                                      .currentSettings
+                                                      .isNotEmpty
+                                              ? FileImage(File(ref
+                                                  .read(appSettingsDatabaseProvider
+                                                      .notifier)
+                                                  .currentSettings[1]
+                                                  .appSettingValue))
+                                              : FileImage(File(ref.read(selfiePath)))),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color.fromARGB(255, 0, 0, 0)
+                                              .withOpacity(0.3),
+                                          spreadRadius: 0,
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ],
+                                      border: Border.all(
+                                          width: 5,
+                                          color:
+                                              Theme.of(context).colorScheme.tertiary),
+                                      borderRadius:
+                                          const BorderRadius.all(Radius.circular(25)),
+                                      color: Colors.transparent),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
                     )
                   ],
                 )),
