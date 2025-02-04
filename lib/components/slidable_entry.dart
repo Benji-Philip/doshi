@@ -64,8 +64,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                     ? false
                     : true,
             child: Padding(
-              padding: EdgeInsets.only(
-                  top: widget.index == 0 ? 0 : 20, bottom: 15),
+              padding:
+                  EdgeInsets.only(top: widget.index == 0 ? 0 : 20, bottom: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -87,8 +87,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                     child: Text(
                       DateFormat('EEEE, d MMMM').format(widget
                                   .currentEntries[widget.index].dateTime) ==
-                              DateFormat('EEEE, d MMMM')
-                                  .format(DateTime.now())
+                              DateFormat('EEEE, d MMMM').format(DateTime.now())
                           ? "Today"
                           : DateFormat('EEEE, d MMMM').format(
                               widget.currentEntries[widget.index].dateTime),
@@ -145,8 +144,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                           .currentEntries[widget.index].id)
                                   : const Text(""));
                         },
-                        transitionDuration:
-                            const Duration(milliseconds: 200));
+                        transitionDuration: const Duration(milliseconds: 200));
                   },
                   backgroundColor: const Color(0xFFFE4A49),
                   foregroundColor: Colors.white,
@@ -155,9 +153,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                 SlidableAction(
                   onPressed: (context) {
                     HapticFeedback.heavyImpact();
-                    ref.read(amountText.notifier).update((state) => widget
-                        .currentEntries[widget.index].amount
-                        .toString());
+                    ref.read(amountText.notifier).update((state) =>
+                        widget.currentEntries[widget.index].amount.toString());
                     ref.read(dateTimeVar.notifier).update((state) =>
                         widget.currentEntries[widget.index].dateTime);
                     ref.read(categoryText.notifier).update((state) =>
@@ -170,8 +167,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                     ref.read(categoryColorInt.notifier).update((state) =>
                         widget.currentEntries[widget.index].categoryColor ??
                         Colors.white.value);
-                    if (widget.currentEntries[widget.index].isExpense ==
-                        true) {
+                    if (widget.currentEntries[widget.index].isExpense == true) {
                       ref.read(isExpense.notifier).update((state) => true);
                       showGeneralDialog(
                           pageBuilder: (context, anim1, anim2) {
@@ -260,15 +256,14 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
             child: GestureDetector(
               onTap: () {
                 HapticFeedback.lightImpact();
-                  _slidableController.openEndActionPane();
+                _slidableController.openEndActionPane();
               },
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.tertiary,
                   border: Border.all(
-                      color: Theme.of(context).colorScheme.tertiary,
-                      width: 3),
+                      color: Theme.of(context).colorScheme.tertiary, width: 3),
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Padding(
@@ -285,16 +280,16 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                               padding:
                                   const EdgeInsets.only(left: 4.0, right: 2),
                               child: Container(
-                                width: widget.currentEntries[widget.index]
-                                            .note !=
-                                        ""
-                                    ? 13
-                                    : 10,
-                                height: widget.currentEntries[widget.index]
-                                            .note !=
-                                        ""
-                                    ? 13
-                                    : 10,
+                                width:
+                                    widget.currentEntries[widget.index].note !=
+                                            ""
+                                        ? 13
+                                        : 10,
+                                height:
+                                    widget.currentEntries[widget.index].note !=
+                                            ""
+                                        ? 13
+                                        : 10,
                                 decoration: BoxDecoration(
                                     color: widget.currentEntries[widget.index]
                                                 .isExpense ==
@@ -318,15 +313,11 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                       widget.currentEntries[widget.index]
                                                   .category ==
                                               "Uncategorised"
-                                          ? widget
-                                                  .currentEntries[
-                                                      widget.index]
+                                          ? widget.currentEntries[widget.index]
                                                   .isExpense
                                               ? 'Expense'
                                               : 'Income'
-                                          : widget
-                                                  .currentEntries[
-                                                      widget.index]
+                                          : widget.currentEntries[widget.index]
                                                   .category ??
                                               '',
                                       softWrap: true,
@@ -349,8 +340,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                   child: SizedBox(
                                     width: widget.width * 0.44,
                                     child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 8.0),
+                                      padding: const EdgeInsets.only(left: 8.0),
                                       child: Text(
                                         widget.currentEntries[widget.index]
                                                 .note ??
@@ -382,12 +372,12 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                           fit: BoxFit.contain,
                           child: Text(
                             widget.currentEntries[widget.index].isExpense
-                                ? "-${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}"
-                                : "+${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}",
+                                ? "-${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${widget.currentEntries[widget.index].amount}"
+                                : "+${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${widget.currentEntries[widget.index].amount}",
                             softWrap: true,
                             style: GoogleFonts.montserrat(
-                                color: widget.currentEntries[widget.index]
-                                        .isExpense
+                                color: widget
+                                        .currentEntries[widget.index].isExpense
                                     ? Colors.redAccent
                                     : Colors.lightGreen,
                                 fontSize: 16,

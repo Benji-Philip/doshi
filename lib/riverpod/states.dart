@@ -19,7 +19,7 @@ final exceedSavings = StateProvider((ref) => false);
 final currentPage = StateProvider((ref) => "Home");
 final snackbarProvider = StateProvider<String>((ref) => '');
 
-final currencyProvider = StateProvider((ref) => "₹");
+final currencyProvider = StateProvider((ref) => "\$");
 final amountText = StateProvider((ref) => "500");
 final noteText = StateProvider((ref) => "");
 final categoryText = StateProvider((ref) => "Uncategorised");

@@ -104,7 +104,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                           decorationStyle:
                                               TextDecorationStyle.dotted)),
                                   text:
-                                      "${ref.read(currencyProvider)}${ref.read(amountText)}"),
+                                      "${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${ref.read(amountText)}"),
                               const TextSpan(text: " ?")
                             ]),
                       ),

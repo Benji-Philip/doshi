@@ -149,7 +149,19 @@ class _ThisContainerOfTheDialogBoxState
                                           );
                                         });
                                   },
-                                text: ref.read(currencyProvider) +
+                                text: 
+                          ref.read(currencyProvider) == "\$" &&
+                                  ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings
+                                      .isNotEmpty
+                              ? ref
+                                  .read(appSettingsDatabaseProvider.notifier)
+                                  .currentSettings[2]
+                                  .appSettingValue +
+                                    ref.watch(amountText)
+                              : ref.read(currencyProvider) +
                                     ref.watch(amountText),
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
@@ -222,8 +234,9 @@ class _ThisContainerOfTheDialogBoxState
                                 alignment: Alignment.center,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.onTertiary,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiary,
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(25))),
                                 child: Padding(
@@ -293,8 +306,8 @@ class _ThisContainerOfTheDialogBoxState
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     backgroundColor: Colors.lightGreen,
                                     content: Text(ref.watch(isSavings)
-                                        ? 'Added ${ref.read(currencyProvider)}${ref.read(amountText)} to savings, from vault'
-                                        : 'Added ${ref.read(currencyProvider)}${ref.read(amountText)} to vault')));
+                                        ? 'Added ${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${ref.read(amountText)} to savings, from vault'
+                                        : 'Added ${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${ref.read(amountText)} to vault')));
                                 Navigator.of(context).pop();
                               } catch (e) {
                                 ScaffoldMessenger.of(context)

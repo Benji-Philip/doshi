@@ -265,11 +265,27 @@ List<Widget> analysisPage(
                                                     child: FittedBox(
                                                       fit: BoxFit.contain,
                                                       child: Text(
-                                                        ref.read(
-                                                                currencyProvider) +
-                                                            analysis[index]
-                                                                .categorySum
-                                                                .toString(),
+                                                        ref.read(currencyProvider) ==
+                                                                    "\$" &&
+                                                                ref
+                                                                    .read(appSettingsDatabaseProvider
+                                                                        .notifier)
+                                                                    .currentSettings
+                                                                    .isNotEmpty
+                                                            ? ref
+                                                                    .read(appSettingsDatabaseProvider
+                                                                        .notifier)
+                                                                    .currentSettings[
+                                                                        2]
+                                                                    .appSettingValue +
+                                                                analysis[index]
+                                                                    .categorySum
+                                                                    .toString()
+                                                            : ref.read(
+                                                                    currencyProvider) +
+                                                                analysis[index]
+                                                                    .categorySum
+                                                                    .toString(),
                                                         softWrap: true,
                                                         style: GoogleFonts.montserrat(
                                                             color: Color(analysis[

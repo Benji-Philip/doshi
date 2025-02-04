@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/components/backup_restore_dialog.dart';
 import 'package:doshi/components/break_savings_dialog.dart';
@@ -30,6 +32,8 @@ List<Widget> thisMonthPage(
   CameraDescription camera,
   CameraDescription backcamera,
 ) {
+  // ignore: unused_local_variable
+  final currencySymbolUpdaterVariable = ref.watch(currencyProvider);
   List<Widget> homePage = [
     SliverToBoxAdapter(
       child: Row(
@@ -37,14 +41,55 @@ List<Widget> thisMonthPage(
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 43.0),
-            child: Container(
-              height: 35,
-              width: 35,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: Visibility(
-                visible: scrollOffset > -10,
-                child: GestureDetector(
+            child: Opacity(
+              opacity: 1 - clampDouble(scrollOffset, -80, 80).abs() / 80,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      HapticFeedback.heavyImpact();
+                      showCurrencyPicker(
+                        context: context,
+                        showFlag: true,
+                        showCurrencyName: true,
+                        showCurrencyCode: true,
+                        onSelect: (Currency currency) {
+                          ref
+                              .read(appSettingsDatabaseProvider.notifier)
+                              .editSetting(
+                                  3, "CurrencySymbol", currency.symbol);
+                          ref
+                              .read(currencyProvider.notifier)
+                              .update((state) => currency.symbol);
+                        },
+                      );
+                    },
+                    child: Container(
+                      height: 35,
+                      width: 35,
+                      alignment: Alignment.center,
+                      decoration:
+                          const BoxDecoration(color: Colors.transparent),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Text(
+                          ref.read(currencyProvider) == "\$" &&
+                                  ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings
+                                      .isNotEmpty
+                              ? ref
+                                  .read(appSettingsDatabaseProvider.notifier)
+                                  .currentSettings[2]
+                                  .appSettingValue
+                              : ref.read(currencyProvider),
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
                     onTap: () {
                       HapticFeedback.heavyImpact();
                       showGeneralDialog(
@@ -62,10 +107,19 @@ List<Widget> thisMonthPage(
                           transitionDuration:
                               const Duration(milliseconds: 200));
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.only(right: 10.0),
-                      child: Icon(Icons.save_rounded),
-                    )),
+                    child: Container(
+                      height: 35,
+                      width: 35,
+                      alignment: Alignment.center,
+                      decoration:
+                          const BoxDecoration(color: Colors.transparent),
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 10.0),
+                        child: Icon(Icons.save_rounded),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -90,7 +144,8 @@ List<Widget> thisMonthPage(
                       flex: 3,
                       child: Padding(
                         padding: const EdgeInsets.only(right: 12.0),
-                        child: GestureDetector(onTap: () {
+                        child: GestureDetector(
+                          onTap: () {
                             HapticFeedback.lightImpact();
                             setDefaultValues(ref);
                             Navigator.of(context).push(PageRouteBuilder(
@@ -117,7 +172,8 @@ List<Widget> thisMonthPage(
                                 ],
                                 border: Border.all(
                                     width: 5,
-                                    color: Theme.of(context).colorScheme.tertiary),
+                                    color:
+                                        Theme.of(context).colorScheme.tertiary),
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(25)),
                                 color: Theme.of(context).colorScheme.onPrimary),
@@ -133,9 +189,24 @@ List<Widget> thisMonthPage(
                                         fit: BoxFit.contain,
                                         child: Text(
                                           amountInVault == 0.0
-                                              ? "${ref.watch(currencyProvider)}0.0"
-                                              : ref.watch(currencyProvider) +
-                                                  amountInVault.toString(),
+                                              ? "${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}0.0"
+                                              : ref.read(currencyProvider) ==
+                                                          "\$" &&
+                                                      ref
+                                                          .read(
+                                                              appSettingsDatabaseProvider
+                                                                  .notifier)
+                                                          .currentSettings
+                                                          .isNotEmpty
+                                                  ? ref
+                                                          .read(
+                                                              appSettingsDatabaseProvider
+                                                                  .notifier)
+                                                          .currentSettings[2]
+                                                          .appSettingValue +
+                                                      amountInVault.toString()
+                                                  : ref.read(currencyProvider) +
+                                                      amountInVault.toString(),
                                           style: GoogleFonts.montserrat(
                                               fontSize: 60,
                                               fontWeight: FontWeight.w700,
@@ -148,10 +219,12 @@ List<Widget> thisMonthPage(
                                       ),
                                     ),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
+                                          padding:
+                                              const EdgeInsets.only(top: 8.0),
                                           child: SizedBox(
                                             height: 20,
                                             child: FittedBox(
@@ -195,14 +268,19 @@ List<Widget> thisMonthPage(
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          TakePictureScreen(camera: camera, backcamera: backcamera,)));
+                                      builder: (context) => TakePictureScreen(
+                                            camera: camera,
+                                            backcamera: backcamera,
+                                          )));
                             },
                             child: Stack(
                               children: [
                                 const SizedBox(
                                   height: 130,
-                                  child: Center(child: Icon(Icons.camera_enhance_rounded)),),
+                                  child: Center(
+                                      child:
+                                          Icon(Icons.camera_enhance_rounded)),
+                                ),
                                 Container(
                                   height: 130,
                                   alignment: Alignment.center,
@@ -211,20 +289,24 @@ List<Widget> thisMonthPage(
                                           fit: BoxFit.cover,
                                           image: ref.read(selfiePath) == "" &&
                                                   ref
-                                                      .read(appSettingsDatabaseProvider
-                                                          .notifier)
+                                                      .read(
+                                                          appSettingsDatabaseProvider
+                                                              .notifier)
                                                       .currentSettings
                                                       .isNotEmpty
                                               ? FileImage(File(ref
-                                                  .read(appSettingsDatabaseProvider
-                                                      .notifier)
+                                                  .read(
+                                                      appSettingsDatabaseProvider
+                                                          .notifier)
                                                   .currentSettings[1]
                                                   .appSettingValue))
-                                              : FileImage(File(ref.read(selfiePath)))),
+                                              : FileImage(
+                                                  File(ref.read(selfiePath)))),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color.fromARGB(255, 0, 0, 0)
-                                              .withOpacity(0.3),
+                                          color:
+                                              const Color.fromARGB(255, 0, 0, 0)
+                                                  .withOpacity(0.3),
                                           spreadRadius: 0,
                                           blurRadius: 20,
                                           offset: const Offset(0, 0),
@@ -232,10 +314,11 @@ List<Widget> thisMonthPage(
                                       ],
                                       border: Border.all(
                                           width: 5,
-                                          color:
-                                              Theme.of(context).colorScheme.tertiary),
-                                      borderRadius:
-                                          const BorderRadius.all(Radius.circular(25)),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .tertiary),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(25)),
                                       color: Colors.transparent),
                                 ),
                               ],
@@ -289,7 +372,7 @@ List<Widget> thisMonthPage(
                           forecastAmount: entriesDatabaseNotifier.perDayForecast
                               .toStringAsFixed(1),
                           amount:
-                              "${ref.watch(currencyProvider)}${entriesDatabaseNotifier.todaysExpenses}")),
+                              "${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${entriesDatabaseNotifier.todaysExpenses}")),
                   const SizedBox(
                     width: 16,
                   ),
@@ -300,9 +383,22 @@ List<Widget> thisMonthPage(
                           forecastAmount: entriesDatabaseNotifier
                               .perWeekForecast
                               .toStringAsFixed(1),
-                          amount: ref.watch(currencyProvider) +
-                              entriesDatabaseNotifier.sumOfthisWeeksExpenses
-                                  .toStringAsFixed(1)))
+                          amount: ref.read(currencyProvider) == "\$" &&
+                                  ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings
+                                      .isNotEmpty
+                              ? ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings[2]
+                                      .appSettingValue +
+                                  entriesDatabaseNotifier.sumOfthisWeeksExpenses
+                                      .toStringAsFixed(1)
+                              : ref.read(currencyProvider) +
+                                  entriesDatabaseNotifier.sumOfthisWeeksExpenses
+                                      .toStringAsFixed(1)))
                 ],
               ),
             ),
@@ -316,9 +412,22 @@ List<Widget> thisMonthPage(
                       child: MyBox(
                           width: width,
                           label: 'Total',
-                          amount: ref.watch(currencyProvider) +
-                              entriesDatabaseNotifier.thisMonthExpenses
-                                  .toStringAsFixed(1))),
+                          amount: ref.read(currencyProvider) == "\$" &&
+                                  ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings
+                                      .isNotEmpty
+                              ? ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings[2]
+                                      .appSettingValue +
+                                  entriesDatabaseNotifier.thisMonthExpenses
+                                      .toStringAsFixed(1)
+                              : ref.read(currencyProvider) +
+                                  entriesDatabaseNotifier.thisMonthExpenses
+                                      .toStringAsFixed(1))),
                   const SizedBox(
                     width: 16,
                   ),
@@ -326,9 +435,22 @@ List<Widget> thisMonthPage(
                       child: MyBox(
                           width: width,
                           label: 'Daily Average',
-                          amount: ref.watch(currencyProvider) +
-                              entriesDatabaseNotifier.dailyAverage
-                                  .toStringAsFixed(1)))
+                          amount: ref.read(currencyProvider) == "\$" &&
+                                  ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings
+                                      .isNotEmpty
+                              ? ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings[2]
+                                      .appSettingValue +
+                                  entriesDatabaseNotifier.dailyAverage
+                                      .toStringAsFixed(1)
+                              : ref.read(currencyProvider) +
+                                  entriesDatabaseNotifier.dailyAverage
+                                      .toStringAsFixed(1)))
                 ],
               ),
             ),
@@ -391,9 +513,22 @@ List<Widget> thisMonthPage(
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            ref.read(currencyProvider) +
-                                entriesDatabaseNotifier.amountInSavings
-                                    .toStringAsFixed(1),
+                            ref.read(currencyProvider) == "\$" &&
+                                    ref
+                                        .read(appSettingsDatabaseProvider
+                                            .notifier)
+                                        .currentSettings
+                                        .isNotEmpty
+                                ? ref
+                                        .read(appSettingsDatabaseProvider
+                                            .notifier)
+                                        .currentSettings[2]
+                                        .appSettingValue +
+                                    entriesDatabaseNotifier.amountInSavings
+                                        .toStringAsFixed(1)
+                                : ref.read(currencyProvider) +
+                                    entriesDatabaseNotifier.amountInSavings
+                                        .toStringAsFixed(1),
                             style: GoogleFonts.montserrat(
                               fontSize: 21,
                               fontWeight: FontWeight.w700,

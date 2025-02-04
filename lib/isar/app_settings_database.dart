@@ -10,10 +10,11 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
 
   AppSettingsDatabaseNotifier() : super([]);
 
+  // id = Name
   // 1 = FirstAppOpen&SecondAppOpen
   // 2 = SelfiePath
+  // 3 = CurrencySymbol
 
-  //default entries
   final firstAppOpen = AppSettingEntry()
     ..appSettingName = "FirstAppOpen&SecondAppOpen"
     ..appSettingValue = "true&false";
@@ -62,6 +63,9 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
     if (currentSettings.length<=1) {
       // inititating setting 2 if it doesnt exist
       addSetting("SelfiePath", "");
+    }if (currentSettings.length<=2) {
+      // inititating setting 3 if it doesnt exist
+      addSetting("CurrencySymbol", "\$");
     }
     state = [];
     state = currentSettings;
