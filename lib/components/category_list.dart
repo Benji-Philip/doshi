@@ -1,4 +1,5 @@
 import 'package:doshi/components/add_category_dialogbox.dart';
+import 'package:doshi/components/delete_category_confirm_dialog.dart';
 import 'package:doshi/components/my_button.dart';
 import 'package:doshi/isar/category_entry.dart';
 import 'package:doshi/riverpod/states.dart';
@@ -32,7 +33,7 @@ class _CategoryListState extends ConsumerState<CategoryList> {
     final categoriesDatabaseNotifier =
         ref.watch(categoryDatabaseProvider.notifier);
     List<CategoryEntry> currentCategories =
-        categoriesDatabaseNotifier.currentCategories;
+        categoriesDatabaseNotifier.currentCategories.reversed.toList();
     return SafeArea(
       child: Dialog(
         backgroundColor: Colors.transparent,
@@ -165,10 +166,24 @@ class _CategoryListState extends ConsumerState<CategoryList> {
                                           SlidableAction(
                                             onPressed: (context) {
                                               HapticFeedback.heavyImpact();
-                                              categoriesDatabaseNotifier
-                                                  .deleteCategory(
-                                                      currentCategories[index]
-                                                          .id);
+                                              showGeneralDialog(
+                                                  pageBuilder:
+                                                      (context, anim1, anim2) {
+                                                    return const Placeholder();
+                                                  },
+                                                  context: context,
+                                                  transitionBuilder: (context,
+                                                      anim1, anim2, child) {
+                                                    return Opacity(
+                                                        opacity: anim1.value,
+                                                        child: DeleteCategoryDialogBox(
+                                                            id: currentCategories[
+                                                                    index]
+                                                                .id));
+                                                  },
+                                                  transitionDuration:
+                                                      const Duration(
+                                                          milliseconds: 200));
                                             },
                                             backgroundColor: Colors.transparent,
                                             foregroundColor: Colors.transparent,
