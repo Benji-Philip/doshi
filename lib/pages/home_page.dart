@@ -454,6 +454,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   entriesDatabaseNotifier.analysisOfCategories,
                                   widget.camera,
                                   widget.backcamera,
+                                  _scrollController
                                 )
                               : analysisPage(_spaceFromTop, context, width,
                                   height, ref, entriesDatabaseNotifier));

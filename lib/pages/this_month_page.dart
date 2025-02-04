@@ -31,6 +31,7 @@ List<Widget> thisMonthPage(
   List<CategoryAnalysisEntry> analysisOfExpensesThisMonth,
   CameraDescription camera,
   CameraDescription backcamera,
+  ScrollController scrollController,
 ) {
   // ignore: unused_local_variable
   final currencySymbolUpdaterVariable = ref.watch(currencyProvider);
@@ -54,6 +55,7 @@ List<Widget> thisMonthPage(
                         showCurrencyName: true,
                         showCurrencyCode: true,
                         onSelect: (Currency currency) {
+                          HapticFeedback.lightImpact();
                           ref
                               .read(appSettingsDatabaseProvider.notifier)
                               .editSetting(
@@ -63,6 +65,7 @@ List<Widget> thisMonthPage(
                               .update((state) => currency.symbol);
                         },
                       );
+                      scrollController.animateTo(-80, duration: const Duration(milliseconds: 1000), curve: Curves.easeInCubic);
                     },
                     child: Container(
                       height: 35,
