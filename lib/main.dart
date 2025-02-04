@@ -82,10 +82,16 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  void readEntries() {
+  void readEntries() async {
     ref.read(appSettingsDatabaseProvider.notifier).fetchEntries();
     ref.read(entryDatabaseProvider.notifier).fetchEntries();
     ref.read(categoryDatabaseProvider.notifier).fetchEntries();
+    final List appSettings = await ref.read(appSettingsDatabaseProvider.notifier).fetchSettings();
+    if (appSettings.length > 2) {
+    ref.read(currencyProvider.notifier).update((state)=>appSettings [2].appSettingValue);
+    } else {
+    ref.read(currencyProvider.notifier).update((state)=>"\$");
+    }
   }
 
   Future<void> setOptimalDisplayMode() async {

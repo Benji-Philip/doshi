@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_expense_dialog_box.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/isar/entry.dart';
@@ -273,16 +274,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     opacity: clampDouble(scrollOffset, -80, 0)
                                             .abs() /
                                         80,
-                                    child: Text(
-                                      ref.watch(currentPage) == "Home"
-                                          ? "Analysis"
-                                          : "Home",
-                                      style: GoogleFonts.montserrat(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          fontSize: 36,
-                                          fontWeight: FontWeight.w700),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          ref.watch(currentPage) == "Home"
+                                              ? "Analysis"
+                                              : "Home",
+                                          style: GoogleFonts.montserrat(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 36,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -314,14 +321,55 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                   .abs() /
                                               80
                                       : 1,
-                                  child: Text(
-                                    ref.watch(currentPage),
-                                    style: GoogleFonts.montserrat(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontSize: 36,
-                                        fontWeight: FontWeight.w700),
+                                  child: SizedBox(
+                                    width: width,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          ref.watch(currentPage),
+                                          style: GoogleFonts.montserrat(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 36,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 16.0, right: 12),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                height: 35,
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        minWidth: 35),
+                                                alignment: Alignment.center,
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.transparent),
+                                                child: Text(
+                                                  ref.watch(currencyProvider),
+                                                  style: const TextStyle(
+                                                      fontSize: 20),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 35,
+                                                width: 35,
+                                                alignment: Alignment.center,
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.transparent),
+                                                child: const Icon(
+                                                    Icons.save_rounded),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -454,8 +502,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   entriesDatabaseNotifier.analysisOfCategories,
                                   widget.camera,
                                   widget.backcamera,
-                                  _scrollController
-                                )
+                                  _scrollController)
                               : analysisPage(_spaceFromTop, context, width,
                                   height, ref, entriesDatabaseNotifier));
                     }),

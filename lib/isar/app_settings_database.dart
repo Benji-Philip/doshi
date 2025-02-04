@@ -71,6 +71,10 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
     state = currentSettings;
   }
 
+  Future<List> fetchSettings() async {
+    return await isar.appSettingEntrys.where().findAll();
+  }
+
   //edit
   Future<void> editSetting(
       int id, String newAppSettingName, String newAppSettingValue) async {

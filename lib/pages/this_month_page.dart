@@ -33,17 +33,15 @@ List<Widget> thisMonthPage(
   CameraDescription backcamera,
   ScrollController scrollController,
 ) {
-  // ignore: unused_local_variable
-  final currencySymbolUpdaterVariable = ref.watch(currencyProvider);
   List<Widget> homePage = [
     SliverToBoxAdapter(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 43.0),
-            child: Opacity(
-              opacity: 1 - clampDouble(scrollOffset, -80, 80).abs() / 80,
+          Opacity(
+            opacity: 0,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 43.0, right: 20),
               child: Row(
                 children: [
                   GestureDetector(
@@ -65,30 +63,19 @@ List<Widget> thisMonthPage(
                               .update((state) => currency.symbol);
                         },
                       );
-                      scrollController.animateTo(-80, duration: const Duration(milliseconds: 1000), curve: Curves.easeInCubic);
+                      scrollController.animateTo(-80,
+                          duration: const Duration(milliseconds: 100),
+                          curve: Curves.easeInCubic);
                     },
                     child: Container(
                       height: 35,
-                      width: 35,
+                      constraints: const BoxConstraints(minWidth: 35),
                       alignment: Alignment.center,
                       decoration:
-                          const BoxDecoration(color: Colors.transparent),
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Text(
-                          ref.read(currencyProvider) == "\$" &&
-                                  ref
-                                      .read(
-                                          appSettingsDatabaseProvider.notifier)
-                                      .currentSettings
-                                      .isNotEmpty
-                              ? ref
-                                  .read(appSettingsDatabaseProvider.notifier)
-                                  .currentSettings[2]
-                                  .appSettingValue
-                              : ref.read(currencyProvider),
-                          style: const TextStyle(fontSize: 20),
-                        ),
+                         BoxDecoration(color: Colors.transparent, border: Border.all(color: Colors.white)),
+                      child: Text(
+                        ref.watch(currencyProvider),
+                        style: const TextStyle(fontSize: 20),
                       ),
                     ),
                   ),
@@ -115,21 +102,15 @@ List<Widget> thisMonthPage(
                       width: 35,
                       alignment: Alignment.center,
                       decoration:
-                          const BoxDecoration(color: Colors.transparent),
-                      child: const Padding(
-                        padding: EdgeInsets.only(right: 10.0),
-                        child: Icon(Icons.save_rounded),
-                      ),
+                         BoxDecoration(color: Colors.transparent, border: Border.all(color: Colors.white)),
+                      child: const Icon(Icons.save_rounded),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(
-            width: 25,
-          )
-        ],
+          ],
       ),
     ),
     SliverToBoxAdapter(
@@ -192,23 +173,8 @@ List<Widget> thisMonthPage(
                                         fit: BoxFit.contain,
                                         child: Text(
                                           amountInVault == 0.0
-                                              ? "${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}0.0"
-                                              : ref.read(currencyProvider) ==
-                                                          "\$" &&
-                                                      ref
-                                                          .read(
-                                                              appSettingsDatabaseProvider
-                                                                  .notifier)
-                                                          .currentSettings
-                                                          .isNotEmpty
-                                                  ? ref
-                                                          .read(
-                                                              appSettingsDatabaseProvider
-                                                                  .notifier)
-                                                          .currentSettings[2]
-                                                          .appSettingValue +
-                                                      amountInVault.toString()
-                                                  : ref.read(currencyProvider) +
+                                              ? "${ref.watch(currencyProvider)}0.0"
+                                              : ref.watch(currencyProvider) +
                                                       amountInVault.toString(),
                                           style: GoogleFonts.montserrat(
                                               fontSize: 60,
@@ -375,7 +341,7 @@ List<Widget> thisMonthPage(
                           forecastAmount: entriesDatabaseNotifier.perDayForecast
                               .toStringAsFixed(1),
                           amount:
-                              "${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${entriesDatabaseNotifier.todaysExpenses}")),
+                              "${ref.watch(currencyProvider)}${entriesDatabaseNotifier.todaysExpenses}")),
                   const SizedBox(
                     width: 16,
                   ),
@@ -386,20 +352,7 @@ List<Widget> thisMonthPage(
                           forecastAmount: entriesDatabaseNotifier
                               .perWeekForecast
                               .toStringAsFixed(1),
-                          amount: ref.read(currencyProvider) == "\$" &&
-                                  ref
-                                      .read(
-                                          appSettingsDatabaseProvider.notifier)
-                                      .currentSettings
-                                      .isNotEmpty
-                              ? ref
-                                      .read(
-                                          appSettingsDatabaseProvider.notifier)
-                                      .currentSettings[2]
-                                      .appSettingValue +
-                                  entriesDatabaseNotifier.sumOfthisWeeksExpenses
-                                      .toStringAsFixed(1)
-                              : ref.read(currencyProvider) +
+                          amount: ref.watch(currencyProvider) +
                                   entriesDatabaseNotifier.sumOfthisWeeksExpenses
                                       .toStringAsFixed(1)))
                 ],
@@ -415,20 +368,7 @@ List<Widget> thisMonthPage(
                       child: MyBox(
                           width: width,
                           label: 'Total',
-                          amount: ref.read(currencyProvider) == "\$" &&
-                                  ref
-                                      .read(
-                                          appSettingsDatabaseProvider.notifier)
-                                      .currentSettings
-                                      .isNotEmpty
-                              ? ref
-                                      .read(
-                                          appSettingsDatabaseProvider.notifier)
-                                      .currentSettings[2]
-                                      .appSettingValue +
-                                  entriesDatabaseNotifier.thisMonthExpenses
-                                      .toStringAsFixed(1)
-                              : ref.read(currencyProvider) +
+                          amount: ref.watch(currencyProvider) +
                                   entriesDatabaseNotifier.thisMonthExpenses
                                       .toStringAsFixed(1))),
                   const SizedBox(
@@ -438,20 +378,7 @@ List<Widget> thisMonthPage(
                       child: MyBox(
                           width: width,
                           label: 'Daily Average',
-                          amount: ref.read(currencyProvider) == "\$" &&
-                                  ref
-                                      .read(
-                                          appSettingsDatabaseProvider.notifier)
-                                      .currentSettings
-                                      .isNotEmpty
-                              ? ref
-                                      .read(
-                                          appSettingsDatabaseProvider.notifier)
-                                      .currentSettings[2]
-                                      .appSettingValue +
-                                  entriesDatabaseNotifier.dailyAverage
-                                      .toStringAsFixed(1)
-                              : ref.read(currencyProvider) +
+                          amount: ref.watch(currencyProvider) +
                                   entriesDatabaseNotifier.dailyAverage
                                       .toStringAsFixed(1)))
                 ],
@@ -515,21 +442,7 @@ List<Widget> thisMonthPage(
                             horizontal: 16.0, vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
-                          child: Text(
-                            ref.read(currencyProvider) == "\$" &&
-                                    ref
-                                        .read(appSettingsDatabaseProvider
-                                            .notifier)
-                                        .currentSettings
-                                        .isNotEmpty
-                                ? ref
-                                        .read(appSettingsDatabaseProvider
-                                            .notifier)
-                                        .currentSettings[2]
-                                        .appSettingValue +
-                                    entriesDatabaseNotifier.amountInSavings
-                                        .toStringAsFixed(1)
-                                : ref.read(currencyProvider) +
+                          child: Text(ref.watch(currencyProvider) +
                                     entriesDatabaseNotifier.amountInSavings
                                         .toStringAsFixed(1),
                             style: GoogleFonts.montserrat(

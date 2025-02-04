@@ -372,8 +372,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                           fit: BoxFit.contain,
                           child: Text(
                             widget.currentEntries[widget.index].isExpense
-                                ? "-${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${widget.currentEntries[widget.index].amount}"
-                                : "+${ref.read(currencyProvider) == "\$" && ref.read(appSettingsDatabaseProvider.notifier).currentSettings.isNotEmpty ? ref.read(appSettingsDatabaseProvider.notifier).currentSettings[2].appSettingValue : ref.read(currencyProvider)}${widget.currentEntries[widget.index].amount}",
+                                ? "-${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}"
+                                : "+${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}",
                             softWrap: true,
                             style: GoogleFonts.montserrat(
                                 color: widget

@@ -264,25 +264,7 @@ List<Widget> analysisPage(
                                                     flex: 1,
                                                     child: FittedBox(
                                                       fit: BoxFit.contain,
-                                                      child: Text(
-                                                        ref.read(currencyProvider) ==
-                                                                    "\$" &&
-                                                                ref
-                                                                    .read(appSettingsDatabaseProvider
-                                                                        .notifier)
-                                                                    .currentSettings
-                                                                    .isNotEmpty
-                                                            ? ref
-                                                                    .read(appSettingsDatabaseProvider
-                                                                        .notifier)
-                                                                    .currentSettings[
-                                                                        2]
-                                                                    .appSettingValue +
-                                                                analysis[index]
-                                                                    .categorySum
-                                                                    .toString()
-                                                            : ref.read(
-                                                                    currencyProvider) +
+                                                      child: Text(ref.read(currencyProvider) +
                                                                 analysis[index]
                                                                     .categorySum
                                                                     .toString(),
