@@ -32,17 +32,10 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Stack(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.bottomRight,
               children: [
-                Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(25)),
-                      color: Theme.of(context).colorScheme.onTertiary),
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 14.0),
+                  padding: const EdgeInsets.only(top: 10.0, left: 10),
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -56,7 +49,157 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                 const Offset(0, 0), // changes position of shadow
                           ),
                         ],
-                        borderRadius: const BorderRadius.all(Radius.circular(25)),
+                        borderRadius: const BorderRadius.all(Radius.circular(35)),
+                        color: Theme.of(context).colorScheme.onTertiary),
+                    child: Opacity(
+                      opacity: 0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(21.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: RichText(
+                                textAlign: TextAlign.left,
+                                text: TextSpan(
+                                    style: GoogleFonts.montserrat(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                          text: "Replenish credit with "),
+                                      TextSpan(
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              HapticFeedback.lightImpact();
+                                              amountTEC.clear();
+                                              ref
+                                                  .read(amountText.notifier)
+                                                  .update((state) => "");
+                                              showModalBottomSheet(
+                                                  barrierColor: Colors.transparent,
+                                                  context: context,
+                                                  builder: (builder) {
+                                                    return UserInputDialog(
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly
+                                                      ],
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      textProvider: amountText,
+                                                      label: "amount",
+                                                      commonTextEditingController:
+                                                          amountTEC,
+                                                    );
+                                                  });
+                                            },
+                                          style: GoogleFonts.montserrat(
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.lightGreen,
+                                              textStyle: const TextStyle(
+                                                  color: Colors.lightGreen,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  decorationStyle:
+                                                      TextDecorationStyle.dotted)),
+                                          text:
+                                              "${ref.read(currencyProvider)}${ref.read(amountText)}"),
+                                      const TextSpan(text: " ?")
+                                    ]),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 30.0, right: 30, bottom: 14),
+                            child: Visibility(
+                              visible: ref.watch(exceedSavings),
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width: double.infinity,
+                                  decoration: const BoxDecoration(
+                                      color: Colors.redAccent,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(25))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      "Insufficient savings!",
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          decorationColor: Colors.redAccent),
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 14.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                    alignment: Alignment.center,
+                                    width:
+                                        MediaQuery.of(context).size.width / 3.1,
+                                    height: 50,
+                                    decoration: const BoxDecoration(
+                                        color: Colors.redAccent,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(50))),
+                                    child: const Icon(
+                                      Icons.close_rounded,
+                                      size: 40,
+                                      color: Colors.white,
+                                    )),
+                                Container(
+                                    alignment: Alignment.center,
+                                    width:
+                                        MediaQuery.of(context).size.width / 3.1,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color:
+                                            Theme.of(context).colorScheme.primary,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(50))),
+                                    child: Icon(
+                                      Icons.check_rounded,
+                                      size: 40,
+                                      color:
+                                          Theme.of(context).colorScheme.onPrimary,
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0, right: 10),
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color.fromARGB(255, 0, 0, 0)
+                                .withOpacity(0.3),
+                            spreadRadius: 0,
+                            blurRadius: 20,
+                            offset:
+                                const Offset(0, 0), // changes position of shadow
+                          ),
+                        ],
+                        borderRadius: const BorderRadius.all(Radius.circular(35)),
                         color: Theme.of(context).colorScheme.tertiary),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
