@@ -32,14 +32,12 @@ class SlidableEntry extends ConsumerStatefulWidget {
 class _SlidableEntryState extends ConsumerState<SlidableEntry>
     with SingleTickerProviderStateMixin {
   late SlidableController _slidableController;
-  late bool _isOpen;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _slidableController = SlidableController(this);
-    _isOpen = false;
   }
 
   @override
@@ -262,13 +260,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
             child: GestureDetector(
               onTap: () {
                 HapticFeedback.lightImpact();
-                if (_isOpen) {
-                  _isOpen = !_isOpen;
-                  _slidableController.close();
-                } else {
-                  _isOpen = !_isOpen;
                   _slidableController.openEndActionPane();
-                }
               },
               child: Container(
                 alignment: Alignment.center,
