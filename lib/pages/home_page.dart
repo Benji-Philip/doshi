@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_expense_dialog_box.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/isar/entry.dart';
@@ -23,6 +22,7 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   bool canChangePage = true;
+  bool preventScrollSpam = true;
   final double pageSwitchScrollLimit = 100;
   final double _spaceFromTop = 90;
   double scrollDelta = 0.0;
@@ -338,34 +338,44 @@ class _HomePageState extends ConsumerState<HomePage> {
                                               fontWeight: FontWeight.w700),
                                         ),
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 16.0, right: 12),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                height: 35,
-                                                constraints:
-                                                    const BoxConstraints(
-                                                        minWidth: 35),
-                                                alignment: Alignment.center,
-                                                decoration: const BoxDecoration(
-                                                    color: Colors.transparent),
-                                                child: Text(
-                                                  ref.watch(currencyProvider),
-                                                  style: const TextStyle(
-                                                      fontSize: 20),
+                                          padding: const EdgeInsets.only(
+                                              top: 16.0, right: 12),
+                                          child: Opacity(
+                                            opacity:
+                                                ref.watch(currentPage) == "Home"
+                                                    ? 1
+                                                    : 0,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  height: 35,
+                                                  constraints:
+                                                      const BoxConstraints(
+                                                          minWidth: 35),
+                                                  alignment: Alignment.center,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: Colors
+                                                              .transparent),
+                                                  child: Text(
+                                                    ref.watch(currencyProvider),
+                                                    style: const TextStyle(
+                                                        fontSize: 20),
+                                                  ),
                                                 ),
-                                              ),
-                                              Container(
-                                                height: 35,
-                                                width: 35,
-                                                alignment: Alignment.center,
-                                                decoration: const BoxDecoration(
-                                                    color: Colors.transparent),
-                                                child: const Icon(
-                                                    Icons.save_rounded),
-                                              ),
-                                            ],
+                                                Container(
+                                                  height: 35,
+                                                  width: 35,
+                                                  alignment: Alignment.center,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: Colors
+                                                              .transparent),
+                                                  child: const Icon(
+                                                      Icons.save_rounded),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -454,8 +464,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                             canChangePage = true;
                           });
                         }
+                        if (scrollOffset <= -pageSwitchScrollLimit/2 && scrollOffset >= -pageSwitchScrollLimit/2 - 10) {
+                          setState(() {
+                            preventScrollSpam = true;
+                          });
+                        }
                         if (scrollOffset < -pageSwitchScrollLimit &&
-                            canChangePage) {
+                            preventScrollSpam) {
                           ref.read(analysisOfExpenses.notifier).state = [];
                           ref.read(analysisOfExpenses.notifier).state =
                               entriesDatabaseNotifier.analysisOfCategories;
@@ -474,6 +489,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           }
                           setState(() {
                             canChangePage = false;
+                            preventScrollSpam = false;
                           });
                         }
                       }
@@ -484,7 +500,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       final watcher = ref.watch(analysisOfExpenses);
                       return CustomScrollView(
                           physics: BouncingScrollPhysics(
-                              parent: canChangePage
+                              parent: preventScrollSpam
                                   ? const AlwaysScrollableScrollPhysics()
                                   : const NeverScrollableScrollPhysics()),
                           controller: _scrollController,
