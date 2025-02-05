@@ -66,169 +66,215 @@ class _HomePageState extends ConsumerState<HomePage> {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Stack(
-                alignment: Alignment.topCenter,
                 children: [
-                  Container(
-                    height: 108,
-                    width: width,
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color.fromARGB(255, 0, 0, 0)
-                                .withOpacity(0.3),
-                            spreadRadius: 0,
-                            blurRadius: 20,
-                            offset: const Offset(
-                                0, 0), // changes position of shadow
-                          ),
-                        ],
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(25)),
-                        color: Theme.of(context).colorScheme.onTertiary),
-                  ),
-                  Container(
-                    height: 100,
-                    width: width,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(25)),
-                        color: Theme.of(context).colorScheme.tertiary),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Visibility(
+                    visible: !(scrollOffset > MediaQuery.of(context).size.height/2),
+                    child: Stack(
+                      alignment: Alignment.topCenter,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            setDefaultValues(ref);
-                            Navigator.of(context).push(PageRouteBuilder(
-                                opaque: false,
-                                barrierDismissible: false,
-                                pageBuilder: (BuildContext context, _, __) {
-                                  return const Hero(
-                                      tag: "addtovault",
-                                      child: AddToVaultDialogBox());
-                                }));
-                          },
-                          child: Stack(
-                            children: [
-                              Hero(
-                                tag: "addtovault",
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  width: width / 2.7,
-                                  height: 60,
-                                  decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(25)),
-                                      color: Colors.transparent),
+                        Container(
+                          height: 108,
+                          width: width,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color.fromARGB(255, 0, 0, 0)
+                                      .withOpacity(0.3),
+                                  spreadRadius: 0,
+                                  blurRadius: 20,
+                                  offset: const Offset(
+                                      0, 0), // changes position of shadow
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: width / 2.7,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0)
-                                                .withOpacity(0.3),
-                                        spreadRadius: 0,
-                                        blurRadius: 20,
-                                        offset: const Offset(
-                                            0, 0), // changes position of shadow
-                                      ),
-                                    ],
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(25)),
-                                    color: Colors.lightGreen),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 18.0, vertical: 8),
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      "Add",
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.white,
-                                          fontSize: 21,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                              ],
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(25)),
+                              color: Theme.of(context).colorScheme.onTertiary),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            setDefaultValues(ref);
-                            ref
-                                .read(amountText.notifier)
-                                .update((state) => '25');
-                            Navigator.of(context).push(PageRouteBuilder(
-                                opaque: false,
-                                barrierDismissible: false,
-                                pageBuilder: (BuildContext context, _, __) {
-                                  return const Hero(
-                                      tag: "deductfromvault",
-                                      child: AddExpenseDialogBox());
-                                }));
-                          },
-                          child: Stack(
-                            alignment: Alignment.center,
+                        Container(
+                          height: 100,
+                          width: width,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(25)),
+                              color: Theme.of(context).colorScheme.tertiary),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Hero(
-                                tag: "deductfromvault",
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  width: width / 2.7,
-                                  height: 60,
-                                  decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(25)),
-                                      color: Colors.transparent),
+                              GestureDetector(
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  setDefaultValues(ref);
+                                  Navigator.of(context).push(PageRouteBuilder(
+                                      opaque: false,
+                                      barrierDismissible: false,
+                                      pageBuilder: (BuildContext context, _, __) {
+                                        return const Hero(
+                                            tag: "addtovault",
+                                            child: AddToVaultDialogBox());
+                                      }));
+                                },
+                                child: Stack(
+                                  children: [
+                                    Hero(
+                                      tag: "addtovault",
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width: width / 2.7,
+                                        height: 60,
+                                        decoration: const BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(25)),
+                                            color: Colors.transparent),
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: width / 2.7,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  const Color.fromARGB(255, 0, 0, 0)
+                                                      .withOpacity(0.3),
+                                              spreadRadius: 0,
+                                              blurRadius: 20,
+                                              offset: const Offset(
+                                                  0, 0), // changes position of shadow
+                                            ),
+                                          ],
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(25)),
+                                          color: Colors.lightGreen),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 18.0, vertical: 8),
+                                        child: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: Text(
+                                            "Add",
+                                            style: GoogleFonts.montserrat(
+                                                color: Colors.white,
+                                                fontSize: 21,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: width / 2.7,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0)
-                                                .withOpacity(0.3),
-                                        spreadRadius: 0,
-                                        blurRadius: 20,
-                                        offset: const Offset(
-                                            0, 0), // changes position of shadow
+                              GestureDetector(
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  setDefaultValues(ref);
+                                  ref
+                                      .read(amountText.notifier)
+                                      .update((state) => '25');
+                                  Navigator.of(context).push(PageRouteBuilder(
+                                      opaque: false,
+                                      barrierDismissible: false,
+                                      pageBuilder: (BuildContext context, _, __) {
+                                        return const Hero(
+                                            tag: "deductfromvault",
+                                            child: AddExpenseDialogBox());
+                                      }));
+                                },
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Hero(
+                                      tag: "deductfromvault",
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width: width / 2.7,
+                                        height: 60,
+                                        decoration: const BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(25)),
+                                            color: Colors.transparent),
                                       ),
-                                    ],
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(25)),
-                                    color: Colors.redAccent),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 18.0, vertical: 8),
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      "Deduct",
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.white,
-                                          fontSize: 21,
-                                          fontWeight: FontWeight.w700),
                                     ),
-                                  ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: width / 2.7,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  const Color.fromARGB(255, 0, 0, 0)
+                                                      .withOpacity(0.3),
+                                              spreadRadius: 0,
+                                              blurRadius: 20,
+                                              offset: const Offset(
+                                                  0, 0), // changes position of shadow
+                                            ),
+                                          ],
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(25)),
+                                          color: Colors.redAccent),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 18.0, vertical: 8),
+                                        child: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: Text(
+                                            "Deduct",
+                                            style: GoogleFonts.montserrat(
+                                                color: Colors.white,
+                                                fontSize: 21,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ],
+                    ),
+                  ),Visibility(
+                    visible: (scrollOffset > MediaQuery.of(context).size.height/2),
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        _scrollController.animateTo(0, duration: Duration(milliseconds: (scrollOffset/2).clamp(500,2000).round()), curve: Curves.easeInOutCirc);
+                      },
+                      child: Stack(
+                        alignment: Alignment.topCenter,
+                        children: [
+                          Container(
+                            height: 54,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color.fromARGB(255, 0, 0, 0)
+                                        .withOpacity(0.3),
+                                    spreadRadius: 0,
+                                    blurRadius: 20,
+                                    offset: const Offset(
+                                        0, 0), // changes position of shadow
+                                  ),
+                                ],
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(100)),
+                                color: Theme.of(context).colorScheme.onTertiary),
+                          ),
+                          Container(
+                            height: 50,
+                            width:50,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(100)),
+                                color: Theme.of(context).colorScheme.tertiary),
+                            child: Icon(Icons.swipe_up_alt_rounded,size: 32,) ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
