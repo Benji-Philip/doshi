@@ -228,7 +228,7 @@ class _ThisContainerOfTheDialogBoxState
                                   color: Colors.amber,
                                 )),
                             TextSpan(
-                                text: !ref.watch(isSavings) ? " (" : "",
+                                text: " (",
                                 style: GoogleFonts.montserrat(
                                   fontWeight: FontWeight.w700,
                                   color: Colors.purple,
@@ -251,11 +251,9 @@ class _ThisContainerOfTheDialogBoxState
                                           );
                                         });
                                   },
-                                text: !ref.watch(isSavings)
-                                    ? ref.watch(noteText) == ""
-                                        ? "note"
-                                        : ref.watch(noteText)
-                                    : "",
+                                text: ref.watch(noteText) == ""
+                                    ? "note"
+                                    : ref.watch(noteText),
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.purple,
@@ -264,7 +262,7 @@ class _ThisContainerOfTheDialogBoxState
                                         decorationStyle:
                                             TextDecorationStyle.dashed))),
                             TextSpan(
-                                text: !ref.watch(isSavings) ? ")" : "",
+                                text: ")",
                                 style: GoogleFonts.montserrat(
                                   fontWeight: FontWeight.w700,
                                   color: Colors.purple,
@@ -288,7 +286,6 @@ class _ThisContainerOfTheDialogBoxState
                           GestureDetector(
                             onTap: () {
                               HapticFeedback.lightImpact();
-                              setDefaultValues(ref);
                               Navigator.of(context).pop();
                             },
                             child: Container(

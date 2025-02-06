@@ -204,7 +204,7 @@ class _ThisContainerOfTheDialogBoxState
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
                                             TextDecorationStyle.dashed))),
-                            TextSpan(text: ref.watch(isSavings) ? "" : " on "),
+                            const TextSpan(text: " on "),
                             TextSpan(
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {

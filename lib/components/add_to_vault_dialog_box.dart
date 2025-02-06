@@ -195,11 +195,13 @@ class _ThisContainerOfTheDialogBoxState
                                         decorationStyle:
                                             TextDecorationStyle.dashed))),
                             TextSpan(
-                                text: DateFormat('dMMMM').format(dateTimeVar) !=
-                                        DateFormat('dMMMM')
-                                            .format(DateTime.now())
-                                    ? " on "
-                                    : " "),
+                                text: ref.watch(isSavings)
+                                    ? ""
+                                    : DateFormat('dMMMM').format(dateTimeVar) !=
+                                            DateFormat('dMMMM')
+                                                .format(DateTime.now())
+                                        ? " on "
+                                        : " "),
                             TextSpan(
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
@@ -217,7 +219,9 @@ class _ThisContainerOfTheDialogBoxState
                                     }
                                   });
                                 },
-                              text: DateFormat('d MMM yy')
+                              text:ref.watch(isSavings)
+                                    ? ""
+                                    : DateFormat('d MMM yy')
                                           .format(DateTime.now()) ==
                                       DateFormat('d MMM yy').format(dateTimeVar)
                                   ? "today"
@@ -231,7 +235,9 @@ class _ThisContainerOfTheDialogBoxState
                                           TextDecorationStyle.dashed)),
                             ),
                             TextSpan(
-                                text: ".",
+                                text:ref.watch(isSavings)
+                                    ? ""
+                                    : ".",
                                 style: GoogleFonts.montserrat(
                                   fontWeight: FontWeight.w700,
                                   color: Colors.amber,
@@ -300,7 +306,6 @@ class _ThisContainerOfTheDialogBoxState
                           GestureDetector(
                             onTap: () {
                               HapticFeedback.lightImpact();
-                              setDefaultValues(ref);
                               Navigator.of(context).pop();
                             },
                             child: Container(
