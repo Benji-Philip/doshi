@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final showCamera = StateProvider((state) => true);
+
 class HomePage extends ConsumerStatefulWidget {
   final CameraDescription camera;
   final CameraDescription backcamera;
@@ -45,6 +47,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    bool watchForHomePageUpdates = ref.watch(showCamera);
     final entriesDatabase = ref.watch(entryDatabaseProvider);
     final entriesDatabaseNotifier = ref.watch(entryDatabaseProvider.notifier);
     List<Entry> currentEntries = entriesDatabase;
@@ -68,7 +72,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               child: Stack(
                 children: [
                   Visibility(
-                    visible: !(scrollOffset > MediaQuery.of(context).size.height/2),
+                    visible: !(scrollOffset >
+                        MediaQuery.of(context).size.height / 2),
                     child: Stack(
                       alignment: Alignment.topCenter,
                       children: [
@@ -101,13 +106,56 @@ class _HomePageState extends ConsumerState<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               GestureDetector(
+                                onLongPress: () {
+                                  if (ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings
+                                      .isNotEmpty) {
+                                    HapticFeedback.heavyImpact();
+                                    bool currentCamState = ref
+                                            .read(appSettingsDatabaseProvider
+                                                .notifier)
+                                            .currentSettings[3]
+                                            .appSettingValue ==
+                                        "true";
+                                    if (currentCamState) {
+                                      ref
+                                          .read(appSettingsDatabaseProvider
+                                              .notifier)
+                                          .editSetting(
+                                              4, "EnableCamera", "false");
+                                    ref
+                                        .read(showCamera.notifier)
+                                        .update((state) =>false);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  Text("Disabled Easter Egg")));
+                                    } else {
+                                      ref
+                                          .read(appSettingsDatabaseProvider
+                                              .notifier)
+                                          .editSetting(
+                                              4, "EnableCamera", "true");
+                                    ref
+                                        .read(showCamera.notifier)
+                                        .update((state) => true);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  Text("Enabled Easter Egg")));
+                                    }
+                                  }
+                                },
                                 onTap: () {
                                   HapticFeedback.lightImpact();
                                   setDefaultValues(ref);
                                   Navigator.of(context).push(PageRouteBuilder(
                                       opaque: false,
                                       barrierDismissible: false,
-                                      pageBuilder: (BuildContext context, _, __) {
+                                      pageBuilder:
+                                          (BuildContext context, _, __) {
                                         return const Hero(
                                             tag: "addtovault",
                                             child: AddToVaultDialogBox());
@@ -122,8 +170,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         width: width / 2.7,
                                         height: 60,
                                         decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(Radius.circular(25)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(25)),
                                             color: Colors.transparent),
                                       ),
                                     ),
@@ -134,13 +182,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       decoration: BoxDecoration(
                                           boxShadow: [
                                             BoxShadow(
-                                              color:
-                                                  const Color.fromARGB(255, 0, 0, 0)
-                                                      .withOpacity(0.3),
+                                              color: const Color.fromARGB(
+                                                      255, 0, 0, 0)
+                                                  .withOpacity(0.3),
                                               spreadRadius: 0,
                                               blurRadius: 20,
-                                              offset: const Offset(
-                                                  0, 0), // changes position of shadow
+                                              offset: const Offset(0,
+                                                  0), // changes position of shadow
                                             ),
                                           ],
                                           borderRadius: const BorderRadius.all(
@@ -164,7 +212,48 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ],
                                 ),
                               ),
-                              GestureDetector(
+                              GestureDetector(onLongPress: () {
+                                  if (ref
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
+                                      .currentSettings
+                                      .isNotEmpty) {
+                                    HapticFeedback.heavyImpact();
+                                    bool currentCamState = ref
+                                            .read(appSettingsDatabaseProvider
+                                                .notifier)
+                                            .currentSettings[3]
+                                            .appSettingValue ==
+                                        "true";
+                                    if (currentCamState) {
+                                      ref
+                                          .read(appSettingsDatabaseProvider
+                                              .notifier)
+                                          .editSetting(
+                                              4, "EnableCamera", "false");
+                                    ref
+                                        .read(showCamera.notifier)
+                                        .update((state) =>false);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  Text("Disabled Easter Egg")));
+                                    } else {
+                                      ref
+                                          .read(appSettingsDatabaseProvider
+                                              .notifier)
+                                          .editSetting(
+                                              4, "EnableCamera", "true");
+                                    ref
+                                        .read(showCamera.notifier)
+                                        .update((state) => true);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  Text("Enabled Easter Egg")));
+                                    }
+                                  }
+                                },
                                 onTap: () {
                                   HapticFeedback.lightImpact();
                                   setDefaultValues(ref);
@@ -174,7 +263,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   Navigator.of(context).push(PageRouteBuilder(
                                       opaque: false,
                                       barrierDismissible: false,
-                                      pageBuilder: (BuildContext context, _, __) {
+                                      pageBuilder:
+                                          (BuildContext context, _, __) {
                                         return const Hero(
                                             tag: "deductfromvault",
                                             child: AddExpenseDialogBox());
@@ -190,8 +280,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         width: width / 2.7,
                                         height: 60,
                                         decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(Radius.circular(25)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(25)),
                                             color: Colors.transparent),
                                       ),
                                     ),
@@ -202,13 +292,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       decoration: BoxDecoration(
                                           boxShadow: [
                                             BoxShadow(
-                                              color:
-                                                  const Color.fromARGB(255, 0, 0, 0)
-                                                      .withOpacity(0.3),
+                                              color: const Color.fromARGB(
+                                                      255, 0, 0, 0)
+                                                  .withOpacity(0.3),
                                               spreadRadius: 0,
                                               blurRadius: 20,
-                                              offset: const Offset(
-                                                  0, 0), // changes position of shadow
+                                              offset: const Offset(0,
+                                                  0), // changes position of shadow
                                             ),
                                           ],
                                           borderRadius: const BorderRadius.all(
@@ -237,12 +327,19 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       ],
                     ),
-                  ),Visibility(
-                    visible: (scrollOffset > MediaQuery.of(context).size.height/2),
+                  ),
+                  Visibility(
+                    visible:
+                        (scrollOffset > MediaQuery.of(context).size.height / 2),
                     child: GestureDetector(
                       onTap: () {
                         HapticFeedback.lightImpact();
-                        _scrollController.animateTo(0, duration: Duration(milliseconds: (scrollOffset/2).clamp(500,2000).round()), curve: Curves.easeInOutCirc);
+                        _scrollController.animateTo(0,
+                            duration: Duration(
+                                milliseconds: (scrollOffset / 2)
+                                    .clamp(500, 2000)
+                                    .round()),
+                            curve: Curves.easeInOutCirc);
                       },
                       child: Stack(
                         alignment: Alignment.topCenter,
@@ -261,18 +358,23 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         0, 0), // changes position of shadow
                                   ),
                                 ],
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(100)),
-                                color: Theme.of(context).colorScheme.onTertiary),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(100)),
+                                color:
+                                    Theme.of(context).colorScheme.onTertiary),
                           ),
                           Container(
-                            height: 50,
-                            width:50,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(100)),
-                                color: Theme.of(context).colorScheme.tertiary),
-                            child: Icon(Icons.swipe_up_alt_rounded,size: 32,) ),
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(100)),
+                                  color:
+                                      Theme.of(context).colorScheme.tertiary),
+                              child: Icon(
+                                Icons.swipe_up_alt_rounded,
+                                size: 32,
+                              )),
                         ],
                       ),
                     ),
@@ -510,7 +612,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                             canChangePage = true;
                           });
                         }
-                        if (scrollOffset <= -pageSwitchScrollLimit/2 && scrollOffset >= -pageSwitchScrollLimit/2 - 10) {
+                        if (scrollOffset <= -pageSwitchScrollLimit / 2 &&
+                            scrollOffset >= -pageSwitchScrollLimit / 2 - 10) {
                           setState(() {
                             preventScrollSpam = true;
                           });

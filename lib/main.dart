@@ -86,11 +86,21 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     ref.read(appSettingsDatabaseProvider.notifier).fetchEntries();
     ref.read(entryDatabaseProvider.notifier).fetchEntries();
     ref.read(categoryDatabaseProvider.notifier).fetchEntries();
-    final List appSettings = await ref.read(appSettingsDatabaseProvider.notifier).fetchSettings();
+    final List appSettings =
+        await ref.read(appSettingsDatabaseProvider.notifier).fetchSettings();
     if (appSettings.length > 2) {
-    ref.read(currencyProvider.notifier).update((state)=>appSettings [2].appSettingValue);
+      ref
+          .read(currencyProvider.notifier)
+          .update((state) => appSettings[2].appSettingValue);
     } else {
-    ref.read(currencyProvider.notifier).update((state)=>"\$");
+      ref.read(currencyProvider.notifier).update((state) => "\$");
+    }
+    if (appSettings.length > 3) {
+      ref
+          .read(showCamera.notifier)
+          .update((state) => appSettings[3].appSettingValue == "true");
+    } else {
+      ref.read(showCamera.notifier).update((state) => false);
     }
   }
 
@@ -122,7 +132,10 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
         MonthYearPickerLocalizations.delegate,
       ],
       debugShowCheckedModeBanner: false,
-      home: HomePage(camera: widget.camera, backcamera: widget.backcamera,),
+      home: HomePage(
+        camera: widget.camera,
+        backcamera: widget.backcamera,
+      ),
       theme: darkMode,
       darkTheme: darkMode,
     );

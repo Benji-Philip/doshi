@@ -14,6 +14,7 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
   // 1 = FirstAppOpen&SecondAppOpen
   // 2 = SelfiePath
   // 3 = CurrencySymbol
+  // 4 = EnableCamera
 
   final firstAppOpen = AppSettingEntry()
     ..appSettingName = "FirstAppOpen&SecondAppOpen"
@@ -66,12 +67,15 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
     }if (currentSettings.length<=2) {
       // inititating setting 3 if it doesnt exist
       addSetting("CurrencySymbol", "\$");
+    }if (currentSettings.length<=3) {
+      // inititating setting 3 if it doesnt exist
+      addSetting("EnableCamera", "false");
     }
     state = [];
     state = currentSettings;
   }
 
-  Future<List> fetchSettings() async {
+  Future<List<AppSettingEntry>> fetchSettings() async {
     return await isar.appSettingEntrys.where().findAll();
   }
 

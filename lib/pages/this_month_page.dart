@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:currency_picker/currency_picker.dart';
@@ -12,6 +11,7 @@ import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/sort_entries.dart';
 import 'package:doshi/pages/history_page.dart';
+import 'package:doshi/pages/home_page.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,8 +71,9 @@ List<Widget> thisMonthPage(
                       height: 35,
                       constraints: const BoxConstraints(minWidth: 35),
                       alignment: Alignment.center,
-                      decoration:
-                         BoxDecoration(color: Colors.transparent, border: Border.all(color: Colors.white)),
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(color: Colors.white)),
                       child: Text(
                         ref.watch(currencyProvider),
                         style: const TextStyle(fontSize: 20),
@@ -101,8 +102,9 @@ List<Widget> thisMonthPage(
                       height: 35,
                       width: 35,
                       alignment: Alignment.center,
-                      decoration:
-                         BoxDecoration(color: Colors.transparent, border: Border.all(color: Colors.white)),
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(color: Colors.white)),
                       child: const Icon(Icons.save_rounded),
                     ),
                   ),
@@ -110,7 +112,7 @@ List<Widget> thisMonthPage(
               ),
             ),
           ),
-          ],
+        ],
       ),
     ),
     SliverToBoxAdapter(
@@ -175,7 +177,7 @@ List<Widget> thisMonthPage(
                                           amountInVault == 0.0
                                               ? "${ref.watch(currencyProvider)}0.0"
                                               : ref.watch(currencyProvider) +
-                                                      amountInVault.toString(),
+                                                  amountInVault.toString(),
                                           style: GoogleFonts.montserrat(
                                               fontSize: 60,
                                               fontWeight: FontWeight.w700,
@@ -225,7 +227,7 @@ List<Widget> thisMonthPage(
                       ),
                     ),
                     Visibility(
-                      visible: false,
+                      visible: ref.watch(showCamera),
                       child: Flexible(
                         flex: 1,
                         child: Consumer(builder: (context, ref, child) {
@@ -353,8 +355,8 @@ List<Widget> thisMonthPage(
                               .perWeekForecast
                               .toStringAsFixed(1),
                           amount: ref.watch(currencyProvider) +
-                                  entriesDatabaseNotifier.sumOfthisWeeksExpenses
-                                      .toStringAsFixed(1)))
+                              entriesDatabaseNotifier.sumOfthisWeeksExpenses
+                                  .toStringAsFixed(1)))
                 ],
               ),
             ),
@@ -369,8 +371,8 @@ List<Widget> thisMonthPage(
                           width: width,
                           label: 'Total',
                           amount: ref.watch(currencyProvider) +
-                                  entriesDatabaseNotifier.thisMonthExpenses
-                                      .toStringAsFixed(1))),
+                              entriesDatabaseNotifier.thisMonthExpenses
+                                  .toStringAsFixed(1))),
                   const SizedBox(
                     width: 16,
                   ),
@@ -379,8 +381,8 @@ List<Widget> thisMonthPage(
                           width: width,
                           label: 'Daily Average',
                           amount: ref.watch(currencyProvider) +
-                                  entriesDatabaseNotifier.dailyAverage
-                                      .toStringAsFixed(1)))
+                              entriesDatabaseNotifier.dailyAverage
+                                  .toStringAsFixed(1)))
                 ],
               ),
             ),
@@ -442,9 +444,10 @@ List<Widget> thisMonthPage(
                             horizontal: 16.0, vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
-                          child: Text(ref.watch(currencyProvider) +
-                                    entriesDatabaseNotifier.amountInSavings
-                                        .toStringAsFixed(1),
+                          child: Text(
+                            ref.watch(currencyProvider) +
+                                entriesDatabaseNotifier.amountInSavings
+                                    .toStringAsFixed(1),
                             style: GoogleFonts.montserrat(
                               fontSize: 21,
                               fontWeight: FontWeight.w700,
