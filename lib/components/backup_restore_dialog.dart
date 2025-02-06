@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class BackupRestoreDialog extends ConsumerStatefulWidget {
   final EntryDatabaseNotifier entriesDatabaseNotifier;
@@ -15,12 +16,34 @@ class BackupRestoreDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
+  final InAppPurchase _iap = InAppPurchase.instance;
+  late List<ProductDetails> product;
+  bool _iapAvailable = false;
   double scrollOffset = 0.0;
   final _listViewScrollController = ScrollController();
+
+  @override
+  void initState() {
+    _initialize();
+    super.initState();
+  }
+
   @override
   void dispose() {
     _listViewScrollController.dispose();
     super.dispose();
+  }
+
+  void _initialize () async {
+    _iapAvailable = await _iap.isAvailable();
+    print("init: "+_iapAvailable.toString());
+    Set<String> ids = {"donate_to_developer"};
+    if (_iapAvailable) {
+      ProductDetailsResponse response = await _iap.queryProductDetails(ids);
+      setState(() {
+        product = response.productDetails;
+      });
+    }
   }
 
   @override
@@ -96,6 +119,40 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                     color: Colors.lightGreen),
                                 child: Text(
                                   "Restore",
+                                  softWrap: true,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                HapticFeedback.heavyImpact();
+                                print(_iapAvailable);
+                                if (_iapAvailable) {
+                                PurchaseParam purchaseParam = PurchaseParam(productDetails: product[0]);
+                                _iap.buyConsumable(purchaseParam: purchaseParam);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: Colors.amber),
+                                child: Text(
+                                  "Donate",
                                   softWrap: true,
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white,
