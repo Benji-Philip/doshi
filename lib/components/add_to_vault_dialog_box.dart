@@ -1,11 +1,13 @@
 import 'package:doshi/components/is_savings_selector.dart';
 import 'package:doshi/components/user_input_dialog.dart';
+import 'package:doshi/logic/decimal_text_input_formatter.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class AddToVaultDialogBox extends StatelessWidget {
   const AddToVaultDialogBox({super.key});
@@ -76,6 +78,7 @@ class ThisContainerOfTheDialogBox extends StatefulWidget {
 
 class _ThisContainerOfTheDialogBoxState
     extends State<ThisContainerOfTheDialogBox> {
+  DateTime dateTimeVar = DateTime.now();
   final amountTEC = TextEditingController();
   final addNoteTEC = TextEditingController();
 
@@ -114,9 +117,12 @@ class _ThisContainerOfTheDialogBoxState
                       return RichText(
                         text: TextSpan(
                           children: [
-                            const TextSpan(text: "I would like to "),
                             TextSpan(
-                              text: "add",
+                                text: ref.watch(isSavings)
+                                    ? "I would like to "
+                                    : "I "),
+                            TextSpan(
+                              text: ref.watch(isSavings) ? "add" : "gained",
                               style: GoogleFonts.montserrat(
                                 fontWeight: FontWeight.w700,
                                 color: Colors.lightGreen,
@@ -138,10 +144,11 @@ class _ThisContainerOfTheDialogBoxState
                                         builder: (builder) {
                                           return UserInputDialog(
                                             inputFormatters: [
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly
+                                              DecimalTextInputFormatter()
                                             ],
-                                            keyboardType: TextInputType.number,
+                                            keyboardType: const TextInputType
+                                                .numberWithOptions(
+                                                decimal: true),
                                             textProvider: amountText,
                                             label: "amount",
                                             commonTextEditingController:
@@ -157,7 +164,7 @@ class _ThisContainerOfTheDialogBoxState
                                     textStyle: const TextStyle(
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
-                                            TextDecorationStyle.dotted))),
+                                            TextDecorationStyle.dashed))),
                             const TextSpan(text: " "),
                             TextSpan(
                                 recognizer: TapGestureRecognizer()
@@ -178,17 +185,102 @@ class _ThisContainerOfTheDialogBoxState
                                             const Duration(milliseconds: 200));
                                   },
                                 text: ref.watch(isSavings)
-                                    ? "to my savings"
-                                    : "in credit.",
+                                    ? "to my savings."
+                                    : "in credit",
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.blueGrey,
                                     textStyle: const TextStyle(
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
-                                            TextDecorationStyle.dotted))),
+                                            TextDecorationStyle.dashed))),
+                            TextSpan(
+                                text: DateFormat('dMMMM').format(dateTimeVar) !=
+                                        DateFormat('dMMMM')
+                                            .format(DateTime.now())
+                                    ? " on "
+                                    : " "),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  HapticFeedback.lightImpact();
+                                  final DateTime? picked = await showDatePicker(
+                                      initialDate: DateTime.now(),
+                                      context: context,
+                                      firstDate:
+                                          DateTime(DateTime.now().year - 10),
+                                      lastDate: DateTime.now());
+                                  setState(() {
+                                    if (picked != null &&
+                                        picked != dateTimeVar) {
+                                      dateTimeVar = picked;
+                                    }
+                                  });
+                                },
+                              text: DateFormat('d MMM yy')
+                                          .format(DateTime.now()) ==
+                                      DateFormat('d MMM yy').format(dateTimeVar)
+                                  ? "today"
+                                  : DateFormat('d MMM yy').format(dateTimeVar),
+                              style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.amber,
+                                  textStyle: const TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      decorationStyle:
+                                          TextDecorationStyle.dashed)),
+                            ),
+                            TextSpan(
+                                text: ".",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.amber,
+                                )),
+                            TextSpan(
+                                text: !ref.watch(isSavings) ? " (" : "",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.purple,
+                                )),
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    HapticFeedback.lightImpact();
+                                    addNoteTEC.clear();
+                                    showModalBottomSheet(
+                                        barrierColor: Colors.transparent,
+                                        context: context,
+                                        builder: (builder) {
+                                          return UserInputDialog(
+                                            keyboardType: TextInputType.text,
+                                            textProvider: noteText,
+                                            label: "note",
+                                            commonTextEditingController:
+                                                addNoteTEC,
+                                          );
+                                        });
+                                  },
+                                text: !ref.watch(isSavings)
+                                    ? ref.watch(noteText) == ""
+                                        ? "note"
+                                        : ref.watch(noteText)
+                                    : "",
+                                style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.purple,
+                                    textStyle: const TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed))),
+                            TextSpan(
+                                text: !ref.watch(isSavings) ? ")" : "",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.purple,
+                                )),
                           ],
                           style: GoogleFonts.montserrat(
+                              height: 1.4,
                               fontSize: 34,
                               fontWeight: FontWeight.w700,
                               color: Theme.of(context).colorScheme.primary),
@@ -198,55 +290,6 @@ class _ThisContainerOfTheDialogBoxState
                     const SizedBox(
                       height: 15,
                     ),
-                    Consumer(builder: (context, ref, child) {
-                      return Visibility(
-                        visible: !ref.watch(isSavings),
-                        child: GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            addNoteTEC.clear();
-                            showModalBottomSheet(
-                                barrierColor: Colors.transparent,
-                                context: context,
-                                builder: (builder) {
-                                  return UserInputDialog(
-                                    keyboardType: TextInputType.text,
-                                    textProvider: noteText,
-                                    label: "note",
-                                    commonTextEditingController: addNoteTEC,
-                                  );
-                                });
-                          },
-                          child: Consumer(builder: (context, ref, child) {
-                            return Container(
-                                alignment: Alignment.center,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onTertiary,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(25))),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Text(
-                                    ref.watch(noteText) == ""
-                                        ? "add a note"
-                                        : ref.watch(noteText),
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w700,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        decorationColor: const Color.fromARGB(
-                                            0, 255, 255, 255)),
-                                  ),
-                                ));
-                          }),
-                        ),
-                      );
-                    }),
                     const SizedBox(
                       height: 20,
                     ),
@@ -285,7 +328,7 @@ class _ThisContainerOfTheDialogBoxState
                                     .read(entryDatabaseProvider.notifier)
                                     .addEntry(
                                         double.parse(ref.read(amountText)),
-                                        DateTime.now(),
+                                        dateTimeVar,
                                         "Uncategorised",
                                         ref.read(noteText),
                                         false,

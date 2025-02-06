@@ -1,5 +1,6 @@
 import 'package:doshi/components/category_list.dart';
 import 'package:doshi/components/user_input_dialog.dart';
+import 'package:doshi/logic/decimal_text_input_formatter.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -157,7 +158,7 @@ class _ThisContainerOfTheDialogBoxState
                                   textStyle: const TextStyle(
                                       decoration: TextDecoration.underline,
                                       decorationStyle:
-                                          TextDecorationStyle.dotted)),
+                                          TextDecorationStyle.dashed)),
                             ),
                             const TextSpan(text: " I "),
                             TextSpan(
@@ -182,10 +183,11 @@ class _ThisContainerOfTheDialogBoxState
                                         builder: (builder) {
                                           return UserInputDialog(
                                             inputFormatters: [
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly
+                                              DecimalTextInputFormatter()
                                             ],
-                                            keyboardType: TextInputType.number,
+                                            keyboardType: const TextInputType
+                                                .numberWithOptions(
+                                                decimal: true),
                                             textProvider: amountText,
                                             label: "amount",
                                             commonTextEditingController:
@@ -194,14 +196,14 @@ class _ThisContainerOfTheDialogBoxState
                                         });
                                   },
                                 text: ref.watch(currencyProvider) +
-                                        ref.watch(amountText),
+                                    ref.watch(amountText),
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.teal,
                                     textStyle: const TextStyle(
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
-                                            TextDecorationStyle.dotted))),
+                                            TextDecorationStyle.dashed))),
                             TextSpan(text: ref.watch(isSavings) ? "" : " on "),
                             TextSpan(
                                 recognizer: TapGestureRecognizer()
@@ -230,9 +232,55 @@ class _ThisContainerOfTheDialogBoxState
                                     textStyle: const TextStyle(
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
-                                            TextDecorationStyle.dotted))),
+                                            TextDecorationStyle.dashed))),
+                            TextSpan(
+                                text: ".",
+                                style: GoogleFonts.montserrat(
+                                  color: Color(ref.watch(categoryColorInt)),
+                                )),
+                            TextSpan(
+                                text: " (",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.purple,
+                                )),
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    HapticFeedback.lightImpact();
+                                    addNoteTEC.clear();
+                                    showModalBottomSheet(
+                                        barrierColor: Colors.transparent,
+                                        context: context,
+                                        builder: (builder) {
+                                          return UserInputDialog(
+                                            keyboardType: TextInputType.text,
+                                            textProvider: noteText,
+                                            label: "note",
+                                            commonTextEditingController:
+                                                addNoteTEC,
+                                          );
+                                        });
+                                  },
+                                text: ref.watch(noteText) == ""
+                                    ? "note"
+                                    : ref.watch(noteText),
+                                style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.purple,
+                                    textStyle: const TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed))),
+                            TextSpan(
+                                text: ")",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.purple,
+                                )),
                           ],
                           style: GoogleFonts.montserrat(
+                              height: 1.4,
                               fontSize: 34,
                               fontWeight: FontWeight.w700,
                               color: Theme.of(context).colorScheme.primary),
@@ -240,48 +288,6 @@ class _ThisContainerOfTheDialogBoxState
                       ),
                       const SizedBox(
                         height: 15,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          addNoteTEC.clear();
-                          showModalBottomSheet(
-                              barrierColor: Colors.transparent,
-                              context: context,
-                              builder: (builder) {
-                                return UserInputDialog(
-                                  keyboardType: TextInputType.text,
-                                  textProvider: noteText,
-                                  label: "note",
-                                  commonTextEditingController: addNoteTEC,
-                                );
-                              });
-                        },
-                        child: Container(
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.onTertiary,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(25))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(14.0),
-                              child: Text(
-                                ref.watch(noteText) == ""
-                                    ? "add a note"
-                                    : ref.watch(noteText),
-                                style: GoogleFonts.montserrat(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w700,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    decorationColor:
-                                        const Color.fromARGB(0, 255, 255, 255)),
-                              ),
-                            )),
-                      ),
-                      const SizedBox(
-                        height: 20,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

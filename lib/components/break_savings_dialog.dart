@@ -1,4 +1,5 @@
 import 'package:doshi/components/user_input_dialog.dart';
+import 'package:doshi/logic/decimal_text_input_formatter.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -45,11 +46,12 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                 .withOpacity(0.3),
                             spreadRadius: 0,
                             blurRadius: 20,
-                            offset:
-                                const Offset(0, 0), // changes position of shadow
+                            offset: const Offset(
+                                0, 0), // changes position of shadow
                           ),
                         ],
-                        borderRadius: const BorderRadius.all(Radius.circular(35)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(35)),
                         color: Theme.of(context).colorScheme.onTertiary),
                     child: Opacity(
                       opacity: 0,
@@ -67,7 +69,8 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                     style: GoogleFonts.montserrat(
                                       fontSize: 32,
                                       fontWeight: FontWeight.w700,
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                     children: [
                                       const TextSpan(
@@ -81,7 +84,8 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                                   .read(amountText.notifier)
                                                   .update((state) => "");
                                               showModalBottomSheet(
-                                                  barrierColor: Colors.transparent,
+                                                  barrierColor:
+                                                      Colors.transparent,
                                                   context: context,
                                                   builder: (builder) {
                                                     return UserInputDialog(
@@ -106,7 +110,8 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                                   decoration:
                                                       TextDecoration.underline,
                                                   decorationStyle:
-                                                      TextDecorationStyle.dotted)),
+                                                      TextDecorationStyle
+                                                          .dotted)),
                                           text:
                                               "${ref.read(currencyProvider)}${ref.read(amountText)}"),
                                       const TextSpan(text: " ?")
@@ -124,8 +129,8 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                   width: double.infinity,
                                   decoration: const BoxDecoration(
                                       color: Colors.redAccent,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(25))),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(25))),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: Text(
@@ -165,15 +170,17 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                         MediaQuery.of(context).size.width / 3.1,
                                     height: 50,
                                     decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(50))),
                                     child: Icon(
                                       Icons.check_rounded,
                                       size: 40,
-                                      color:
-                                          Theme.of(context).colorScheme.onPrimary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
                                     )),
                               ],
                             ),
@@ -182,7 +189,6 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                       ),
                     ),
                   ),
-                
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0, right: 10),
@@ -195,11 +201,12 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                 .withOpacity(0.3),
                             spreadRadius: 0,
                             blurRadius: 20,
-                            offset:
-                                const Offset(0, 0), // changes position of shadow
+                            offset: const Offset(
+                                0, 0), // changes position of shadow
                           ),
                         ],
-                        borderRadius: const BorderRadius.all(Radius.circular(35)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(35)),
                         color: Theme.of(context).colorScheme.tertiary),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -212,11 +219,6 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                             child: RichText(
                               textAlign: TextAlign.left,
                               text: TextSpan(
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w700,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
                                   children: [
                                     const TextSpan(
                                         text: "Replenish credit with "),
@@ -229,16 +231,18 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                                 .read(amountText.notifier)
                                                 .update((state) => "");
                                             showModalBottomSheet(
-                                                barrierColor: Colors.transparent,
+                                                barrierColor:
+                                                    Colors.transparent,
                                                 context: context,
                                                 builder: (builder) {
                                                   return UserInputDialog(
                                                     inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .digitsOnly
+                                                      DecimalTextInputFormatter()
                                                     ],
                                                     keyboardType:
-                                                        TextInputType.number,
+                                                        const TextInputType
+                                                            .numberWithOptions(
+                                                            decimal: true),
                                                     textProvider: amountText,
                                                     label: "amount",
                                                     commonTextEditingController:
@@ -254,11 +258,17 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                                 decoration:
                                                     TextDecoration.underline,
                                                 decorationStyle:
-                                                    TextDecorationStyle.dotted)),
+                                                    TextDecorationStyle
+                                                        .dashed)),
                                         text:
                                             "${ref.read(currencyProvider)}${ref.watch(amountText)}"),
                                     const TextSpan(text: " ?")
-                                  ]),
+                                  ],
+                          style: GoogleFonts.montserrat(
+                              height: 1.4,
+                              fontSize: 34,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).colorScheme.primary),),
                             ),
                           ),
                         ),
@@ -336,15 +346,17 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                         MediaQuery.of(context).size.width / 3.1,
                                     height: 50,
                                     decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(50))),
                                     child: Icon(
                                       Icons.check_rounded,
                                       size: 40,
-                                      color:
-                                          Theme.of(context).colorScheme.onPrimary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
                                     )),
                               ),
                             ],
