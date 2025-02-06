@@ -256,7 +256,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                                 decorationStyle:
                                                     TextDecorationStyle.dotted)),
                                         text:
-                                            "${ref.read(currencyProvider)}${ref.read(amountText)}"),
+                                            "${ref.read(currencyProvider)}${ref.watch(amountText)}"),
                                     const TextSpan(text: " ?")
                                   ]),
                             ),
@@ -264,7 +264,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 30.0, right: 30, bottom: 14),
+                              left: 30.0, right: 30, bottom: 20),
                           child: Visibility(
                             visible: ref.watch(exceedSavings),
                             child: Container(

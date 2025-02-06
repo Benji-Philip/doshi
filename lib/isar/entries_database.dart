@@ -297,7 +297,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
         Colors.white.value,
         true);
     await addEntry(double.parse(ref.read(amountText)), DateTime.now(),
-        "Uncategorised", "", false, Colors.white.value, false);
+        "Uncategorised", "From savings", false, Colors.white.value, false);
     await fetchEntries();
   }
 }
