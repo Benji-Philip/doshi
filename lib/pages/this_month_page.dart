@@ -5,6 +5,7 @@ import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/components/backup_restore_dialog.dart';
 import 'package:doshi/components/break_savings_dialog.dart';
+import 'package:doshi/components/edit_savings_dialog_box.dart';
 import 'package:doshi/components/mybox.dart';
 import 'package:doshi/components/take_picture_screen.dart';
 import 'package:doshi/isar/entries_database.dart';
@@ -177,7 +178,8 @@ List<Widget> thisMonthPage(
                                           amountInVault == 0.0
                                               ? "${ref.watch(currencyProvider)}0.0"
                                               : ref.watch(currencyProvider) +
-                                                  amountInVault.toString(),
+                                                  amountInVault
+                                                      .toStringAsFixed(2),
                                           style: GoogleFonts.montserrat(
                                               fontSize: 60,
                                               fontWeight: FontWeight.w700,
@@ -338,10 +340,14 @@ List<Widget> thisMonthPage(
                 children: [
                   Expanded(
                       child: MyBox(
+                          borderColor: entriesDatabaseNotifier.todaysExpenses >
+                                  entriesDatabaseNotifier.perDayForecast
+                              ? Colors.red
+                              : Theme.of(context).colorScheme.onTertiary,
                           width: width,
                           label: 'Today',
                           forecastAmount: entriesDatabaseNotifier.perDayForecast
-                              .toStringAsFixed(1),
+                              .toStringAsFixed(2),
                           amount:
                               "${ref.watch(currencyProvider)}${entriesDatabaseNotifier.todaysExpenses}")),
                   const SizedBox(
@@ -349,14 +355,18 @@ List<Widget> thisMonthPage(
                   ),
                   Expanded(
                       child: MyBox(
+                          borderColor: entriesDatabaseNotifier.sumOfthisWeeksExpenses >
+                                  entriesDatabaseNotifier.perWeekForecast
+                              ? Colors.red
+                              : Theme.of(context).colorScheme.onTertiary,
                           width: width,
                           label: 'This Week',
                           forecastAmount: entriesDatabaseNotifier
                               .perWeekForecast
-                              .toStringAsFixed(1),
+                              .toStringAsFixed(2),
                           amount: ref.watch(currencyProvider) +
                               entriesDatabaseNotifier.sumOfthisWeeksExpenses
-                                  .toStringAsFixed(1)))
+                                  .toStringAsFixed(2)))
                 ],
               ),
             ),
@@ -372,7 +382,7 @@ List<Widget> thisMonthPage(
                           label: 'Total',
                           amount: ref.watch(currencyProvider) +
                               entriesDatabaseNotifier.thisMonthExpenses
-                                  .toStringAsFixed(1))),
+                                  .toStringAsFixed(2))),
                   const SizedBox(
                     width: 16,
                   ),
@@ -382,7 +392,7 @@ List<Widget> thisMonthPage(
                           label: 'Daily Average',
                           amount: ref.watch(currencyProvider) +
                               entriesDatabaseNotifier.dailyAverage
-                                  .toStringAsFixed(1)))
+                                  .toStringAsFixed(2)))
                 ],
               ),
             ),
@@ -395,68 +405,84 @@ List<Widget> thisMonthPage(
         padding: const EdgeInsets.symmetric(horizontal: 21.0),
         child: Column(
           children: [
-            Visibility(
-              visible:
-                  entriesDatabaseNotifier.amountInSavings == 0 ? false : true,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 0.0, left: 0, top: 15),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.amber, width: 3),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        'Savings',
-                        style: GoogleFonts.montserrat(
-                            fontSize: 24, fontWeight: FontWeight.w700),
-                      ),
+            Padding(
+              padding: const EdgeInsets.only(right: 0.0, left: 0, top: 15),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.amber, width: 3),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'Savings',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 24, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
               ),
             ),
-            Visibility(
-              visible:
-                  entriesDatabaseNotifier.amountInSavings == 0 ? false : true,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 0.0, left: 0, top: 21),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: width * 0.5,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.tertiary,
-                            width: 5),
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 12),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            ref.watch(currencyProvider) +
-                                entriesDatabaseNotifier.amountInSavings
-                                    .toStringAsFixed(1),
-                            style: GoogleFonts.montserrat(
-                              fontSize: 21,
-                              fontWeight: FontWeight.w700,
+            Padding(
+              padding: const EdgeInsets.only(right: 0.0, left: 0, top: 21),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        setDefaultValues(ref);
+                        ref.read(amountText.notifier).update((state) =>
+                            entriesDatabaseNotifier.amountInSavings
+                                .toStringAsFixed(2));
+                        Navigator.of(context).push(PageRouteBuilder(
+                            opaque: false,
+                            barrierDismissible: false,
+                            pageBuilder: (BuildContext context, _, __) {
+                              return const Hero(
+                                  tag: "addtovault",
+                                  child: EditSavingsDialogBox());
+                            }));
+                      },
+                      child: Container(
+                        constraints: BoxConstraints(minWidth: width * 0.5),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.tertiary,
+                              width: 5),
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 12),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              ref.watch(currencyProvider) +
+                                  entriesDatabaseNotifier.amountInSavings
+                                      .toStringAsFixed(2),
+                              style: GoogleFonts.montserrat(
+                                fontSize: 21,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                    GestureDetector(
+                  ),
+                  Visibility(
+                    visible: entriesDatabaseNotifier.amountInSavings == 0
+                        ? false
+                        : true,
+                    child: GestureDetector(
                       onTap: () {
                         HapticFeedback.lightImpact();
                         setDefaultValues(ref);
@@ -477,33 +503,37 @@ List<Widget> thisMonthPage(
                             transitionDuration:
                                 const Duration(milliseconds: 200));
                       },
-                      child: Container(
-                        width: width * 0.35,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          color: Colors.lightGreen,
-                          border: Border.all(color: Colors.green),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 12),
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              "Break!",
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.w700,
-                                  color: Theme.of(context).colorScheme.surface),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: Container(
+                          width: width * 0.35,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            color: Colors.lightGreen,
+                            border: Border.all(color: Colors.green),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 12),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                "Break!",
+                                style: GoogleFonts.montserrat(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w700,
+                                    color:
+                                        Theme.of(context).colorScheme.surface),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],

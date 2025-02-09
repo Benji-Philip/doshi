@@ -1,3 +1,5 @@
+import 'package:currency_picker/currency_picker.dart';
+import 'package:doshi/components/category_list_editor.dart';
 import 'package:doshi/components/my_button.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/riverpod/states.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BackupRestoreDialog extends ConsumerStatefulWidget {
   final EntryDatabaseNotifier entriesDatabaseNotifier;
@@ -34,15 +37,23 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
     super.dispose();
   }
 
-  void _initialize () async {
+  void _initialize() async {
     _iapAvailable = await _iap.isAvailable();
-    print("init: "+_iapAvailable.toString());
     Set<String> ids = {"donate_to_developer"};
     if (_iapAvailable) {
       ProductDetailsResponse response = await _iap.queryProductDetails(ids);
       setState(() {
         product = response.productDetails;
       });
+    }
+  }
+
+  final String feedbackUrl = "https://forms.gle/CbfyvbLuyCJwpWfj8";
+
+  Future<void> _launchURL() async {
+    final Uri uri = Uri.parse(feedbackUrl);
+    if (!await launchUrl(uri, mode: LaunchMode.inAppBrowserView)) {
+      throw 'Could not launch $feedbackUrl';
     }
   }
 
@@ -61,111 +72,281 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                   color: Theme.of(context).colorScheme.tertiary),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+                child: Container(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                HapticFeedback.heavyImpact();
-                                widget.entriesDatabaseNotifier.tryBackup();
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
-                                child: Text(
-                                  "Backup",
-                                  softWrap: true,
-                                  style: GoogleFonts.montserrat(
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w700),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.heavyImpact();
+                                    widget.entriesDatabaseNotifier.tryBackup();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                    child: Text(
+                                      "Backup",
+                                      softWrap: true,
+                                      style: GoogleFonts.montserrat(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                HapticFeedback.heavyImpact();
-                                ref
-                                    .read(backupRestoreSuccess.notifier)
-                                    .update((state) => true);
-                                widget.entriesDatabaseNotifier.tryRestore();
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Colors.lightGreen),
-                                child: Text(
-                                  "Restore",
-                                  softWrap: true,
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white,
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w700),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.heavyImpact();
+                                    ref
+                                        .read(backupRestoreSuccess.notifier)
+                                        .update((state) => true);
+                                    widget.entriesDatabaseNotifier.tryRestore();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Colors.lightGreen),
+                                    child: Text(
+                                      "Restore",
+                                      softWrap: true,
+                                      style: GoogleFonts.montserrat(
+                                          color: Colors.white,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 3,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onTertiary,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(100))),
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                HapticFeedback.heavyImpact();
-                                print(_iapAvailable);
-                                if (_iapAvailable) {
-                                PurchaseParam purchaseParam = PurchaseParam(productDetails: product[0]);
-                                _iap.buyConsumable(purchaseParam: purchaseParam);
-                                }
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Colors.amber),
-                                child: Text(
-                                  "Donate",
-                                  softWrap: true,
-                                  style: GoogleFonts.montserrat(
-                                      color: Colors.white,
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w700),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.heavyImpact();
+                    
+                                    HapticFeedback.heavyImpact();
+                                    showCurrencyPicker(
+                                      context: context,
+                                      showFlag: true,
+                                      showCurrencyName: true,
+                                      showCurrencyCode: true,
+                                      onSelect: (Currency currency) {
+                                        HapticFeedback.lightImpact();
+                                        ref
+                                            .read(appSettingsDatabaseProvider
+                                                .notifier)
+                                            .editSetting(3, "CurrencySymbol",
+                                                currency.symbol);
+                                        ref
+                                            .read(currencyProvider.notifier)
+                                            .update((state) => currency.symbol);
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onTertiary),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      child: FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Text(
+                                          'Symbol : ${ref.watch(currencyProvider)}',
+                                          softWrap: true,
+                                          style: GoogleFonts.montserrat(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.heavyImpact();
+                                    showGeneralDialog(
+                                        pageBuilder: (context, anim1, anim2) {
+                                          return const Placeholder();
+                                        },
+                                        context: context,
+                                        transitionBuilder:
+                                            (context, anim1, anim2, child) {
+                                          return Opacity(
+                                              opacity: anim1.value,
+                                              child: const CategoryListEditor());
+                                        },
+                                        transitionDuration:
+                                            const Duration(milliseconds: 200));
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onTertiary),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      child: FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Text(
+                                          'Categories : ${ref.watch(categoryDatabaseProvider.notifier).currentCategories.length}',
+                                          softWrap: true,
+                                          style: GoogleFonts.montserrat(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 3,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onTertiary,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(100))),
                           ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    HapticFeedback.heavyImpact();
+                                    _launchURL();
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Colors.teal),
+                                    child: Text(
+                                      "Feedback",
+                                      softWrap: true,
+                                      style: GoogleFonts.montserrat(
+                                          color: Colors.white,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.heavyImpact();
+                                    if (_iapAvailable) {
+                                      PurchaseParam purchaseParam = PurchaseParam(
+                                          productDetails: product[0]);
+                                      _iap.buyConsumable(
+                                          purchaseParam: purchaseParam);
+                                    }
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Colors.amber),
+                                    child: Text(
+                                      "Donate",
+                                      softWrap: true,
+                                      style: GoogleFonts.montserrat(
+                                          color: Colors.white,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

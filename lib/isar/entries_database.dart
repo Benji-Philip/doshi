@@ -179,6 +179,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     }
   }
 
+
   //edit
   Future<void> editEntry(
       int id,
@@ -298,6 +299,25 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
         true);
     await addEntry(double.parse(ref.read(amountText)), DateTime.now(),
         "Uncategorised", "From savings", false, Colors.white.value, false);
+    await fetchEntries();
+  }
+
+  //edit Savings
+
+  Future<void> editSavings(WidgetRef ref) async {
+    var entriesToDelete =
+        await isar.entrys.where().filter().isSavingsEqualTo(true).findAll();
+    for (var element in entriesToDelete) {
+      await isar.writeTxn(() => isar.entrys.delete(element.id));
+    }
+    await addEntry(
+            double.parse(ref.read(amountText)),
+        DateTime.now(),
+        "Uncategorised",
+        "",
+        false,
+        Colors.white.value,
+        true);
     await fetchEntries();
   }
 }

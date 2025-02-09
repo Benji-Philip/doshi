@@ -70,7 +70,7 @@ class _CategoryListState extends ConsumerState<IsSavingsDialog> {
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Text(
-                            "to my savings",
+                            "to savings",
                             softWrap: true,
                             style: GoogleFonts.montserrat(
                               color: Theme.of(context).colorScheme.primary,

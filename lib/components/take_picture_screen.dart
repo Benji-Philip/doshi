@@ -113,7 +113,6 @@ class _TakePictureScreenState extends ConsumerState<TakePictureScreen> {
                                                     image: image)));
                                   } catch (e) {
                                     // If an error occurs, log the error to the console.
-                                    print(e);
                                   }
                                 },
                                 child: Container(
@@ -227,7 +226,6 @@ class _TakePictureScreenState extends ConsumerState<TakePictureScreen> {
                                                     image: image)));
                                   } catch (e) {
                                     // If an error occurs, log the error to the console.
-                                    print(e);
                                   }
                                 },
                                 child: Container(

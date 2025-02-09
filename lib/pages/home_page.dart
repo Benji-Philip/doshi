@@ -371,7 +371,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       Radius.circular(100)),
                                   color:
                                       Theme.of(context).colorScheme.tertiary),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.swipe_up_alt_rounded,
                                 size: 32,
                               )),

@@ -35,15 +35,12 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _slidableController = SlidableController(this);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
-
     _slidableController.dispose();
     super.dispose();
   }

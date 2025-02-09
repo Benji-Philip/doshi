@@ -1,4 +1,3 @@
-import 'package:doshi/components/is_savings_selector.dart';
 import 'package:doshi/components/user_input_dialog.dart';
 import 'package:doshi/logic/decimal_text_input_formatter.dart';
 import 'package:doshi/riverpod/states.dart';
@@ -7,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 
-class AddToVaultDialogBox extends StatelessWidget {
-  const AddToVaultDialogBox({super.key});
+class EditSavingsDialogBox extends StatelessWidget {
+  const EditSavingsDialogBox({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +52,7 @@ class ThisContainerFinal extends StatelessWidget {
   }
 }
 
-class ThisContainerOfTheDialogBox extends StatefulWidget {
+class ThisContainerOfTheDialogBox extends ConsumerStatefulWidget {
   final double padTop;
   final double padBottom;
   final double padLeft;
@@ -72,12 +70,12 @@ class ThisContainerOfTheDialogBox extends StatefulWidget {
   });
 
   @override
-  State<ThisContainerOfTheDialogBox> createState() =>
+  ConsumerState<ThisContainerOfTheDialogBox> createState() =>
       _ThisContainerOfTheDialogBoxState();
 }
 
 class _ThisContainerOfTheDialogBoxState
-    extends State<ThisContainerOfTheDialogBox> {
+    extends ConsumerState<ThisContainerOfTheDialogBox> {
   DateTime dateTimeVar = DateTime.now();
   final amountTEC = TextEditingController();
   final addNoteTEC = TextEditingController();
@@ -85,7 +83,7 @@ class _ThisContainerOfTheDialogBoxState
   @override
   void initState() {
     setState(() {
-      amountTEC.text = "500";
+      amountTEC.text = ref.read(amountText);
     });
     super.initState();
   }
@@ -117,12 +115,9 @@ class _ThisContainerOfTheDialogBoxState
                       return RichText(
                         text: TextSpan(
                           children: [
+                            const TextSpan(text: "I've "),
                             TextSpan(
-                                text: ref.watch(isSavings)
-                                    ? "I would like to "
-                                    : "I "),
-                            TextSpan(
-                              text: ref.watch(isSavings) ? "add" : "gained",
+                              text: "saved",
                               style: GoogleFonts.montserrat(
                                 fontWeight: FontWeight.w700,
                                 color: Colors.lightGreen,
@@ -133,11 +128,6 @@ class _ThisContainerOfTheDialogBoxState
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     HapticFeedback.lightImpact();
-                                    amountTEC.clear();
-
-                                    ref
-                                        .read(amountText.notifier)
-                                        .update((state) => "");
                                     showModalBottomSheet(
                                         barrierColor: Colors.transparent,
                                         context: context,
@@ -165,125 +155,6 @@ class _ThisContainerOfTheDialogBoxState
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
                                             TextDecorationStyle.dashed))),
-                            const TextSpan(text: " "),
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    HapticFeedback.lightImpact();
-                                    showGeneralDialog(
-                                        pageBuilder: (context, anim1, anim2) {
-                                          return const Placeholder();
-                                        },
-                                        context: context,
-                                        transitionBuilder:
-                                            (context, anim1, anim2, child) {
-                                          return Opacity(
-                                              opacity: anim1.value,
-                                              child: const IsSavingsDialog());
-                                        },
-                                        transitionDuration:
-                                            const Duration(milliseconds: 200));
-                                  },
-                                text: ref.watch(isSavings)
-                                    ? "to my savings."
-                                    : "in credit",
-                                style: GoogleFonts.montserrat(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.blueGrey,
-                                    textStyle: const TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed))),
-                            TextSpan(
-                                text: ref.watch(isSavings)
-                                    ? ""
-                                    : DateFormat('dMMMM').format(dateTimeVar) !=
-                                            DateFormat('dMMMM')
-                                                .format(DateTime.now())
-                                        ? " on "
-                                        : " "),
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async {
-                                  HapticFeedback.lightImpact();
-                                  final DateTime? picked = await showDatePicker(
-                                      initialDate: DateTime.now(),
-                                      context: context,
-                                      firstDate:
-                                          DateTime(DateTime.now().year - 10),
-                                      lastDate: DateTime.now());
-                                  setState(() {
-                                    if (picked != null &&
-                                        picked != dateTimeVar) {
-                                      dateTimeVar = picked;
-                                    }
-                                  });
-                                },
-                              text:ref.watch(isSavings)
-                                    ? ""
-                                    : DateFormat('d MMM yy')
-                                          .format(DateTime.now()) ==
-                                      DateFormat('d MMM yy').format(dateTimeVar)
-                                  ? "today"
-                                  : DateFormat('d MMM yy').format(dateTimeVar),
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.amber,
-                                  textStyle: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      decorationStyle:
-                                          TextDecorationStyle.dashed)),
-                            ),
-                            TextSpan(
-                                text:ref.watch(isSavings)
-                                    ? ""
-                                    : ".",
-                                style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.amber,
-                                )),
-                            TextSpan(
-                                text: !ref.watch(isSavings) ? " (" : "",
-                                style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.purple,
-                                )),
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    HapticFeedback.lightImpact();
-                                    addNoteTEC.clear();
-                                    showModalBottomSheet(
-                                        barrierColor: Colors.transparent,
-                                        context: context,
-                                        builder: (builder) {
-                                          return UserInputDialog(
-                                            keyboardType: TextInputType.text,
-                                            textProvider: noteText,
-                                            label: "note",
-                                            commonTextEditingController:
-                                                addNoteTEC,
-                                          );
-                                        });
-                                  },
-                                text: !ref.watch(isSavings)
-                                    ? ref.watch(noteText) == ""
-                                        ? "note"
-                                        : ref.watch(noteText)
-                                    : "",
-                                style: GoogleFonts.montserrat(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.purple,
-                                    textStyle: const TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed))),
-                            TextSpan(
-                                text: !ref.watch(isSavings) ? ")" : "",
-                                style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.purple,
-                                )),
                           ],
                           style: GoogleFonts.montserrat(
                               height: 1.4,
@@ -326,24 +197,16 @@ class _ThisContainerOfTheDialogBoxState
                             width: 10,
                           ),
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               HapticFeedback.lightImpact();
                               try {
-                                ref
-                                    .read(entryDatabaseProvider.notifier)
-                                    .addEntry(
-                                        double.parse(ref.read(amountText)),
-                                        dateTimeVar,
-                                        "Uncategorised",
-                                        ref.read(noteText),
-                                        false,
-                                        ref.read(categoryColorInt),
-                                        ref.read(isSavings));
+                                    await ref
+                                        .read(entryDatabaseProvider.notifier)
+                                        .editSavings(ref);
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     backgroundColor: Colors.lightGreen,
-                                    content: Text(ref.watch(isSavings)
-                                        ? 'Added ${ref.read(currencyProvider)}${ref.read(amountText)} to savings'
-                                        : 'Added ${ref.read(currencyProvider)}${ref.read(amountText)} to vault')));
+                                    content: Text(
+                                        'Your savings are ${ref.read(currencyProvider)}${ref.read(amountText)}')));
                                 Navigator.of(context).pop();
                               } catch (e) {
                                 ScaffoldMessenger.of(context)

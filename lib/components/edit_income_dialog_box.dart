@@ -152,11 +152,6 @@ class _ThisContainerOfTheDialogBoxState
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     HapticFeedback.lightImpact();
-                                    amountTEC.clear();
-
-                                    ref
-                                        .read(amountText.notifier)
-                                        .update((state) => "");
                                     showModalBottomSheet(
                                         barrierColor: Colors.transparent,
                                         context: context,
@@ -237,7 +232,6 @@ class _ThisContainerOfTheDialogBoxState
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     HapticFeedback.lightImpact();
-                                    addNoteTEC.clear();
                                     showModalBottomSheet(
                                         barrierColor: Colors.transparent,
                                         context: context,
