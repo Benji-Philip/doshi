@@ -11,28 +11,16 @@ import 'package:isar/isar.dart';
 
 class EditIncomeDialogBox extends StatelessWidget {
   final Id id;
-  final double amounttext;
-  final DateTime datetimeVar;
-  final String categorytext;
-  final String addnoteText;
-  final bool isexpense;
-  final int categorycolorInt;
 
-  const EditIncomeDialogBox(
-      {super.key,
-      required this.id,
-      required this.addnoteText,
-      required this.amounttext,
-      required this.categorycolorInt,
-      required this.categorytext,
-      required this.datetimeVar,
-      required this.isexpense});
+  const EditIncomeDialogBox({
+    super.key,
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      alignment: Alignment.center,
       color: Colors.black.withOpacity(0.5),
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -120,241 +108,252 @@ class _ThisContainerOfTheDialogBoxState
           right: widget.padRight,
           top: widget.padTop,
           left: widget.padLeft),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(50)),
-                color: widget.color),
-            child: Padding(
-              padding: const EdgeInsets.all(26.0),
-              child: Opacity(
-                opacity: widget.opacity,
-                child: Column(
-                  children: [
-                    Consumer(builder: (context, ref, child) {
-                      return RichText(
-                        text: TextSpan(
-                          children: [
-                            const TextSpan(text: "I meant, I "),
-                            TextSpan(
-                              text: "gained",
-                              style: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.lightGreen,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(50)),
+                  color: widget.color),
+              child: Padding(
+                padding: const EdgeInsets.all(26.0),
+                child: Opacity(
+                  opacity: widget.opacity,
+                  child: Column(
+                    children: [
+                      Consumer(builder: (context, ref, child) {
+                        return RichText(
+                          text: TextSpan(
+                            children: [
+                              const TextSpan(text: "I meant, I "),
+                              TextSpan(
+                                text: "gained",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.lightGreen,
+                                ),
                               ),
-                            ),
-                            const TextSpan(text: " "),
-                            TextSpan(
+                              const TextSpan(text: " "),
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      HapticFeedback.lightImpact();
+                                      showModalBottomSheet(
+                                          barrierColor: Colors.transparent,
+                                          context: context,
+                                          builder: (builder) {
+                                            return UserInputDialog(
+                                              inputFormatters: [
+                                                DecimalTextInputFormatter()
+                                              ],
+                                              keyboardType: const TextInputType
+                                                  .numberWithOptions(
+                                                  decimal: true),
+                                              textProvider: amountText,
+                                              label: "amount",
+                                              commonTextEditingController:
+                                                  amountTEC,
+                                            );
+                                          });
+                                    },
+                                  text: ref.read(currencyProvider) +
+                                      ref.watch(amountText),
+                                  style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.amber,
+                                      textStyle: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          decorationStyle:
+                                              TextDecorationStyle.dashed))),
+                              const TextSpan(text: " in credit"),
+                              TextSpan(
+                                  text:
+                                      DateFormat('dMMMM').format(dateTimeVar) !=
+                                              DateFormat('dMMMM')
+                                                  .format(DateTime.now())
+                                          ? " on "
+                                          : " "),
+                              TextSpan(
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
+                                  ..onTap = () async {
                                     HapticFeedback.lightImpact();
-                                    showModalBottomSheet(
-                                        barrierColor: Colors.transparent,
-                                        context: context,
-                                        builder: (builder) {
-                                          return UserInputDialog(
-                                            inputFormatters: [
-                                              DecimalTextInputFormatter()
-                                            ],
-                                            keyboardType: const TextInputType
-                                                .numberWithOptions(
-                                                decimal: true),
-                                            textProvider: amountText,
-                                            label: "amount",
-                                            commonTextEditingController:
-                                                amountTEC,
-                                          );
-                                        });
+                                    final DateTime? picked =
+                                        await showDatePicker(
+                                            initialDate: DateTime.now(),
+                                            context: context,
+                                            firstDate: DateTime(
+                                                DateTime.now().year - 10),
+                                            lastDate: DateTime.now());
+                                    setState(() {
+                                      if (picked != null &&
+                                          picked != dateTimeVar) {
+                                        dateTimeVar = picked;
+                                      }
+                                    });
                                   },
-                                text: ref.read(currencyProvider) +
-                                    ref.watch(amountText),
+                                text: DateFormat('d MMM yy')
+                                            .format(DateTime.now()) ==
+                                        DateFormat('d MMM yy')
+                                            .format(dateTimeVar)
+                                    ? "today"
+                                    : DateFormat('d MMM yy')
+                                        .format(dateTimeVar),
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.amber,
                                     textStyle: const TextStyle(
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
-                                            TextDecorationStyle.dashed))),
-                            const TextSpan(text: " in credit"),
-                            TextSpan(
-                                text: DateFormat('dMMMM').format(dateTimeVar) !=
-                                        DateFormat('dMMMM')
-                                            .format(DateTime.now())
-                                    ? " on "
-                                    : " "),
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async {
-                                  HapticFeedback.lightImpact();
-                                  final DateTime? picked = await showDatePicker(
-                                      initialDate: DateTime.now(),
-                                      context: context,
-                                      firstDate:
-                                          DateTime(DateTime.now().year - 10),
-                                      lastDate: DateTime.now());
-                                  setState(() {
-                                    if (picked != null &&
-                                        picked != dateTimeVar) {
-                                      dateTimeVar = picked;
-                                    }
-                                  });
-                                },
-                              text: DateFormat('d MMM yy')
-                                          .format(DateTime.now()) ==
-                                      DateFormat('d MMM yy').format(dateTimeVar)
-                                  ? "today"
-                                  : DateFormat('d MMM yy').format(dateTimeVar),
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.amber,
-                                  textStyle: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      decorationStyle:
-                                          TextDecorationStyle.dashed)),
-                            ),
-                            TextSpan(
-                                text: ".",
-                                style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.amber,
-                                )),
-                            TextSpan(
-                                text: " (",
-                                style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.purple,
-                                )),
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    HapticFeedback.lightImpact();
-                                    showModalBottomSheet(
-                                        barrierColor: Colors.transparent,
-                                        context: context,
-                                        builder: (builder) {
-                                          return UserInputDialog(
-                                            keyboardType: TextInputType.text,
-                                            textProvider: noteText,
-                                            label: "note",
-                                            commonTextEditingController:
-                                                addNoteTEC,
-                                          );
-                                        });
-                                  },
-                                text: ref.watch(noteText) == ""
-                                    ? "note"
-                                    : ref.watch(noteText),
-                                style: GoogleFonts.montserrat(
+                                            TextDecorationStyle.dashed)),
+                              ),
+                              TextSpan(
+                                  text: ".",
+                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.amber,
+                                  )),
+                              TextSpan(
+                                  text: " (",
+                                  style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.purple,
-                                    textStyle: const TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed))),
-                            TextSpan(
-                                text: ")",
-                                style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.purple,
-                                )),
-                          ],
-                          style: GoogleFonts.montserrat(
-                              height: 1.4,
-                              fontSize: 34,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.primary),
-                        ),
-                      );
-                    }),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Consumer(builder: (context, ref, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              Navigator.of(context).pop();
-                            },
-                            child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width / 3.1,
-                                height: 50,
-                                decoration: const BoxDecoration(
-                                    color: Colors.redAccent,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50))),
-                                child: const Icon(
-                                  Icons.close_rounded,
-                                  size: 40,
-                                  color: Colors.white,
-                                )),
+                                  )),
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      HapticFeedback.lightImpact();
+                                      showModalBottomSheet(
+                                          barrierColor: Colors.transparent,
+                                          context: context,
+                                          builder: (builder) {
+                                            return UserInputDialog(
+                                              keyboardType: TextInputType.text,
+                                              textProvider: noteText,
+                                              label: "note",
+                                              commonTextEditingController:
+                                                  addNoteTEC,
+                                            );
+                                          });
+                                    },
+                                  text: ref.watch(noteText) == ""
+                                      ? "note"
+                                      : ref.watch(noteText),
+                                  style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.purple,
+                                      textStyle: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          decorationStyle:
+                                              TextDecorationStyle.dashed))),
+                              TextSpan(
+                                  text: ")",
+                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.purple,
+                                  )),
+                            ],
+                            style: GoogleFonts.montserrat(
+                                height: 1.4,
+                                fontSize: 34,
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(context).colorScheme.primary),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              try {
-                                ref
-                                    .read(entryDatabaseProvider.notifier)
-                                    .editEntry(
-                                        widget.id,
-                                        ref.read(categoryText),
-                                        double.parse(ref.read(amountText)),
-                                        addNoteTEC.text,
-                                        dateTimeVar,
-                                        ref.read(isExpense),
-                                        ref.read(categoryColorInt),
-                                        ref.read(isSavings));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        backgroundColor: Colors.lightGreen,
-                                        content: Text('Updated income')));
+                        );
+                      }),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Consumer(builder: (context, ref, child) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
                                 Navigator.of(context).pop();
-                              } catch (e) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                        backgroundColor: Colors.redAccent,
-                                        content: Text(
-                                          'Invalid amount',
-                                          style: TextStyle(color: Colors.white),
-                                        )));
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width / 3.1,
-                                height: 50,
-                                decoration: BoxDecoration(
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.1,
+                                  height: 50,
+                                  decoration: const BoxDecoration(
+                                      color: Colors.redAccent,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50))),
+                                  child: const Icon(
+                                    Icons.close_rounded,
+                                    size: 40,
+                                    color: Colors.white,
+                                  )),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                try {
+                                  ref
+                                      .read(entryDatabaseProvider.notifier)
+                                      .editEntry(
+                                          widget.id,
+                                          ref.read(categoryText),
+                                          double.parse(ref.read(amountText)),
+                                          addNoteTEC.text,
+                                          dateTimeVar,
+                                          ref.read(isExpense),
+                                          ref.read(categoryColorInt),
+                                          ref.read(isSavings),
+                                          ref.read(subCategoryText),
+                                          ref.read(subCategoryColorInt));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          backgroundColor: Colors.lightGreen,
+                                          content: Text('Updated income')));
+                                  Navigator.of(context).pop();
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                          backgroundColor: Colors.redAccent,
+                                          content: Text(
+                                            'Invalid amount',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )));
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.1,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(50))),
+                                  child: Icon(
+                                    Icons.check_rounded,
+                                    size: 40,
                                     color:
-                                        Theme.of(context).colorScheme.primary,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(50))),
-                                child: Icon(
-                                  Icons.check_rounded,
-                                  size: 40,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                )),
-                          ),
-                        ],
-                      );
-                    })
-                  ],
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  )),
+                            ),
+                          ],
+                        );
+                      })
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

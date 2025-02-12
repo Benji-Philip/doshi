@@ -1,307 +1,157 @@
 import 'package:doshi/components/add_category_dialogbox.dart';
-import 'package:doshi/components/delete_category_confirm_dialog.dart';
-import 'package:doshi/components/my_button.dart';
+import 'package:doshi/components/slidable_category.dart';
+import 'package:doshi/components/subcategory_list.dart';
 import 'package:doshi/isar/category_entry.dart';
+import 'package:doshi/isar/subcategory_entry.dart';
+import 'package:doshi/logic/sort_entries.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CategoryList extends ConsumerStatefulWidget {
-  const CategoryList({super.key});
+final openSubCats = StateProvider<int>((state) => -1);
+
+class CategoryList extends ConsumerWidget {
+  final List<CategoryEntry> currentCategories;
+  final List<SubCategoryEntry> currentSubCategories;
+  final bool? editMode;
+  const CategoryList({
+    super.key,
+    required this.currentCategories,
+    required this.currentSubCategories,
+    this.editMode,
+  });
 
   @override
-  ConsumerState<CategoryList> createState() => _CategoryListState();
-}
-
-class _CategoryListState extends ConsumerState<CategoryList> {
-  double scrollOffset = 0.0;
-  double maxScrollExtent = 1.0;
-  final _listViewScrollController = ScrollController();
-  @override
-  void dispose() {
-    _listViewScrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-    final categoriesDatabaseProvider = ref.watch(categoryDatabaseProvider);
-    final categoriesDatabaseNotifier =
-        ref.watch(categoryDatabaseProvider.notifier);
-    List<CategoryEntry> currentCategories =
-        categoriesDatabaseNotifier.currentCategories.reversed.toList();
-    return SafeArea(
-      child: Dialog(
-        backgroundColor: Colors.transparent,
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(25)),
-                      color: Theme.of(context).colorScheme.tertiary),
-                  child: Padding(
-                    padding: const EdgeInsets.all(21.0),
-                    child: NotificationListener(
-                      onNotification: (notif) {
-                        if (notif is ScrollUpdateNotification) {
-                          if (notif.scrollDelta == null) {
-                            return false;
-                          }
-                          setState(() {
-                            scrollOffset = _listViewScrollController.offset;
-                            maxScrollExtent = _listViewScrollController
-                                .position.maxScrollExtent;
-                          });
-                        }
-                        return true;
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Consumer(builder: (context, ref, child) {
+      // ignore: unused_local_variable
+      final watchSubCatStateUpdate = ref.watch(openSubCats);
+      return ListView.builder(
+        itemCount: currentCategories.length + 2,
+        itemBuilder: (context, index) {
+          bool notInList = index >= currentCategories.length;
+          bool openSubCat = !notInList && ref.read(openSubCats) == index;
+          return Flex(
+            direction: Axis.vertical,
+            children: [
+              Visibility(
+                visible: openSubCat,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        HapticFeedback.heavyImpact();
+                        ref.read(openSubCats.notifier).update((state) => -1);
                       },
-                      child: ListView.builder(
-                        controller: _listViewScrollController,
-                        itemCount: currentCategories.length + 1,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(13.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (index == currentCategories.length) {
-                                  HapticFeedback.lightImpact();
-                                  Navigator.of(context).push(PageRouteBuilder(
-                                      opaque: false,
-                                      barrierDismissible: false,
-                                      pageBuilder:
-                                          (BuildContext context, _, __) {
-                                        return const AddCategory();
-                                      }));
-                                } else {
-                                  HapticFeedback.lightImpact();
-                                  ref.read(categoryText.notifier).update(
-                                      (state) =>
-                                          currentCategories[index].category);
-                                  ref.read(categoryColorInt.notifier).update(
-                                      (state) => currentCategories[index]
-                                          .categoryColor);
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Visibility(
-                                    visible: index == currentCategories.length
-                                        ? false
-                                        : true,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10.0, left: 4),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.8,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(15)),
-                                            color: Color(index ==
-                                                    currentCategories.length
-                                                ? Colors.white.value
-                                                : currentCategories[index]
-                                                    .categoryColor)),
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Stack(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 12.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .delete_forever_rounded,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .surface,
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Text(
-                                                index ==
-                                                        currentCategories.length
-                                                    ? "+"
-                                                    : currentCategories[index]
-                                                        .category,
-                                                softWrap: true,
-                                                style: GoogleFonts.montserrat(
-                                                    color: Colors.transparent,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Slidable(
-                                    enabled: index == currentCategories.length
-                                        ? false
-                                        : true,
-                                    endActionPane: ActionPane(
-                                        extentRatio: 0.3,
-                                        motion: const BehindMotion(),
-                                        children: [
-                                          SlidableAction(
-                                            onPressed: (context) {
-                                              HapticFeedback.heavyImpact();
-                                              showGeneralDialog(
-                                                  pageBuilder:
-                                                      (context, anim1, anim2) {
-                                                    return const Placeholder();
-                                                  },
-                                                  context: context,
-                                                  transitionBuilder: (context,
-                                                      anim1, anim2, child) {
-                                                    return Opacity(
-                                                        opacity: anim1.value,
-                                                        child: DeleteCategoryDialogBox(
-                                                            id: currentCategories[
-                                                                    index]
-                                                                .id));
-                                                  },
-                                                  transitionDuration:
-                                                      const Duration(
-                                                          milliseconds: 200));
-                                            },
-                                            backgroundColor: Colors.transparent,
-                                            foregroundColor: Colors.transparent,
-                                            icon: Icons.delete_rounded,
-                                          )
-                                        ]),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 10.0, right: 4),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.8,
-                                        decoration: BoxDecoration(
-                                            color: index ==
-                                                    currentCategories.length
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .onTertiary,
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(15)),
-                                            border: Border.all(
-                                                width: 5,
-                                                color: index ==
-                                                        currentCategories.length
-                                                    ? Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                    : Theme.of(context)
-                                                        .colorScheme
-                                                        .onTertiary)),
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            index == currentCategories.length
-                                                ? "Add new"
-                                                : currentCategories[index]
-                                                    .category,
-                                            softWrap: true,
-                                            style: GoogleFonts.montserrat(
-                                                color: index ==
-                                                        currentCategories.length
-                                                    ? Theme.of(context)
-                                                        .colorScheme
-                                                        .surface
-                                                    : Theme.of(context)
-                                                        .colorScheme
-                                                        .primary,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w700),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                      child: Container(
+                        decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            color: Colors.redAccent),
+                        child: const Padding(
+                          padding: EdgeInsets.all(3.0),
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 21,
+                          ),
+                        ),
                       ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: 13.0,
+                    right: 13,
+                    bottom: 13,
+                    top: openSubCat ? 0 : 13),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(28)),
+                      border: openSubCat
+                          ? Border.all(
+                              width: 3,
+                              color: index >= currentCategories.length
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Color(
+                                      currentCategories[index].categoryColor),
+                            )
+                          : Border.all(color: Colors.transparent)),
+                  child: Padding(
+                    padding: openSubCat
+                        ? const EdgeInsets.all(13.0)
+                        : const EdgeInsets.all(0),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (notInList) {
+                              HapticFeedback.lightImpact();
+                              Navigator.of(context).push(PageRouteBuilder(
+                                  opaque: false,
+                                  barrierDismissible: false,
+                                  pageBuilder: (BuildContext context, _, __) {
+                                    return const AddCategory();
+                                  }));
+                            } else if (currentCategories[index].category ==
+                                "Uncategorised") {
+                              HapticFeedback.lightImpact();
+                              ref.read(categoryText.notifier).update(
+                                  (state) => currentCategories[index].category);
+                              ref.read(categoryColorInt.notifier).update(
+                                  (state) =>
+                                      currentCategories[index].categoryColor);
+                              Navigator.of(context).pop();
+                            } else if (openSubCat) {
+                              HapticFeedback.lightImpact();
+                              ref.read(categoryText.notifier).update(
+                                  (state) => currentCategories[index].category);
+                              ref.read(categoryColorInt.notifier).update(
+                                  (state) =>
+                                      currentCategories[index].categoryColor);
+                              Navigator.of(context).pop();
+                            } else if (!notInList) {
+                              HapticFeedback.heavyImpact();
+                              ref.read(categoryText.notifier).update(
+                                  (state) => currentCategories[index].category);
+
+                              ref
+                                  .read(openSubCats.notifier)
+                                  .update((state) => index);
+                            }
+                          },
+                          child: SlidableCategory(
+                              editMode: editMode?? false,
+                              currentSubCategories: currentSubCategories,
+                              openSubCat: openSubCat,
+                              notInList: notInList,
+                              currentCategories: currentCategories,
+                              index: index),
+                        ),
+                        openSubCat
+                            ? SubCategoryList(
+                              editMode: editMode??false,
+                                currentParentCategory:
+                                    currentCategories[index].category,
+                                currentParentCategoryColor:
+                                    currentCategories[index].categoryColor,
+                                currentSubCategories: sortSubCategoriesByParent(
+                                    currentCategories[index].category,
+                                    currentSubCategories))
+                            : const SizedBox()
+                      ],
                     ),
                   ),
                 ),
-                IgnorePointer(
-                  ignoring: true,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 100),
-                    opacity: scrollOffset != maxScrollExtent ? 1 : 0,
-                    child: Container(
-                      alignment: Alignment.bottomCenter,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                Theme.of(context).colorScheme.tertiary,
-                                Colors.transparent
-                              ]),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(25)),
-                        ),
-                        height: 210,
-                        width: double.infinity,
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: MyButton(
-                borderRadius: 50,
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.of(context).pop();
-                },
-                width: 50,
-                height: 50,
-                iconSize: 32,
-                myIcon: Icons.close_rounded,
-                iconColor: Colors.white,
-                buttonColor: Colors.redAccent,
-                splashColor: Colors.red.shade900,
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            ],
+          );
+        },
+      );
+    });
   }
 }

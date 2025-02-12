@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:doshi/isar/app_settings_database.dart';
 import 'package:doshi/isar/category_database.dart';
 import 'package:doshi/isar/entries_database.dart';
+import 'package:doshi/isar/subcategory_database.dart';
 import 'package:doshi/pages/home_page.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:doshi/theme/theme.dart';
@@ -22,6 +23,7 @@ Future<void> main() async {
   await AppSettingsDatabaseNotifier.initialise();
   await EntryDatabaseNotifier.initialise();
   await CategoryDatabaseNotifier.initialise();
+  await SubCategoryDatabaseNotifier.initialise();
 
   // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
@@ -86,6 +88,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     ref.read(appSettingsDatabaseProvider.notifier).fetchEntries();
     ref.read(entryDatabaseProvider.notifier).fetchEntries();
     ref.read(categoryDatabaseProvider.notifier).fetchEntries();
+    ref.read(subCategoryDatabaseProvider.notifier).fetchEntries();
     final List appSettings =
         await ref.read(appSettingsDatabaseProvider.notifier).fetchSettings();
     if (appSettings.length > 2) {

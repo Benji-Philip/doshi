@@ -1,8 +1,9 @@
 import 'package:doshi/components/bar_graph_weekly.dart';
+import 'package:doshi/components/my_piechart.dart';
 import 'package:doshi/isar/entries_database.dart';
+import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/sort_entries.dart';
 import 'package:doshi/riverpod/states.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 List<Widget> analysisPage(
+  List<Entry> listOfExpenses,
   double spaceFromTop,
   BuildContext context,
   double width,
@@ -18,7 +20,8 @@ List<Widget> analysisPage(
   WidgetRef ref,
   EntryDatabaseNotifier entriesDatabaseNotifier,
 ) {
-  if (ref.read(analysisOfExpenses).isNotEmpty) {
+  bool headers = true;
+  if (ref.read(analysisOfCatExpenses).isNotEmpty) {
     return [
       Consumer(builder: (context, ref, child) {
         final dateToDisp = ref.watch(dateToDisplay);
@@ -35,9 +38,8 @@ List<Widget> analysisPage(
                   flex: 2,
                   child: GestureDetector(
                     onTap: () async {
-                      final List<CategoryAnalysisEntry> tempList = [];
                       HapticFeedback.lightImpact();
-                      late DateTime? date;
+                      late DateTime date = DateTime.now();
                       await showMonthPicker(
                         monthPickerDialogSettings: MonthPickerDialogSettings(
                             headerSettings: PickerHeaderSettings(
@@ -52,20 +54,17 @@ List<Widget> analysisPage(
                       ).then((selectedDate) {
                         if (selectedDate != null) {
                           date = selectedDate;
+                          ref
+                              .read(dateToDisplay.notifier)
+                              .update((state) => date);
                         } else {
                           date = DateTime.now();
                         }
                       });
-
-                      ref.read(dateToDisplay.notifier).state =
-                          date ?? DateTime.now();
-                      ref.read(analysisOfExpenses.notifier).state = [];
-                      ref.read(analysisOfExpenses.notifier).state = [];
-                      tempList.addAll(sortIntoCategories(
-                          sortExpensesByGivenMonth(
-                              entriesDatabaseNotifier.theListOfTheExpenses,
-                              date ?? DateTime.now())));
-                      ref.read(analysisOfExpenses.notifier).state = tempList;
+                      List<Entry> entrysInGivenMonth =
+                          sortExpensesByGivenMonth(listOfExpenses, date);
+                      ref.read(analysisOfCatExpenses.notifier).update((state) =>
+                          [...sortIntoCategories(entrysInGivenMonth)]);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -85,6 +84,7 @@ List<Widget> analysisPage(
                                 ? 'This Month'
                                 : DateFormat('MMMM, yyyy').format(dateToDisp),
                             style: GoogleFonts.montserrat(
+                                color: Theme.of(context).colorScheme.primary,
                                 decorationThickness: 2,
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700,
@@ -104,201 +104,80 @@ List<Widget> analysisPage(
         );
       }),
       Consumer(builder: (context, ref, child) {
-        final analysis = ref.watch(analysisOfExpenses);
         return SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.only(top: 9, right: 21, left: 21),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
+            child: Column(
               children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 38.0, bottom: 15),
-                        child: SizedBox(
-                          height: width / 2,
-                          child: PieChart(
-                              swapAnimationDuration:
-                                  const Duration(milliseconds: 750),
-                              swapAnimationCurve: Curves.easeInOut,
-                              PieChartData(
-                                  sections:
-                                      List.generate(analysis.length, (index) {
-                                return PieChartSectionData(
-                                    titlePositionPercentageOffset: 1.6,
-                                    titleStyle: GoogleFonts.montserrat(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700),
-                                    title:
-                                        "${analysis[index].categorySumPercent}%",
-                                    value: double.parse(
-                                        analysis[index].categorySumPercent),
-                                    color: Color(
-                                        analysis[index].categoryColor ??
-                                            Colors.white.value));
-                              }))),
+                Visibility(
+                  visible: headers,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15)),
+                          color: Theme.of(context).colorScheme.onTertiary),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          "Categories",
+                          style: GoogleFonts.montserrat(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.primary),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 21.0),
-                        child: Column(
-                          children: List.generate(
-                            analysis.length,
-                            (index) {
-                              return Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      HapticFeedback.heavyImpact();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0, bottom: 6),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            height: 55,
-                                            width: width * 0.85,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary,
-                                              border: Border.all(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .tertiary,
-                                                  width: 5),
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(15)),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 4,
-                                                  right: 21.0,
-                                                  top: 10,
-                                                  bottom: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Flexible(
-                                                    flex: 2,
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(4.0),
-                                                          child: Container(
-                                                            height: 12,
-                                                            width: 12,
-                                                            decoration: BoxDecoration(
-                                                                color: Color(analysis[
-                                                                            index]
-                                                                        .categoryColor ??
-                                                                    Colors.white
-                                                                        .value),
-                                                                borderRadius:
-                                                                    const BorderRadius
-                                                                        .all(
-                                                                        Radius.circular(
-                                                                            100))),
-                                                          ),
-                                                        ),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      left:
-                                                                          8.0),
-                                                              child: SizedBox(
-                                                                child: Text(
-                                                                  analysis[index]
-                                                                          .categoryName ??
-                                                                      '',
-                                                                  softWrap:
-                                                                      true,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style: GoogleFonts.montserrat(
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .colorScheme
-                                                                          .primary,
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Flexible(
-                                                    flex: 1,
-                                                    child: FittedBox(
-                                                      fit: BoxFit.contain,
-                                                      child: Text(ref.read(currencyProvider) +
-                                                                analysis[index]
-                                                                    .categorySum
-                                                                    .toString(),
-                                                        softWrap: true,
-                                                        style: GoogleFonts.montserrat(
-                                                            color: Color(analysis[
-                                                                        index]
-                                                                    .categoryColor ??
-                                                                Colors.white
-                                                                    .value),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w700),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                    ],
+                    ),
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                        child: MyPieChart(
+                      useSubCat: false,
+                      entriesOfGivenMonth: sortExpensesByGivenMonth(
+                          entriesDatabaseNotifier.theListOfTheExpenses,
+                          ref.watch(dateToDisplay)),
+                      width: width,
+                    )),
+                  ],
+                ),
+                Visibility(
+                  visible: headers,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15)),
+                          color: Theme.of(context).colorScheme.onTertiary),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          "Subcategories",
+                          style: GoogleFonts.montserrat(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                MyPieChart(
+                  width: width,
+                  entriesOfGivenMonth: sortExpensesByGivenMonth(
+                      entriesDatabaseNotifier.theListOfTheExpenses,
+                      ref.watch(dateToDisplay)),
+                  useSubCat: true,
+                )
               ],
             ),
           ),
@@ -389,7 +268,7 @@ List<Widget> analysisPage(
                   flex: 2,
                   child: GestureDetector(
                     onTap: () async {
-                      final List<CategoryAnalysisEntry> tempList = [];
+                      final List<CategoryAnalysisEntry> tempCatList = [];
                       HapticFeedback.lightImpact();
                       late DateTime? date;
                       await showMonthPicker(
@@ -410,16 +289,15 @@ List<Widget> analysisPage(
                           date = DateTime.now();
                         }
                       });
-
                       ref.read(dateToDisplay.notifier).state =
                           date ?? DateTime.now();
-                      ref.read(analysisOfExpenses.notifier).state = [];
-                      ref.read(analysisOfExpenses.notifier).state = [];
-                      tempList.addAll(sortIntoCategories(
+                      tempCatList.addAll(sortIntoCategories(
                           sortExpensesByGivenMonth(
                               entriesDatabaseNotifier.theListOfTheExpenses,
                               date ?? DateTime.now())));
-                      ref.read(analysisOfExpenses.notifier).state = tempList;
+                      ref
+                          .read(analysisOfCatExpenses.notifier)
+                          .update((state) => tempCatList);
                     },
                     child: Container(
                       alignment: Alignment.center,

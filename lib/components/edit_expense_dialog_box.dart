@@ -1,5 +1,7 @@
-import 'package:doshi/components/category_list.dart';
+import 'package:doshi/components/category_selector.dart';
+import 'package:doshi/components/entrys_in_subcat_dialog.dart';
 import 'package:doshi/components/user_input_dialog.dart';
+import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/decimal_text_input_formatter.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/gestures.dart';
@@ -11,23 +13,14 @@ import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 
 class EditEntryDialogBox extends ConsumerStatefulWidget {
+  final bool analysisDialog;
   final Id id;
-  final double amounttext;
-  final DateTime datetimeVar;
-  final String categorytext;
-  final String addnoteText;
-  final bool isexpense;
-  final int categorycolorInt;
 
-  const EditEntryDialogBox(
-      {super.key,
-      required this.id,
-      required this.addnoteText,
-      required this.amounttext,
-      required this.categorycolorInt,
-      required this.categorytext,
-      required this.datetimeVar,
-      required this.isexpense});
+  const EditEntryDialogBox({
+    super.key,
+    required this.id,
+    required this.analysisDialog,
+  });
 
   @override
   ConsumerState<EditEntryDialogBox> createState() =>
@@ -43,12 +36,12 @@ class _AddExpenseDialogBoxState extends ConsumerState<EditEntryDialogBox> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      alignment: Alignment.center,
       color: Colors.black.withOpacity(0.5),
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: ThisContainerFinal(
+            analysisDialog: widget.analysisDialog,
             id: widget.id,
           )),
     );
@@ -56,8 +49,13 @@ class _AddExpenseDialogBoxState extends ConsumerState<EditEntryDialogBox> {
 }
 
 class ThisContainerFinal extends StatelessWidget {
+  final bool analysisDialog;
   final Id id;
-  const ThisContainerFinal({super.key, required this.id});
+  const ThisContainerFinal({
+    super.key,
+    required this.id,
+    required this.analysisDialog,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +63,7 @@ class ThisContainerFinal extends StatelessWidget {
       alignment: Alignment.topCenter,
       children: [
         ThisContainerOfTheDialogBox(
+          analysisDialog: analysisDialog,
           id: id,
           opacity: 0,
           padBottom: 0,
@@ -74,6 +73,7 @@ class ThisContainerFinal extends StatelessWidget {
           color: Theme.of(context).colorScheme.onTertiary,
         ),
         ThisContainerOfTheDialogBox(
+          analysisDialog: analysisDialog,
           id: id,
           opacity: 1,
           padBottom: 8,
@@ -88,6 +88,7 @@ class ThisContainerFinal extends StatelessWidget {
 }
 
 class ThisContainerOfTheDialogBox extends ConsumerStatefulWidget {
+  final bool analysisDialog;
   final double padTop;
   final double padBottom;
   final double padLeft;
@@ -103,7 +104,8 @@ class ThisContainerOfTheDialogBox extends ConsumerStatefulWidget {
       required this.padTop,
       required this.color,
       required this.opacity,
-      required this.id});
+      required this.id,
+      required this.analysisDialog});
 
   @override
   ConsumerState<ThisContainerOfTheDialogBox> createState() =>
@@ -134,265 +136,311 @@ class _ThisContainerOfTheDialogBoxState
           right: widget.padRight,
           top: widget.padTop,
           left: widget.padLeft),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(50)),
-                color: widget.color),
-            child: Consumer(builder: (context, ref, child) {
-              return Padding(
-                padding: const EdgeInsets.all(26.0),
-                child: Opacity(
-                  opacity: widget.opacity,
-                  child: Column(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                                text: DateFormat('dMMMM').format(varDateTime) !=
-                                        DateFormat('dMMMM')
-                                            .format(DateTime.now())
-                                    ? "I meant, on "
-                                    : "I meant, "),
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async {
-                                  HapticFeedback.lightImpact();
-                                  final DateTime? picked = await showDatePicker(
-                                      initialDate: DateTime.now(),
-                                      context: context,
-                                      firstDate:
-                                          DateTime(DateTime.now().year - 10),
-                                      lastDate: DateTime.now());
-                                  setState(() {
-                                    if (picked != null &&
-                                        picked != ref.read(dateTimeVar)) {
-                                      varDateTime = picked;
-                                    }
-                                  });
-                                },
-                              text: DateFormat('d MMM yy')
-                                          .format(DateTime.now()) ==
-                                      DateFormat('d MMM yy').format(varDateTime)
-                                  ? "Today"
-                                  : DateFormat('d MMM yy').format(varDateTime),
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.amber,
-                                  textStyle: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      decorationStyle:
-                                          TextDecorationStyle.dashed)),
-                            ),
-                            const TextSpan(text: " I "),
-                            TextSpan(
-                              text: "spent",
-                              style: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.redAccent,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(50)),
+                  color: widget.color),
+              child: Consumer(builder: (context, ref, child) {
+                return Padding(
+                  padding: const EdgeInsets.all(26.0),
+                  child: Opacity(
+                    opacity: widget.opacity,
+                    child: Column(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text:
+                                      DateFormat('dMMMM').format(varDateTime) !=
+                                              DateFormat('dMMMM')
+                                                  .format(DateTime.now())
+                                          ? "I meant, on "
+                                          : "I meant, "),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    HapticFeedback.lightImpact();
+                                    final DateTime? picked =
+                                        await showDatePicker(
+                                            initialDate: DateTime.now(),
+                                            context: context,
+                                            firstDate: DateTime(
+                                                DateTime.now().year - 10),
+                                            lastDate: DateTime.now());
+                                    setState(() {
+                                      if (picked != null &&
+                                          picked != ref.read(dateTimeVar)) {
+                                        varDateTime = picked;
+                                      }
+                                    });
+                                  },
+                                text: DateFormat('d MMM yy')
+                                            .format(DateTime.now()) ==
+                                        DateFormat('d MMM yy')
+                                            .format(varDateTime)
+                                    ? "Today"
+                                    : DateFormat('d MMM yy')
+                                        .format(varDateTime),
+                                style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.amber,
+                                    textStyle: const TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed)),
                               ),
-                            ),
-                            const TextSpan(text: " "),
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    HapticFeedback.lightImpact();
-                                    showModalBottomSheet(
-                                        barrierColor: Colors.transparent,
-                                        context: context,
-                                        builder: (builder) {
-                                          return UserInputDialog(
-                                            inputFormatters: [
-                                              DecimalTextInputFormatter()
-                                            ],
-                                            keyboardType: const TextInputType
-                                                .numberWithOptions(
-                                                decimal: true),
-                                            textProvider: amountText,
-                                            label: "amount",
-                                            commonTextEditingController:
-                                                amountTEC,
-                                          );
-                                        });
-                                  },
-                                text: ref.read(currencyProvider) +
-                                    ref.watch(amountText),
-                                style: GoogleFonts.montserrat(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.teal,
-                                    textStyle: const TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed))),
-                            const TextSpan(text: " on "),
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    HapticFeedback.lightImpact();
-                                    showGeneralDialog(
-                                        pageBuilder: (context, anim1, anim2) {
-                                          return const Placeholder();
-                                        },
-                                        context: context,
-                                        transitionBuilder:
-                                            (context, anim1, anim2, child) {
-                                          return Opacity(
-                                              opacity: anim1.value,
-                                              child: const CategoryList());
-                                        },
-                                        transitionDuration:
-                                            const Duration(milliseconds: 200));
-                                  },
-                                text: ref.watch(categoryText) == "Uncategorised"
-                                    ? "nothing in particular"
-                                    : ref.watch(categoryText).toLowerCase(),
-                                style: GoogleFonts.montserrat(
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(ref.watch(categoryColorInt)),
-                                    textStyle: const TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed))),
-                            TextSpan(
-                                text: ".",
-                                style: GoogleFonts.montserrat(
-                                  color: Color(ref.watch(categoryColorInt)),
-                                )),
-                            TextSpan(
-                                text: " (",
+                              const TextSpan(text: " I "),
+                              TextSpan(
+                                text: "spent",
                                 style: GoogleFonts.montserrat(
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.purple,
-                                )),
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    HapticFeedback.lightImpact();
-                                    showModalBottomSheet(
-                                        barrierColor: Colors.transparent,
-                                        context: context,
-                                        builder: (builder) {
-                                          return UserInputDialog(
-                                            keyboardType: TextInputType.text,
-                                            textProvider: noteText,
-                                            label: "note",
-                                            commonTextEditingController:
-                                                addNoteTEC,
-                                          );
-                                        });
-                                  },
-                                text: ref.watch(noteText) == ""
-                                    ? "note"
-                                    : ref.watch(noteText),
-                                style: GoogleFonts.montserrat(
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                              const TextSpan(text: " "),
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      HapticFeedback.lightImpact();
+                                      showModalBottomSheet(
+                                          barrierColor: Colors.transparent,
+                                          context: context,
+                                          builder: (builder) {
+                                            return UserInputDialog(
+                                              inputFormatters: [
+                                                DecimalTextInputFormatter()
+                                              ],
+                                              keyboardType: const TextInputType
+                                                  .numberWithOptions(
+                                                  decimal: true),
+                                              textProvider: amountText,
+                                              label: "amount",
+                                              commonTextEditingController:
+                                                  amountTEC,
+                                            );
+                                          });
+                                    },
+                                  text: ref.read(currencyProvider) +
+                                      ref.watch(amountText),
+                                  style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.teal,
+                                      textStyle: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          decorationStyle:
+                                              TextDecorationStyle.dashed))),
+                              const TextSpan(text: " on "),
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      HapticFeedback.lightImpact();
+                                      showGeneralDialog(
+                                          pageBuilder: (context, anim1, anim2) {
+                                            return const Placeholder();
+                                          },
+                                          context: context,
+                                          transitionBuilder:
+                                              (context, anim1, anim2, child) {
+                                            return Opacity(
+                                                opacity: anim1.value,
+                                                child:
+                                                    const CategoryListSelector());
+                                          },
+                                          transitionDuration: const Duration(
+                                              milliseconds: 200));
+                                    },
+                                  text:
+                                      ref.watch(categoryText) == "Uncategorised"
+                                          ? "nothing in particular"
+                                          : ref.watch(subCategoryText) ==
+                                                  "Uncategorised"
+                                              ? ref
+                                                  .watch(categoryText)
+                                                  .toLowerCase()
+                                              : ref
+                                                  .watch(subCategoryText)
+                                                  .toLowerCase(),
+                                  style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(ref.watch(categoryColorInt)),
+                                      textStyle: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          decorationStyle:
+                                              TextDecorationStyle.dashed))),
+                              TextSpan(
+                                  text: ".",
+                                  style: GoogleFonts.montserrat(
+                                    color: Color(ref.watch(categoryColorInt)),
+                                  )),
+                              TextSpan(
+                                  text: " (",
+                                  style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.purple,
-                                    textStyle: const TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed))),
-                            TextSpan(
-                                text: ")",
-                                style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.purple,
-                                )),
-                          ],
-                          style: GoogleFonts.montserrat(
-                              height: 1.4,
-                              fontSize: 34,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.primary),
+                                  )),
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      HapticFeedback.lightImpact();
+                                      showModalBottomSheet(
+                                          barrierColor: Colors.transparent,
+                                          context: context,
+                                          builder: (builder) {
+                                            return UserInputDialog(
+                                              keyboardType: TextInputType.text,
+                                              textProvider: noteText,
+                                              label: "note",
+                                              commonTextEditingController:
+                                                  addNoteTEC,
+                                            );
+                                          });
+                                    },
+                                  text: ref.watch(noteText) == ""
+                                      ? "note"
+                                      : ref.watch(noteText),
+                                  style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.purple,
+                                      textStyle: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          decorationStyle:
+                                              TextDecorationStyle.dashed))),
+                              TextSpan(
+                                  text: ")",
+                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.purple,
+                                  )),
+                            ],
+                            style: GoogleFonts.montserrat(
+                                height: 1.4,
+                                fontSize: 34,
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(context).colorScheme.primary),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              Navigator.of(context).pop();
-                            },
-                            child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width / 3.1,
-                                height: 50,
-                                decoration: const BoxDecoration(
-                                    color: Colors.redAccent,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50))),
-                                child: const Icon(
-                                  Icons.close_rounded,
-                                  size: 40,
-                                  color: Colors.white,
-                                )),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              try {
-                                ref
-                                    .read(entryDatabaseProvider.notifier)
-                                    .editEntry(
-                                        widget.id,
-                                        ref.read(categoryText),
-                                        double.parse(ref.read(amountText)),
-                                        addNoteTEC.text,
-                                        varDateTime,
-                                        true,
-                                        ref.read(categoryColorInt),
-                                        ref.read(isSavings));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Updated expense')));
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
                                 Navigator.of(context).pop();
-                              } catch (e) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                        backgroundColor: Colors.redAccent,
-                                        content: Text(
-                                          'Invalid amount',
-                                          style: TextStyle(color: Colors.white),
-                                        )));
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width / 3.1,
-                                height: 50,
-                                decoration: BoxDecoration(
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.1,
+                                  height: 50,
+                                  decoration: const BoxDecoration(
+                                      color: Colors.redAccent,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50))),
+                                  child: const Icon(
+                                    Icons.close_rounded,
+                                    size: 40,
+                                    color: Colors.white,
+                                  )),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                try {
+                                  ref
+                                      .read(entryDatabaseProvider.notifier)
+                                      .editEntry(
+                                          widget.id,
+                                          ref.read(categoryText),
+                                          double.parse(ref.read(amountText)),
+                                          addNoteTEC.text,
+                                          varDateTime,
+                                          true,
+                                          ref.read(categoryColorInt),
+                                          ref.read(isSavings),
+                                          ref.read(subCategoryText),
+                                          ref.read(subCategoryColorInt));
+                                  if (widget.analysisDialog) {
+                                    List<Entry> temp1 =
+                                        ref.read(entriesForSubCatDialog);
+                                    int i = temp1.indexWhere(
+                                        (entry) => entry.id == widget.id);
+                                    temp1[i].id = widget.id;
+                                    temp1[i].category = ref.read(categoryText);
+                                    temp1[i].amount =
+                                        double.parse(ref.read(amountText));
+                                    temp1[i].dateTime = varDateTime;
+                                    temp1[i].isExpense = true;
+                                    temp1[i].categoryColor =
+                                        ref.read(categoryColorInt);
+                                    temp1[i].isSavings = ref.read(isSavings);
+                                    temp1[i].note = addNoteTEC.text;
+                                    temp1[i].subCategory =
+                                        ref.read(subCategoryText);
+                                    temp1[i].subCategoryColor =
+                                        ref.read(subCategoryColorInt);
+                                    ref
+                                        .read(entriesForSubCatDialog.notifier)
+                                        .state = [];
+                                    ref
+                                        .read(entriesForSubCatDialog.notifier)
+                                        .update((state) => temp1);
+                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Updated expense')));
+                                  Navigator.of(context).pop();
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                          backgroundColor: Colors.redAccent,
+                                          content: Text(
+                                            'Invalid amount',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )));
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.1,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(50))),
+                                  child: Icon(
+                                    Icons.check_rounded,
+                                    size: 40,
                                     color:
-                                        Theme.of(context).colorScheme.primary,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(50))),
-                                child: Icon(
-                                  Icons.check_rounded,
-                                  size: 40,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                )),
-                          ),
-                        ],
-                      )
-                    ],
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  )),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
-          ),
-        ],
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:doshi/isar/app_settings.dart';
 import 'package:doshi/isar/category_entry.dart';
 import 'package:doshi/isar/entry.dart';
+import 'package:doshi/isar/subcategory_entry.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,7 +28,7 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
   static Future<void> initialise() async {
     final dir = await getApplicationDocumentsDirectory();
     isar = await Isar.open(
-        [AppSettingEntrySchema, CategoryEntrySchema, EntrySchema],
+        [AppSettingEntrySchema, CategoryEntrySchema, EntrySchema, SubCategoryEntrySchema],
         directory: dir.path);
   }
 

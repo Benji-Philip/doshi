@@ -73,11 +73,6 @@ class CategoryDatabaseNotifier extends StateNotifier<List<CategoryEntry>> {
     fetchedEntries = fetchedEntries.reversed.toList();
     currentCategories.clear();
     currentCategories.addAll(fetchedEntries);
-    List<AppSettingEntry> fetchedSettings =
-        await isar.appSettingEntrys.where().findAll();
-    currentSettings.clear();
-    currentSettings.addAll(fetchedSettings);
-    if (currentSettings.isEmpty) {
       if (currentCategories.isEmpty) {
         await isar.writeTxn(() => isar.categoryEntrys.put(uncategorised));
         await isar.writeTxn(() => isar.categoryEntrys.put(food));
@@ -91,24 +86,7 @@ class CategoryDatabaseNotifier extends StateNotifier<List<CategoryEntry>> {
         fetchedEntries = await isar.categoryEntrys.where().findAll();
         currentCategories.clear();
         currentCategories.addAll(fetchedEntries);
-      } else {
-        if (currentCategories.isEmpty &&
-            currentSettings[0].appSettingValue == "true&false") {
-          await isar.writeTxn(() => isar.categoryEntrys.put(uncategorised));
-          await isar.writeTxn(() => isar.categoryEntrys.put(food));
-          await isar.writeTxn(() => isar.categoryEntrys.put(groceries));
-          await isar.writeTxn(() => isar.categoryEntrys.put(transportation));
-          await isar.writeTxn(() => isar.categoryEntrys.put(utilities));
-          await isar.writeTxn(() => isar.categoryEntrys.put(healthcare));
-          await isar.writeTxn(() => isar.categoryEntrys.put(entertainment));
-          await isar.writeTxn(() => isar.categoryEntrys.put(internet));
-          await isar.writeTxn(() => isar.categoryEntrys.put(miscellaneous));
-          fetchedEntries = await isar.categoryEntrys.where().findAll();
-          currentCategories.clear();
-          currentCategories.addAll(fetchedEntries);
-        }
       }
-    }
     state = [];
     state = currentCategories;
   }

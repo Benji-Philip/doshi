@@ -1,5 +1,3 @@
-import 'package:doshi/components/entrys_in_subcat_dialog.dart';
-import 'package:doshi/isar/entry.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,14 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
-class DeleteEntryDialogBox extends ConsumerWidget {
+class DeleteSubCategoryDialogBox extends ConsumerWidget {
   final Id id;
-  final bool analysisDialog;
-  const DeleteEntryDialogBox({
-    super.key,
-    required this.id,
-    required this.analysisDialog,
-  });
+  const DeleteSubCategoryDialogBox({super.key, required this.id});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -266,42 +259,8 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                   onTap: () {
                                     HapticFeedback.heavyImpact();
                                     ref
-                                        .read(entryDatabaseProvider.notifier)
-                                        .deleteEntry(id);
-                                    ref
-                                        .read(appSettingsDatabaseProvider
-                                            .notifier)
-                                        .fetchEntries();
-                                    ref
-                                        .read(entryDatabaseProvider.notifier)
-                                        .fetchEntries();
-                                    ref
-                                        .read(categoryDatabaseProvider.notifier)
-                                        .fetchEntries();
-                                    ref
-                                        .read(subCategoryDatabaseProvider
-                                            .notifier)
-                                        .fetchEntries();
-                                    if (analysisDialog) {
-                                      List<Entry> temp1 =
-                                          ref.read(entriesForSubCatDialog);
-                                      List<Entry> temp2 =
-                                          ref.read(entriesForSubCatDialog);
-                                      for (var i = 0; i < temp2.length; i++) {
-                                        if (temp1[i].id == id) {
-                                          temp1.removeAt(i);
-                                        }
-                                      }
-                                      ref
-                                          .read(entriesForSubCatDialog.notifier)
-                                          .state = [];
-                                      ref
-                                          .read(entriesForSubCatDialog.notifier)
-                                          .update((state) => temp1);
-                                      if (temp1.isEmpty) {
-                                        Navigator.of(context).pop();
-                                      }
-                                    }
+                                        .read(subCategoryDatabaseProvider.notifier)
+                                        .deleteSubCategory(id);
                                     Navigator.of(context).pop();
                                   },
                                   child: Container(

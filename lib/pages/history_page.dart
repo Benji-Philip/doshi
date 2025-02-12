@@ -47,6 +47,7 @@ List<Widget> historyPage(
         itemCount: currentEntries.length,
         itemBuilder: (BuildContext context, int index) {
           return SlidableEntry(
+            analysisDialog: false,
               currentEntries: currentEntries,
               ref: ref,
               spaceFromTop: spaceFromTop,

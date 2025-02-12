@@ -1,7 +1,8 @@
 import 'package:currency_picker/currency_picker.dart';
-import 'package:doshi/components/category_list_editor.dart';
+import 'package:doshi/components/category_selector.dart';
 import 'package:doshi/components/my_button.dart';
 import 'package:doshi/isar/entries_database.dart';
+import 'package:doshi/pages/home_page.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -73,7 +74,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Container(
-                  constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.7),
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -119,13 +121,55 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     HapticFeedback.heavyImpact();
                                     ref
                                         .read(backupRestoreSuccess.notifier)
                                         .update((state) => true);
-                                    widget.entriesDatabaseNotifier.tryRestore();
-                                    Navigator.of(context).pop();
+                                    await widget.entriesDatabaseNotifier
+                                        .tryRestore(ref);
+
+                                    ref
+                                        .read(appSettingsDatabaseProvider
+                                            .notifier)
+                                        .fetchEntries();
+                                    ref
+                                        .read(entryDatabaseProvider.notifier)
+                                        .fetchEntries();
+                                    ref
+                                        .read(categoryDatabaseProvider.notifier)
+                                        .fetchEntries();
+                                    ref
+                                        .read(subCategoryDatabaseProvider
+                                            .notifier)
+                                        .fetchEntries();
+                                    final List appSettings = await ref
+                                        .read(appSettingsDatabaseProvider
+                                            .notifier)
+                                        .fetchSettings();
+                                    if (appSettings.length > 2) {
+                                      ref
+                                          .read(currencyProvider.notifier)
+                                          .update((state) =>
+                                              appSettings[2].appSettingValue);
+                                    } else {
+                                      ref
+                                          .read(currencyProvider.notifier)
+                                          .update((state) => "\$");
+                                    }
+                                    if (appSettings.length > 3) {
+                                      ref.read(showCamera.notifier).update(
+                                          (state) =>
+                                              appSettings[3].appSettingValue ==
+                                              "true");
+                                    } else {
+                                      ref
+                                          .read(showCamera.notifier)
+                                          .update((state) => false);
+                                    }
+                                    if (mounted) {
+                                      Navigator.of(context).pop();
+                                    }
                                   },
                                   child: Container(
                                     alignment: Alignment.center,
@@ -153,8 +197,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                             height: 3,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.onTertiary,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(100))),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(100))),
                           ),
                         ),
                         Row(
@@ -165,7 +209,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                 child: GestureDetector(
                                   onTap: () {
                                     HapticFeedback.heavyImpact();
-                    
+
                                     HapticFeedback.heavyImpact();
                                     showCurrencyPicker(
                                       context: context,
@@ -224,6 +268,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                 child: GestureDetector(
                                   onTap: () {
                                     HapticFeedback.heavyImpact();
+                                    setDefaultValues(ref);
                                     showGeneralDialog(
                                         pageBuilder: (context, anim1, anim2) {
                                           return const Placeholder();
@@ -233,7 +278,9 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                             (context, anim1, anim2, child) {
                                           return Opacity(
                                               opacity: anim1.value,
-                                              child: const CategoryListEditor());
+                                              child: const CategoryListSelector(
+                                                editMode: true,
+                                              ));
                                         },
                                         transitionDuration:
                                             const Duration(milliseconds: 200));
@@ -275,8 +322,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                             height: 3,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.onTertiary,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(100))),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(100))),
                           ),
                         ),
                         Row(
@@ -318,8 +365,9 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                   onTap: () {
                                     HapticFeedback.heavyImpact();
                                     if (_iapAvailable) {
-                                      PurchaseParam purchaseParam = PurchaseParam(
-                                          productDetails: product[0]);
+                                      PurchaseParam purchaseParam =
+                                          PurchaseParam(
+                                              productDetails: product[0]);
                                       _iap.buyConsumable(
                                           purchaseParam: purchaseParam);
                                     }

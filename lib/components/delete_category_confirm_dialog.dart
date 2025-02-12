@@ -1,3 +1,4 @@
+import 'package:doshi/isar/subcategory_entry.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +8,9 @@ import 'package:isar/isar.dart';
 
 class DeleteCategoryDialogBox extends ConsumerWidget {
   final Id id;
-  const DeleteCategoryDialogBox({super.key, required this.id});
+  final List<SubCategoryEntry> subCategories;
+  const DeleteCategoryDialogBox(
+      {super.key, required this.id, required this.subCategories});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,7 +55,7 @@ class DeleteCategoryDialogBox extends ConsumerWidget {
                                   const EdgeInsets.only(left: 24.0, bottom: 4),
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.6,
-                                height: 80,
+                                height: 60,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Text(
@@ -60,6 +63,28 @@ class DeleteCategoryDialogBox extends ConsumerWidget {
                                     softWrap: true,
                                     style: GoogleFonts.montserrat(
                                         fontSize: 56,
+                                        fontWeight: FontWeight.w700,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        decorationColor: const Color.fromARGB(
+                                            0, 255, 255, 255)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 36.0, bottom: 24),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.6,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    "This will delete it's sub-categories too!",
+                                    softWrap: true,
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 54,
                                         fontWeight: FontWeight.w700,
                                         color: Theme.of(context)
                                             .colorScheme
@@ -183,11 +208,10 @@ class DeleteCategoryDialogBox extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding:
-                                const EdgeInsets.only(left: 24.0, bottom: 4),
+                            padding: const EdgeInsets.only(left: 24.0, top: 16),
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.6,
-                              height: 80,
+                              height: 60,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
@@ -198,6 +222,29 @@ class DeleteCategoryDialogBox extends ConsumerWidget {
                                       fontWeight: FontWeight.w700,
                                       color:
                                           Theme.of(context).colorScheme.primary,
+                                      decorationColor: const Color.fromARGB(
+                                          0, 255, 255, 255)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 32.0, bottom: 24),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  "Also deletes it's sub-categories!",
+                                  softWrap: true,
+                                  style: GoogleFonts.montserrat(
+                                      fontSize: 54,
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.7),
                                       decorationColor: const Color.fromARGB(
                                           0, 255, 255, 255)),
                                 ),
@@ -261,6 +308,12 @@ class DeleteCategoryDialogBox extends ConsumerWidget {
                                     ref
                                         .read(categoryDatabaseProvider.notifier)
                                         .deleteCategory(id);
+                                    for (var subCategory in subCategories) {
+                                      ref
+                                          .read(subCategoryDatabaseProvider
+                                              .notifier)
+                                          .deleteSubCategory(subCategory.id);
+                                    }
                                     Navigator.of(context).pop();
                                   },
                                   child: Container(

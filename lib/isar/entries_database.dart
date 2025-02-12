@@ -1,8 +1,8 @@
 import 'dart:io' as io;
-
 import 'package:doshi/isar/app_settings_database.dart';
 import 'package:doshi/isar/category_database.dart';
 import 'package:doshi/isar/entry.dart';
+import 'package:doshi/isar/subcategory_database.dart';
 import 'package:doshi/logic/math_of_entries.dart';
 import 'package:doshi/logic/sort_entries.dart';
 import 'package:doshi/riverpod/states.dart';
@@ -54,6 +54,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
   final List<Entry> theSortedList = [];
   final List<Entry> theListOfExpensesThisMonth = [];
   final List<CategoryAnalysisEntry> analysisOfCategories = [];
+  final List<SubCategoryAnalysisEntry> analysisOfSubCategories = [];
   final List<Entry> thisWeekExpenses = [];
   double totalSumOfExpenditures = 0.0;
 
@@ -67,6 +68,8 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     bool isExpenseEntry,
     int categoryColor,
     bool isSavingsEntry,
+    String subCategoryEntry,
+    int subCategoryColor,
   ) async {
     //create new entry
     final newEntry = Entry()
@@ -77,7 +80,9 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       ..isExpense = isExpenseEntry
       ..categoryColor = categoryColor
       ..isExpense = isExpenseEntry
-      ..isSavings = isSavingsEntry;
+      ..isSavings = isSavingsEntry
+      ..subCategory = subCategoryEntry
+      ..subCategoryColor = subCategoryColor;
 
     //save to database
     await isar.writeTxn(() => isar.entrys.put(newEntry));
@@ -134,6 +139,9 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
 
     analysisOfCategories.clear();
     analysisOfCategories.addAll(sortIntoCategories(theListOfExpensesThisMonth));
+    analysisOfSubCategories.clear();
+    analysisOfSubCategories
+        .addAll(sortIntoSubCategories(theListOfExpensesThisMonth));
     state = [];
     state = sortedList;
   }
@@ -179,17 +187,19 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     }
   }
 
-
   //edit
   Future<void> editEntry(
-      int id,
-      String newCategory,
-      double newAmount,
-      String newNote,
-      DateTime newDateTime,
-      bool newIsExpense,
-      int newCategoryColor,
-      bool newIsSavings) async {
+    int id,
+    String newCategory,
+    double newAmount,
+    String newNote,
+    DateTime newDateTime,
+    bool newIsExpense,
+    int newCategoryColor,
+    bool newIsSavings,
+    String newSubCategory,
+    int newSubCategoryColor,
+  ) async {
     final existingEntry = await isar.entrys.get(id);
     if (existingEntry != null) {
       existingEntry.amount = newAmount;
@@ -199,12 +209,14 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       existingEntry.isExpense = newIsExpense;
       existingEntry.categoryColor = newCategoryColor;
       existingEntry.isExpense = newIsExpense;
+      existingEntry.subCategory = newSubCategory;
+      existingEntry.subCategoryColor = newCategoryColor;
       await isar.writeTxn(() => isar.entrys.put(existingEntry));
       await fetchEntries();
     }
   }
 
-  Future<void> tryRestore() async {
+  Future<void> tryRestore(WidgetRef ref) async {
     // Requesting permissions
     var status = await Permission.storage.status;
     if (!status.isGranted) {
@@ -233,7 +245,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       await AppSettingsDatabaseNotifier.initialise();
       await EntryDatabaseNotifier.initialise();
       await CategoryDatabaseNotifier.initialise();
-      fetchEntries();
+      await SubCategoryDatabaseNotifier.initialise();
       showToast("Restored successfully");
     } else {
       showToast("Cancelled");
@@ -296,9 +308,19 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
         "",
         false,
         Colors.white.value,
-        true);
-    await addEntry(double.parse(ref.read(amountText)), DateTime.now(),
-        "Uncategorised", "From savings", false, Colors.white.value, false);
+        true,
+        "Uncategorised",
+        Colors.white.value);
+    await addEntry(
+        double.parse(ref.read(amountText)),
+        DateTime.now(),
+        "Uncategorised",
+        "From savings",
+        false,
+        Colors.white.value,
+        false,
+        "Uncategorised",
+        Colors.white.value);
     await fetchEntries();
   }
 
@@ -311,13 +333,15 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       await isar.writeTxn(() => isar.entrys.delete(element.id));
     }
     await addEntry(
-            double.parse(ref.read(amountText)),
+        double.parse(ref.read(amountText)),
         DateTime.now(),
         "Uncategorised",
         "",
         false,
         Colors.white.value,
-        true);
+        true,
+        "Uncategorised",
+        Colors.white.value);
     await fetchEntries();
   }
 }

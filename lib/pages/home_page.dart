@@ -25,7 +25,7 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   bool canChangePage = true;
   bool preventScrollSpam = true;
-  final double pageSwitchScrollLimit = 100;
+  final double pageSwitchScrollLimit = 60;
   final double _spaceFromTop = 90;
   double scrollDelta = 0.0;
   double scrollOffset = 0.0;
@@ -59,9 +59,12 @@ class _HomePageState extends ConsumerState<HomePage> {
       key: _scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: IgnorePointer(
-        ignoring: scrollDelta > 0 && scrollOffset > 0 ? true : false,
+        ignoring: scrollDelta > 0 && scrollOffset > 0 ||
+                ref.watch(currentPage) != "Home"
+            ? true
+            : false,
         child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 150),
           opacity: scrollDelta > 0 && scrollOffset > 0 ||
                   ref.watch(currentPage) != "Home"
               ? 0
@@ -125,9 +128,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                                               .notifier)
                                           .editSetting(
                                               4, "EnableCamera", "false");
-                                    ref
-                                        .read(showCamera.notifier)
-                                        .update((state) =>false);
+                                      ref
+                                          .read(showCamera.notifier)
+                                          .update((state) => false);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
                                               content:
@@ -138,9 +141,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                                               .notifier)
                                           .editSetting(
                                               4, "EnableCamera", "true");
-                                    ref
-                                        .read(showCamera.notifier)
-                                        .update((state) => true);
+                                      ref
+                                          .read(showCamera.notifier)
+                                          .update((state) => true);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
                                               content:
@@ -212,7 +215,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ],
                                 ),
                               ),
-                              GestureDetector(onLongPress: () {
+                              GestureDetector(
+                                onLongPress: () {
                                   if (ref
                                       .read(
                                           appSettingsDatabaseProvider.notifier)
@@ -231,9 +235,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                                               .notifier)
                                           .editSetting(
                                               4, "EnableCamera", "false");
-                                    ref
-                                        .read(showCamera.notifier)
-                                        .update((state) =>false);
+                                      ref
+                                          .read(showCamera.notifier)
+                                          .update((state) => false);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
                                               content:
@@ -244,9 +248,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                                               .notifier)
                                           .editSetting(
                                               4, "EnableCamera", "true");
-                                    ref
-                                        .read(showCamera.notifier)
-                                        .update((state) => true);
+                                      ref
+                                          .read(showCamera.notifier)
+                                          .update((state) => true);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
                                               content:
@@ -419,9 +423,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 child: FittedBox(
                                   fit: BoxFit.contain,
                                   child: Opacity(
-                                    opacity: clampDouble(scrollOffset, -80, 0)
+                                    opacity: clampDouble(scrollOffset, -pageSwitchScrollLimit, 0)
                                             .abs() /
-                                        80,
+                                        pageSwitchScrollLimit,
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -465,9 +469,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 child: Opacity(
                                   opacity: canChangePage
                                       ? 1 -
-                                          clampDouble(scrollOffset, -80, 80)
+                                          clampDouble(scrollOffset, -pageSwitchScrollLimit, pageSwitchScrollLimit)
                                                   .abs() /
-                                              80
+                                              pageSwitchScrollLimit
                                       : 1,
                                   child: SizedBox(
                                     width: width,
@@ -607,21 +611,21 @@ class _HomePageState extends ConsumerState<HomePage> {
                           scrollOffset = _scrollController.offset;
                           scrollDelta = notif.scrollDelta ?? 0;
                         });
-                        if (scrollOffset == 0.0) {
+                        if (scrollOffset >= 0) {
                           setState(() {
                             canChangePage = true;
                           });
                         }
-                        if (scrollOffset <= -pageSwitchScrollLimit / 2 &&
-                            scrollOffset >= -pageSwitchScrollLimit / 2 - 10) {
+                        if (scrollOffset <= -30 &&
+                            scrollOffset >= -50) {
                           setState(() {
                             preventScrollSpam = true;
                           });
                         }
                         if (scrollOffset < -pageSwitchScrollLimit &&
                             preventScrollSpam) {
-                          ref.read(analysisOfExpenses.notifier).state = [];
-                          ref.read(analysisOfExpenses.notifier).state =
+                          ref.read(analysisOfCatExpenses.notifier).state = [];
+                          ref.read(analysisOfCatExpenses.notifier).state =
                               entriesDatabaseNotifier.analysisOfCategories;
                           ref.read(dateToDisplay.notifier).state =
                               DateTime.now();
@@ -646,10 +650,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                     },
                     child: Consumer(builder: (context, ref, child) {
                       // ignore: unused_local_variable
-                      final watcher = ref.watch(analysisOfExpenses);
+                      final watcher = ref.watch(analysisOfCatExpenses);
                       return CustomScrollView(
                           physics: BouncingScrollPhysics(
-                              parent: preventScrollSpam
+                              parent: preventScrollSpam || canChangePage
                                   ? const AlwaysScrollableScrollPhysics()
                                   : const NeverScrollableScrollPhysics()),
                           controller: _scrollController,
@@ -664,12 +668,21 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ref,
                                   entriesDatabaseNotifier,
                                   currentEntries,
-                                  entriesDatabaseNotifier.analysisOfCategories,
+                                  entriesDatabaseNotifier
+                                      .analysisOfCategories,
                                   widget.camera,
                                   widget.backcamera,
                                   _scrollController)
-                              : analysisPage(_spaceFromTop, context, width,
-                                  height, ref, entriesDatabaseNotifier));
+                              : analysisPage(
+                                  ref
+                                      .read(entryDatabaseProvider.notifier)
+                                      .theListOfTheExpenses,
+                                  _spaceFromTop,
+                                  context,
+                                  width,
+                                  height,
+                                  ref,
+                                  entriesDatabaseNotifier));
                     }),
                   ),
                 ),

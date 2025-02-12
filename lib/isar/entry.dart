@@ -8,8 +8,9 @@ class Entry {
 
   String? note;
   String? category;
-
+  String? subCategory;
   int? categoryColor;
+  int? subCategoryColor;
   late bool isExpense;
   late DateTime dateTime;
   late double amount;
