@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MyPieChart extends ConsumerStatefulWidget {
+  final bool includeUncat;
   final bool? isDialogBox;
   final String? parentCategory;
   final bool useSubCat;
@@ -24,6 +25,7 @@ class MyPieChart extends ConsumerStatefulWidget {
     required this.entriesOfGivenMonth,
     required this.useSubCat,
     this.parentCategory,
+    required this.includeUncat,
   });
 
   @override
@@ -32,11 +34,30 @@ class MyPieChart extends ConsumerStatefulWidget {
 
 class _MyPieChart extends ConsumerState<MyPieChart> {
   List pieChartData = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.useSubCat) {
-      pieChartData = widget.analysisBySubCats ??
+      List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
           sortIntoSubCategories(widget.entriesOfGivenMonth);
+      List<SubCategoryAnalysisEntry> temp2 = [];
+      if (!widget.includeUncat) {
+        for (var i = 0; i < temp.length; i++) {
+          if (temp[i].subCategoryName == "Uncategorised" ||
+              temp[i].subCategoryName == null) {
+          } else {
+            temp2.add(temp[i]);
+          }
+        }
+        pieChartData = temp2;
+      } else {
+        pieChartData = temp;
+      }
     } else {
       pieChartData = sortIntoCategories(widget.entriesOfGivenMonth);
     }
@@ -236,7 +257,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                             fit: BoxFit.contain,
                                             child: Text(
                                               ref.read(currencyProvider) +
-                                                  sum.toString(),
+                                                  sum.toStringAsFixed(2),
                                               softWrap: true,
                                               style: GoogleFonts.montserrat(
                                                   decorationColor:

@@ -128,6 +128,7 @@ class ThisContainer extends StatelessWidget {
                   opacity: opacity,
                   child: Consumer(builder: (context, ref, child) {
                     return MyPieChart(
+                      includeUncat: true,
                       isDialogBox: true,
                       parentCategory: widget.parentCategory,
                       useSubCat: true,

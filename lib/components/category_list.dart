@@ -113,19 +113,24 @@ class CategoryList extends ConsumerWidget {
                               ref.read(categoryColorInt.notifier).update(
                                   (state) =>
                                       currentCategories[index].categoryColor);
+                              ref
+                                  .read(subCategoryText.notifier)
+                                  .update((state) => "Uncategorised");
+                              ref
+                                  .read(subCategoryColorInt.notifier)
+                                  .update((state) => Colors.white.value);
                               Navigator.of(context).pop();
                             } else if (!notInList) {
                               HapticFeedback.heavyImpact();
                               ref.read(categoryText.notifier).update(
                                   (state) => currentCategories[index].category);
-
                               ref
                                   .read(openSubCats.notifier)
                                   .update((state) => index);
                             }
                           },
                           child: SlidableCategory(
-                              editMode: editMode?? false,
+                              editMode: editMode ?? false,
                               currentSubCategories: currentSubCategories,
                               openSubCat: openSubCat,
                               notInList: notInList,
@@ -134,7 +139,7 @@ class CategoryList extends ConsumerWidget {
                         ),
                         openSubCat
                             ? SubCategoryList(
-                              editMode: editMode??false,
+                                editMode: editMode ?? false,
                                 currentParentCategory:
                                     currentCategories[index].category,
                                 currentParentCategoryColor:

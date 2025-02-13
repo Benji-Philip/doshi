@@ -19,23 +19,31 @@ class SubCategoryDatabaseNotifier
   //list of default categories
   final icecream = SubCategoryEntry()
     ..parentCategory = "Food"
-    ..subCategory = "Icecream"
+    ..subCategory = "Dining Out"
     ..subCategoryColor = const Color.fromARGB(255, 54, 231, 244).value;
+  final coffee = SubCategoryEntry()
+    ..parentCategory = "Food"
+    ..subCategory = "Coffee"
+    ..subCategoryColor = const Color.fromARGB(255, 137, 80, 15).value;
   final junk = SubCategoryEntry()
     ..parentCategory = "Food"
-    ..subCategory = "Junk"
+    ..subCategory = "Snacks"
     ..subCategoryColor = const Color.fromARGB(255, 133, 97, 57).value;
   final restaurant = SubCategoryEntry()
     ..parentCategory = "Food"
-    ..subCategory = "Restaurant"
+    ..subCategory = "Delivery"
     ..subCategoryColor = const Color.fromARGB(255, 174, 54, 244).value;
   final eggs = SubCategoryEntry()
     ..parentCategory = "Groceries"
     ..subCategory = "Eggs"
     ..subCategoryColor = const Color.fromARGB(255, 238, 244, 54).value;
+  final meat = SubCategoryEntry()
+    ..parentCategory = "Groceries"
+    ..subCategory = "Meat"
+    ..subCategoryColor = const Color.fromARGB(255, 164, 243, 255).value;
   final milk = SubCategoryEntry()
     ..parentCategory = "Groceries"
-    ..subCategory = "Milk"
+    ..subCategory = "Dairy"
     ..subCategoryColor = const Color.fromARGB(255, 164, 243, 255).value;
   final fruits = SubCategoryEntry()
     ..parentCategory = "Groceries"
@@ -56,10 +64,14 @@ class SubCategoryDatabaseNotifier
   final flight = SubCategoryEntry()
     ..parentCategory = "Transportation"
     ..subCategory = "Flight"
-    ..subCategoryColor = const Color.fromARGB(255, 76, 196, 209).value;
+    ..subCategoryColor = const Color.fromARGB(255, 128, 172, 217).value;
   final gas = SubCategoryEntry()
     ..parentCategory = "Transportation"
     ..subCategory = "Gas"
+    ..subCategoryColor = const Color.fromARGB(255, 177, 123, 61).value;
+  final repairs = SubCategoryEntry()
+    ..parentCategory = "Transportation"
+    ..subCategory = "Repairs"
     ..subCategoryColor = const Color.fromARGB(255, 177, 123, 61).value;
   final electricity = SubCategoryEntry()
     ..parentCategory = "Utilities"
@@ -79,11 +91,11 @@ class SubCategoryDatabaseNotifier
     ..subCategoryColor = const Color.fromARGB(255, 54, 244, 238).value;
   final doctor = SubCategoryEntry()
     ..parentCategory = "Healthcare"
-    ..subCategory = "Doctor"
+    ..subCategory = "Dental"
     ..subCategoryColor = const Color.fromARGB(255, 244, 54, 155).value;
   final vitamins = SubCategoryEntry()
     ..parentCategory = "Healthcare"
-    ..subCategory = "Vitamins"
+    ..subCategory = "Insurance"
     ..subCategoryColor = const Color.fromARGB(255, 187, 54, 244).value;
   final movie = SubCategoryEntry()
     ..parentCategory = "Entertainment"
@@ -101,6 +113,10 @@ class SubCategoryDatabaseNotifier
     ..parentCategory = "Entertainment"
     ..subCategory = "Arcade"
     ..subCategoryColor = const Color.fromARGB(255, 144, 47, 145).value;
+  final vpn = SubCategoryEntry()
+    ..parentCategory = "Internet"
+    ..subCategory = "VPN"
+    ..subCategoryColor = const Color.fromARGB(255, 63, 130, 255).value;
   final wifi = SubCategoryEntry()
     ..parentCategory = "Internet"
     ..subCategory = "WiFi"
@@ -115,11 +131,19 @@ class SubCategoryDatabaseNotifier
     ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
   final haircut = SubCategoryEntry()
     ..parentCategory = "Miscellaneous"
-    ..subCategory = "Haircut"
-    ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
+    ..subCategory = "Emergency"
+    ..subCategoryColor = const Color.fromARGB(255, 244, 54, 54).value;
   final gifts = SubCategoryEntry()
     ..parentCategory = "Miscellaneous"
     ..subCategory = "Gifts"
+    ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
+  final clothing = SubCategoryEntry()
+    ..parentCategory = "Miscellaneous"
+    ..subCategory = "Clothing"
+    ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
+  final personal = SubCategoryEntry()
+    ..parentCategory = "Miscellaneous"
+    ..subCategory = "Personal"
     ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
 
   //list of entries
@@ -155,15 +179,18 @@ class SubCategoryDatabaseNotifier
     if (currentSubCategories.isEmpty) {
       await isar.writeTxn(() => isar.subCategoryEntrys.put(icecream));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(junk));
+      await isar.writeTxn(() => isar.subCategoryEntrys.put(coffee));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(restaurant));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(eggs));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(fruits));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(vegetables));
+      await isar.writeTxn(() => isar.subCategoryEntrys.put(meat));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(milk));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(railway));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(flight));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(metro));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(gas));
+      await isar.writeTxn(() => isar.subCategoryEntrys.put(repairs));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(electricity));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(water));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(trash));
@@ -176,9 +203,12 @@ class SubCategoryDatabaseNotifier
       await isar.writeTxn(() => isar.subCategoryEntrys.put(arcade));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(wifi));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(cellular));
+      await isar.writeTxn(() => isar.subCategoryEntrys.put(vpn));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(haircut));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(charity));
       await isar.writeTxn(() => isar.subCategoryEntrys.put(gifts));
+      await isar.writeTxn(() => isar.subCategoryEntrys.put(clothing));
+      await isar.writeTxn(() => isar.subCategoryEntrys.put(personal));
       fetchedEntries = await isar.subCategoryEntrys.where().findAll();
       currentSubCategories.clear();
       currentSubCategories.addAll(fetchedEntries);

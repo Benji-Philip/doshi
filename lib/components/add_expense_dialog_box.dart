@@ -126,21 +126,23 @@ class _ThisContainerOfTheDialogBoxState
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                  text: DateFormat('dMMMM').format(dateTimeVar) !=
-                                          DateFormat('dMMMM')
-                                              .format(DateTime.now())
-                                      ? "On "
-                                      : ""),
+                                  text:
+                                      DateFormat('dMMMM').format(dateTimeVar) !=
+                                              DateFormat('dMMMM')
+                                                  .format(DateTime.now())
+                                          ? "On "
+                                          : ""),
                               TextSpan(
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () async {
                                     HapticFeedback.lightImpact();
-                                    final DateTime? picked = await showDatePicker(
-                                        initialDate: DateTime.now(),
-                                        context: context,
-                                        firstDate:
-                                            DateTime(DateTime.now().year - 10),
-                                        lastDate: DateTime.now());
+                                    final DateTime? picked =
+                                        await showDatePicker(
+                                            initialDate: DateTime.now(),
+                                            context: context,
+                                            firstDate: DateTime(
+                                                DateTime.now().year - 10),
+                                            lastDate: DateTime.now());
                                     setState(() {
                                       if (picked != null &&
                                           picked != dateTimeVar) {
@@ -150,9 +152,11 @@ class _ThisContainerOfTheDialogBoxState
                                   },
                                 text: DateFormat('d MMM yy')
                                             .format(DateTime.now()) ==
-                                        DateFormat('d MMM yy').format(dateTimeVar)
+                                        DateFormat('d MMM yy')
+                                            .format(dateTimeVar)
                                     ? "Today,"
-                                    : DateFormat('d MMM yy,').format(dateTimeVar),
+                                    : DateFormat('d MMM yy,')
+                                        .format(dateTimeVar),
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.amber,
@@ -222,20 +226,26 @@ class _ThisContainerOfTheDialogBoxState
                                                 child:
                                                     const CategoryListSelector());
                                           },
-                                          transitionDuration:
-                                              const Duration(milliseconds: 200));
+                                          transitionDuration: const Duration(
+                                              milliseconds: 200));
                                     },
-                                  text: ref.watch(categoryText) == "Uncategorised"
-                                      ? "nothing in particular"
-                                      : ref.watch(subCategoryText) ==
-                                              "Uncategorised"
-                                          ? ref.watch(categoryText).toLowerCase()
-                                          : ref
-                                              .watch(subCategoryText)
-                                              .toLowerCase(),
+                                  text:
+                                      ref.watch(categoryText) == "Uncategorised"
+                                          ? "nothing in particular"
+                                          : ref.watch(subCategoryText) ==
+                                                  "Uncategorised"
+                                              ? ref
+                                                  .watch(categoryText)
+                                                  .toLowerCase()
+                                              : ref
+                                                  .watch(subCategoryText)
+                                                  .toLowerCase(),
                                   style: GoogleFonts.montserrat(
                                       fontWeight: FontWeight.w700,
-                                      color: Color(ref.watch(categoryColorInt)),
+                                      color: Color(ref.watch(subCategoryText) ==
+                                              "Uncategorised"
+                                          ? ref.watch(categoryColorInt)
+                                          : ref.watch(subCategoryColorInt)),
                                       textStyle: const TextStyle(
                                           decoration: TextDecoration.underline,
                                           decorationStyle:
@@ -243,7 +253,7 @@ class _ThisContainerOfTheDialogBoxState
                               TextSpan(
                                   text: ".",
                                   style: GoogleFonts.montserrat(
-                                    color: Color(ref.watch(subCategoryText) !=
+                                    color: Color(ref.watch(subCategoryText) ==
                                             "Uncategorised"
                                         ? ref.watch(categoryColorInt)
                                         : ref.watch(subCategoryColorInt)),
@@ -308,12 +318,13 @@ class _ThisContainerOfTheDialogBoxState
                               },
                               child: Container(
                                   alignment: Alignment.center,
-                                  width: MediaQuery.of(context).size.width / 3.1,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.1,
                                   height: 50,
                                   decoration: const BoxDecoration(
                                       color: Colors.redAccent,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(50))),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50))),
                                   child: const Icon(
                                     Icons.close_rounded,
                                     size: 40,
@@ -339,10 +350,11 @@ class _ThisContainerOfTheDialogBoxState
                                           ref.read(isSavings),
                                           ref.read(subCategoryText),
                                           ref.read(subCategoryColorInt));
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      backgroundColor: Colors.white,
-                                      content: Text(
-                                          'Deducted ${ref.read(currencyProvider)}${ref.read(amountText)} from vault')));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          backgroundColor: Colors.white,
+                                          content: Text(
+                                              'Deducted ${ref.read(currencyProvider)}${ref.read(amountText)} from vault')));
                                   Navigator.of(context).pop();
                                 } catch (e) {
                                   ScaffoldMessenger.of(context)
@@ -350,14 +362,16 @@ class _ThisContainerOfTheDialogBoxState
                                           backgroundColor: Colors.redAccent,
                                           content: Text(
                                             'Invalid amount',
-                                            style: TextStyle(color: Colors.white),
+                                            style:
+                                                TextStyle(color: Colors.white),
                                           )));
                                   Navigator.of(context).pop();
                                 }
                               },
                               child: Container(
                                   alignment: Alignment.center,
-                                  width: MediaQuery.of(context).size.width / 3.1,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.1,
                                   height: 50,
                                   decoration: BoxDecoration(
                                       color:

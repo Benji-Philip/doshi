@@ -139,6 +139,7 @@ List<Widget> analysisPage(
                   children: [
                     Expanded(
                         child: MyPieChart(
+                      includeUncat: true,
                       useSubCat: false,
                       entriesOfGivenMonth: sortExpensesByGivenMonth(
                           entriesDatabaseNotifier.theListOfTheExpenses,
@@ -172,6 +173,7 @@ List<Widget> analysisPage(
                   ),
                 ),
                 MyPieChart(
+                  includeUncat: false,
                   width: width,
                   entriesOfGivenMonth: sortExpensesByGivenMonth(
                       entriesDatabaseNotifier.theListOfTheExpenses,

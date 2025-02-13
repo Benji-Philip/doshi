@@ -210,7 +210,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       existingEntry.categoryColor = newCategoryColor;
       existingEntry.isExpense = newIsExpense;
       existingEntry.subCategory = newSubCategory;
-      existingEntry.subCategoryColor = newCategoryColor;
+      existingEntry.subCategoryColor = newSubCategoryColor;
       await isar.writeTxn(() => isar.entrys.put(existingEntry));
       await fetchEntries();
     }

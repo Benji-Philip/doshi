@@ -376,7 +376,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                       style: GoogleFonts.montserrat(
                                           color: Colors.black,
                                           fontSize: 28,
-                                          fontWeight: FontWeight.w700),
+                                          fontWeight: FontWeight.w700),   
                                     ),
                                   ),
                                 ),

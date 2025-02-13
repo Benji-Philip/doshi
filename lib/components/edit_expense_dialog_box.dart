@@ -269,7 +269,10 @@ class _ThisContainerOfTheDialogBoxState
                                                   .toLowerCase(),
                                   style: GoogleFonts.montserrat(
                                       fontWeight: FontWeight.w700,
-                                      color: Color(ref.watch(categoryColorInt)),
+                                      color: Color(ref.watch(subCategoryText) ==
+                                              "Uncategorised"
+                                          ? ref.watch(categoryColorInt)
+                                          : ref.watch(subCategoryColorInt)),
                                       textStyle: const TextStyle(
                                           decoration: TextDecoration.underline,
                                           decorationStyle:
@@ -277,7 +280,10 @@ class _ThisContainerOfTheDialogBoxState
                               TextSpan(
                                   text: ".",
                                   style: GoogleFonts.montserrat(
-                                    color: Color(ref.watch(categoryColorInt)),
+                                    color: Color(ref.watch(subCategoryText) ==
+                                            "Uncategorised"
+                                        ? ref.watch(categoryColorInt)
+                                        : ref.watch(subCategoryColorInt)),
                                   )),
                               TextSpan(
                                   text: " (",
