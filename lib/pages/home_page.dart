@@ -524,7 +524,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                           color: Colors
                                                               .transparent),
                                                   child: const Icon(
-                                                      Icons.save_rounded),
+                                                      Icons.settings),
                                                 ),
                                               ],
                                             ),

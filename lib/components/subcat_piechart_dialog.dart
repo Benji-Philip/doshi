@@ -61,7 +61,7 @@ class _SubCatPieChartDialogState extends State<SubCatPieChartDialog> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 24.0),
+            padding: const EdgeInsets.only(top: 12.0),
             child: MyButton(
               borderRadius: 50,
               onTap: () {
@@ -123,7 +123,7 @@ class ThisContainer extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(50)),
                   color: color),
               child: Padding(
-                padding: const EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Opacity(
                   opacity: opacity,
                   child: Consumer(builder: (context, ref, child) {

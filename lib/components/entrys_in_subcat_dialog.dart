@@ -23,53 +23,56 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
       color: Colors.black.withOpacity(0.5),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 36.0, horizontal: 30.0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  ThisContainer(
-                    opacity: 0,
-                    padBottom: 0,
-                    padLeft: 8,
-                    padRight: 0,
-                    padTop: 8,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  ThisContainer(
-                    opacity: 1,
-                    padBottom: 8,
-                    padLeft: 0,
-                    padRight: 8,
-                    padTop: 0,
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
-                ],
+        child: Padding(
+                padding: const EdgeInsets.symmetric( vertical: 36.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric( horizontal: 30.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ThisContainer(
+                      opacity: 0,
+                      padBottom: 0,
+                      padLeft: 8,
+                      padRight: 0,
+                      padTop: 8,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                    ThisContainer(
+                      opacity: 1,
+                      padBottom: 8,
+                      padLeft: 0,
+                      padRight: 8,
+                      padTop: 0,
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: MyButton(
-                borderRadius: 50,
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.of(context).pop();
-                },
-                width: 50,
-                height: 50,
-                iconSize: 32,
-                myIcon: Icons.close_rounded,
-                iconColor: Colors.white,
-                buttonColor: Colors.redAccent,
-                splashColor: Colors.red.shade900,
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: MyButton(
+                  borderRadius: 50,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
+                  width: 50,
+                  height: 50,
+                  iconSize: 32,
+                  myIcon: Icons.close_rounded,
+                  iconColor: Colors.white,
+                  buttonColor: Colors.redAccent,
+                  splashColor: Colors.red.shade900,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

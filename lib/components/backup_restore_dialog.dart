@@ -234,9 +234,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                     height: 60,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(25),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary),
+                                        color: Colors.deepPurpleAccent),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10.0),
@@ -246,9 +244,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                           'Symbol : ${ref.watch(currencyProvider)}',
                                           softWrap: true,
                                           style: GoogleFonts.montserrat(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
+                                              color: Colors.white,
                                               fontSize: 28,
                                               fontWeight: FontWeight.w700),
                                         ),
@@ -290,9 +286,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                     height: 60,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(25),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary),
+                                        color: Colors.deepOrange),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10.0),
@@ -302,9 +296,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                           'Categories : ${ref.watch(categoryDatabaseProvider.notifier).currentCategories.length}',
                                           softWrap: true,
                                           style: GoogleFonts.montserrat(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
+                                              color: Colors.white,
                                               fontSize: 28,
                                               fontWeight: FontWeight.w700),
                                         ),
@@ -382,7 +374,35 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                       "Donate",
                                       softWrap: true,
                                       style: GoogleFonts.montserrat(
-                                          color: Colors.white,
+                                          color: Colors.black,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Theme.of(context).colorScheme.onTertiary),
+                                    child: Text(
+                                      "Version 0.5",
+                                      softWrap: true,
+                                      style: GoogleFonts.montserrat(
+                                          color: Theme.of(context).colorScheme.primary,
                                           fontSize: 28,
                                           fontWeight: FontWeight.w700),
                                     ),
