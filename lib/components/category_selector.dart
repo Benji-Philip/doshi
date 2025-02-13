@@ -16,8 +16,10 @@ class CategoryListSelector extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<CategoryListSelector> {
+  final _scrollController = ScrollController();
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -39,43 +41,45 @@ class _CategoryListState extends ConsumerState<CategoryListSelector> {
     return SafeArea(
       child: Dialog(
         backgroundColor: Colors.transparent,
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(25)),
-                      color: Theme.of(context).colorScheme.tertiary),
-                  child: Padding(
-                    padding: const EdgeInsets.all(21.0),
-                    child: CategoryList(
-                        editMode: widget.editMode,
-                        currentCategories: currentCategories,
-                        currentSubCategories: currentSubCategories),
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(25)),
+                        color: Theme.of(context).colorScheme.tertiary),
+                    child: Padding(
+                      padding: const EdgeInsets.all(21.0),
+                      child: CategoryList(
+                          editMode: widget.editMode,
+                          currentCategories: currentCategories,
+                          currentSubCategories: currentSubCategories),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: MyButton(
-                borderRadius: 50,
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.of(context).pop();
-                },
-                width: 50,
-                height: 50,
-                iconSize: 32,
-                myIcon: Icons.close_rounded,
-                iconColor: Colors.white,
-                buttonColor: Colors.redAccent,
-                splashColor: Colors.red.shade900,
+                ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: MyButton(
+                  borderRadius: 50,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
+                  width: 50,
+                  height: 50,
+                  iconSize: 32,
+                  myIcon: Icons.close_rounded,
+                  iconColor: Colors.white,
+                  buttonColor: Colors.redAccent,
+                  splashColor: Colors.red.shade900,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

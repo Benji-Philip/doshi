@@ -104,6 +104,8 @@ List<Widget> analysisPage(
         );
       }),
       Consumer(builder: (context, ref, child) {
+        // ignore: unused_local_variable
+        final dateToDisp = ref.watch(dateToDisplay);
         return SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.only(top: 9, right: 21, left: 21),
@@ -132,18 +134,15 @@ List<Widget> analysisPage(
                       ),
                     ),
                   ),
-                ),
+                ), 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                         child: MyPieChart(
-                      includeUncat: true,
+                          includeUncat: true,
                       useSubCat: false,
-                      entriesOfGivenMonth: sortExpensesByGivenMonth(
-                          entriesDatabaseNotifier.theListOfTheExpenses,
-                          ref.watch(dateToDisplay)),
                       width: width,
                     )),
                   ],
@@ -175,9 +174,6 @@ List<Widget> analysisPage(
                 MyPieChart(
                   includeUncat: false,
                   width: width,
-                  entriesOfGivenMonth: sortExpensesByGivenMonth(
-                      entriesDatabaseNotifier.theListOfTheExpenses,
-                      ref.watch(dateToDisplay)),
                   useSubCat: true,
                 )
               ],

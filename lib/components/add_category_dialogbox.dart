@@ -18,6 +18,12 @@ class _AddCategoryState extends State<AddCategory> {
   var formatter = DateFormat('yyyyMMddHHmmss');
   final _categoryController = TextEditingController();
   final addCategoryFormKey = GlobalKey<FormState>();
+  final _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +39,7 @@ class _AddCategoryState extends State<AddCategory> {
               color: Theme.of(context).colorScheme.tertiary,
               borderRadius: const BorderRadius.all(Radius.circular(25))),
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Form(
               key: addCategoryFormKey,
               child: Column(

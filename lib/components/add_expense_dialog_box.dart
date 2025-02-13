@@ -29,33 +29,52 @@ class _AddExpenseDialogBoxState extends State<AddExpenseDialogBox> {
   }
 }
 
-class ThisContainerFinal extends StatelessWidget {
+class ThisContainerFinal extends StatefulWidget {
   const ThisContainerFinal({
     super.key,
   });
 
   @override
+  State<ThisContainerFinal> createState() => _ThisContainerFinalState();
+}
+
+class _ThisContainerFinalState extends State<ThisContainerFinal> {
+  final _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        ThisContainerOfTheDialogBox(
-          opacity: 0,
-          padBottom: 0,
-          padLeft: 8,
-          padRight: 0,
-          padTop: 8,
-          color: Theme.of(context).colorScheme.onTertiary,
-        ),
-        ThisContainerOfTheDialogBox(
-          opacity: 1,
-          padBottom: 8,
-          padLeft: 0,
-          padRight: 8,
-          padTop: 0,
-          color: Theme.of(context).colorScheme.tertiary,
-        )
-      ],
+    return SingleChildScrollView(
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              ThisContainerOfTheDialogBox(
+                opacity: 0,
+                padBottom: 0,
+                padLeft: 8,
+                padRight: 0,
+                padTop: 8,
+                color: Theme.of(context).colorScheme.onTertiary,
+              ),
+              ThisContainerOfTheDialogBox(
+                opacity: 1,
+                padBottom: 8,
+                padLeft: 0,
+                padRight: 8,
+                padTop: 0,
+                color: Theme.of(context).colorScheme.tertiary,
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -104,297 +123,295 @@ class _ThisContainerOfTheDialogBoxState
           right: widget.padRight,
           top: widget.padTop,
           left: widget.padLeft),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(50)),
-                  color: widget.color),
-              child: Consumer(builder: (context, ref, child) {
-                return Padding(
-                  padding: const EdgeInsets.all(26.0),
-                  child: Opacity(
-                    opacity: widget.opacity,
-                    child: Column(
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                  text:
-                                      DateFormat('dMMMM').format(dateTimeVar) !=
-                                              DateFormat('dMMMM')
-                                                  .format(DateTime.now())
-                                          ? "On "
-                                          : ""),
-                              TextSpan(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(50)),
+                color: widget.color),
+            child: Consumer(builder: (context, ref, child) {
+              return Padding(
+                padding: const EdgeInsets.all(26.0),
+                child: Opacity(
+                  opacity: widget.opacity,
+                  child: Column(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                                text:
+                                    DateFormat('dMMMM').format(dateTimeVar) !=
+                                            DateFormat('dMMMM')
+                                                .format(DateTime.now())
+                                        ? "On "
+                                        : ""),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  HapticFeedback.lightImpact();
+                                  final DateTime? picked =
+                                      await showDatePicker(
+                                          initialDate: DateTime.now(),
+                                          context: context,
+                                          firstDate: DateTime(
+                                              DateTime.now().year - 10),
+                                          lastDate: DateTime.now());
+                                  setState(() {
+                                    if (picked != null &&
+                                        picked != dateTimeVar) {
+                                      dateTimeVar = picked;
+                                    }
+                                  });
+                                },
+                              text: DateFormat('d MMM yy')
+                                          .format(DateTime.now()) ==
+                                      DateFormat('d MMM yy')
+                                          .format(dateTimeVar)
+                                  ? "Today,"
+                                  : DateFormat('d MMM yy,')
+                                      .format(dateTimeVar),
+                              style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.amber,
+                                  textStyle: const TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      decorationStyle:
+                                          TextDecorationStyle.dashed)),
+                            ),
+                            const TextSpan(text: " I "),
+                            TextSpan(
+                              text: "spent",
+                              style: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            const TextSpan(text: " "),
+                            TextSpan(
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
+                                  ..onTap = () {
                                     HapticFeedback.lightImpact();
-                                    final DateTime? picked =
-                                        await showDatePicker(
-                                            initialDate: DateTime.now(),
-                                            context: context,
-                                            firstDate: DateTime(
-                                                DateTime.now().year - 10),
-                                            lastDate: DateTime.now());
-                                    setState(() {
-                                      if (picked != null &&
-                                          picked != dateTimeVar) {
-                                        dateTimeVar = picked;
-                                      }
-                                    });
+                                    amountTEC.clear();
+                                    ref
+                                        .read(amountText.notifier)
+                                        .update((state) => "");
+                                    showModalBottomSheet(
+                                        barrierColor: Colors.transparent,
+                                        context: context,
+                                        builder: (builder) {
+                                          return UserInputDialog(
+                                            inputFormatters: [
+                                              DecimalTextInputFormatter()
+                                            ],
+                                            keyboardType: const TextInputType
+                                                .numberWithOptions(
+                                                decimal: true),
+                                            textProvider: amountText,
+                                            label: "amount",
+                                            commonTextEditingController:
+                                                amountTEC,
+                                          );
+                                        });
                                   },
-                                text: DateFormat('d MMM yy')
-                                            .format(DateTime.now()) ==
-                                        DateFormat('d MMM yy')
-                                            .format(dateTimeVar)
-                                    ? "Today,"
-                                    : DateFormat('d MMM yy,')
-                                        .format(dateTimeVar),
+                                text: ref.watch(currencyProvider) +
+                                    ref.watch(amountText),
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.amber,
+                                    color: Colors.teal,
                                     textStyle: const TextStyle(
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
-                                            TextDecorationStyle.dashed)),
-                              ),
-                              const TextSpan(text: " I "),
-                              TextSpan(
-                                text: "spent",
+                                            TextDecorationStyle.dashed))),
+                            const TextSpan(text: " on "),
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    HapticFeedback.lightImpact();
+                                    showGeneralDialog(
+                                        pageBuilder: (context, anim1, anim2) {
+                                          return const Placeholder();
+                                        },
+                                        context: context,
+                                        transitionBuilder:
+                                            (context, anim1, anim2, child) {
+                                          return Opacity(
+                                              opacity: anim1.value,
+                                              child:
+                                                  const CategoryListSelector());
+                                        },
+                                        transitionDuration: const Duration(
+                                            milliseconds: 200));
+                                  },
+                                text:
+                                    ref.watch(categoryText) == "Uncategorised"
+                                        ? "nothing in particular"
+                                        : ref.watch(subCategoryText) ==
+                                                "Uncategorised"
+                                            ? ref
+                                                .watch(categoryText)
+                                                .toLowerCase()
+                                            : ref
+                                                .watch(subCategoryText)
+                                                .toLowerCase(),
                                 style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.redAccent,
-                                ),
-                              ),
-                              const TextSpan(text: " "),
-                              TextSpan(
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      HapticFeedback.lightImpact();
-                                      amountTEC.clear();
-                                      ref
-                                          .read(amountText.notifier)
-                                          .update((state) => "");
-                                      showModalBottomSheet(
-                                          barrierColor: Colors.transparent,
-                                          context: context,
-                                          builder: (builder) {
-                                            return UserInputDialog(
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: const TextInputType
-                                                  .numberWithOptions(
-                                                  decimal: true),
-                                              textProvider: amountText,
-                                              label: "amount",
-                                              commonTextEditingController:
-                                                  amountTEC,
-                                            );
-                                          });
-                                    },
-                                  text: ref.watch(currencyProvider) +
-                                      ref.watch(amountText),
-                                  style: GoogleFonts.montserrat(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.teal,
-                                      textStyle: const TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          decorationStyle:
-                                              TextDecorationStyle.dashed))),
-                              const TextSpan(text: " on "),
-                              TextSpan(
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      HapticFeedback.lightImpact();
-                                      showGeneralDialog(
-                                          pageBuilder: (context, anim1, anim2) {
-                                            return const Placeholder();
-                                          },
-                                          context: context,
-                                          transitionBuilder:
-                                              (context, anim1, anim2, child) {
-                                            return Opacity(
-                                                opacity: anim1.value,
-                                                child:
-                                                    const CategoryListSelector());
-                                          },
-                                          transitionDuration: const Duration(
-                                              milliseconds: 200));
-                                    },
-                                  text:
-                                      ref.watch(categoryText) == "Uncategorised"
-                                          ? "nothing in particular"
-                                          : ref.watch(subCategoryText) ==
-                                                  "Uncategorised"
-                                              ? ref
-                                                  .watch(categoryText)
-                                                  .toLowerCase()
-                                              : ref
-                                                  .watch(subCategoryText)
-                                                  .toLowerCase(),
-                                  style: GoogleFonts.montserrat(
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(ref.watch(subCategoryText) ==
-                                              "Uncategorised"
-                                          ? ref.watch(categoryColorInt)
-                                          : ref.watch(subCategoryColorInt)),
-                                      textStyle: const TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          decorationStyle:
-                                              TextDecorationStyle.dashed))),
-                              TextSpan(
-                                  text: ".",
-                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.w700,
                                     color: Color(ref.watch(subCategoryText) ==
                                             "Uncategorised"
                                         ? ref.watch(categoryColorInt)
                                         : ref.watch(subCategoryColorInt)),
-                                  )),
-                              TextSpan(
-                                  text: " (",
-                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed))),
+                            TextSpan(
+                                text: ".",
+                                style: GoogleFonts.montserrat(
+                                  color: Color(ref.watch(subCategoryText) ==
+                                          "Uncategorised"
+                                      ? ref.watch(categoryColorInt)
+                                      : ref.watch(subCategoryColorInt)),
+                                )),
+                            TextSpan(
+                                text: " (",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.purple,
+                                )),
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    HapticFeedback.lightImpact();
+                                    showModalBottomSheet(
+                                        barrierColor: Colors.transparent,
+                                        context: context,
+                                        builder: (builder) {
+                                          return UserInputDialog(
+                                            keyboardType: TextInputType.text,
+                                            textProvider: noteText,
+                                            label: "note",
+                                            commonTextEditingController:
+                                                addNoteTEC,
+                                          );
+                                        });
+                                  },
+                                text: ref.watch(noteText) == ""
+                                    ? "note"
+                                    : ref.watch(noteText),
+                                style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.purple,
-                                  )),
-                              TextSpan(
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      HapticFeedback.lightImpact();
-                                      showModalBottomSheet(
-                                          barrierColor: Colors.transparent,
-                                          context: context,
-                                          builder: (builder) {
-                                            return UserInputDialog(
-                                              keyboardType: TextInputType.text,
-                                              textProvider: noteText,
-                                              label: "note",
-                                              commonTextEditingController:
-                                                  addNoteTEC,
-                                            );
-                                          });
-                                    },
-                                  text: ref.watch(noteText) == ""
-                                      ? "note"
-                                      : ref.watch(noteText),
-                                  style: GoogleFonts.montserrat(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.purple,
-                                      textStyle: const TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          decorationStyle:
-                                              TextDecorationStyle.dashed))),
-                              TextSpan(
-                                  text: ")",
-                                  style: GoogleFonts.montserrat(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.purple,
-                                  )),
-                            ],
-                            style: GoogleFonts.montserrat(
-                                height: 1.4,
-                                fontSize: 34,
-                                fontWeight: FontWeight.w700,
-                                color: Theme.of(context).colorScheme.primary),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                HapticFeedback.lightImpact();
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  width:
-                                      MediaQuery.of(context).size.width / 3.1,
-                                  height: 50,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.redAccent,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50))),
-                                  child: const Icon(
-                                    Icons.close_rounded,
-                                    size: 40,
-                                    color: Colors.white,
-                                  )),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                HapticFeedback.lightImpact();
-                                try {
-                                  ref
-                                      .read(entryDatabaseProvider.notifier)
-                                      .addEntry(
-                                          double.parse(ref.read(amountText)),
-                                          dateTimeVar,
-                                          ref.read(categoryText),
-                                          addNoteTEC.text,
-                                          true,
-                                          ref.read(categoryColorInt),
-                                          ref.read(isSavings),
-                                          ref.read(subCategoryText),
-                                          ref.read(subCategoryColorInt));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          backgroundColor: Colors.white,
-                                          content: Text(
-                                              'Deducted ${ref.read(currencyProvider)}${ref.read(amountText)} from vault')));
-                                  Navigator.of(context).pop();
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                          backgroundColor: Colors.redAccent,
-                                          content: Text(
-                                            'Invalid amount',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          )));
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  width:
-                                      MediaQuery.of(context).size.width / 3.1,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(50))),
-                                  child: Icon(
-                                    Icons.check_rounded,
-                                    size: 40,
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                  )),
-                            ),
+                                    textStyle: const TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed))),
+                            TextSpan(
+                                text: ")",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.purple,
+                                )),
                           ],
-                        )
-                      ],
-                    ),
+                          style: GoogleFonts.montserrat(
+                              height: 1.4,
+                              fontSize: 34,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                                alignment: Alignment.center,
+                                width:
+                                    MediaQuery.of(context).size.width / 3.1,
+                                height: 50,
+                                decoration: const BoxDecoration(
+                                    color: Colors.redAccent,
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(50))),
+                                child: const Icon(
+                                  Icons.close_rounded,
+                                  size: 40,
+                                  color: Colors.white,
+                                )),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              try {
+                                ref
+                                    .read(entryDatabaseProvider.notifier)
+                                    .addEntry(
+                                        double.parse(ref.read(amountText)),
+                                        dateTimeVar,
+                                        ref.read(categoryText),
+                                        addNoteTEC.text,
+                                        true,
+                                        ref.read(categoryColorInt),
+                                        ref.read(isSavings),
+                                        ref.read(subCategoryText),
+                                        ref.read(subCategoryColorInt));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        backgroundColor: Colors.white,
+                                        content: Text(
+                                            'Deducted ${ref.read(currencyProvider)}${ref.read(amountText)} from vault')));
+                                Navigator.of(context).pop();
+                              } catch (e) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                        backgroundColor: Colors.redAccent,
+                                        content: Text(
+                                          'Invalid amount',
+                                          style:
+                                              TextStyle(color: Colors.white),
+                                        )));
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            child: Container(
+                                alignment: Alignment.center,
+                                width:
+                                    MediaQuery.of(context).size.width / 3.1,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(50))),
+                                child: Icon(
+                                  Icons.check_rounded,
+                                  size: 40,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                )),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                );
-              }),
-            ),
-          ],
-        ),
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }

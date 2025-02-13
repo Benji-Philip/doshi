@@ -24,60 +24,69 @@ class SubCatPieChartDialog extends StatefulWidget {
 }
 
 class _SubCatPieChartDialogState extends State<SubCatPieChartDialog> {
+  final _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
       color: Colors.black.withOpacity(0.5),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                ThisContainer(
-                  widget: widget,
-                  opacity: 0,
-                  padBottom: 0,
-                  padLeft: 8,
-                  padRight: 0,
-                  padTop: 8,
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
-                ThisContainer(
-                  widget: widget,
-                  opacity: 1,
-                  padBottom: 8,
-                  padLeft: 0,
-                  padRight: 8,
-                  padTop: 0,
-                  color: Theme.of(context).colorScheme.surface,
-                ),
-              ],
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ThisContainer(
+                    widget: widget,
+                    opacity: 0,
+                    padBottom: 0,
+                    padLeft: 8,
+                    padRight: 0,
+                    padTop: 8,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  ThisContainer(
+                    widget: widget,
+                    opacity: 1,
+                    padBottom: 8,
+                    padLeft: 0,
+                    padRight: 8,
+                    padTop: 0,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: MyButton(
-              borderRadius: 50,
-              onTap: () {
-                HapticFeedback.lightImpact();
-                Navigator.of(context).pop();
-              },
-              width: 50,
-              height: 50,
-              iconSize: 32,
-              myIcon: Icons.close_rounded,
-              iconColor: Colors.white,
-              buttonColor: Colors.redAccent,
-              splashColor: Colors.red.shade900,
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: MyButton(
+                borderRadius: 50,
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.of(context).pop();
+                },
+                width: 50,
+                height: 50,
+                iconSize: 32,
+                myIcon: Icons.close_rounded,
+                iconColor: Colors.white,
+                buttonColor: Colors.redAccent,
+                splashColor: Colors.red.shade900,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -111,40 +120,37 @@ class ThisContainer extends StatelessWidget {
           right: padRight,
           top: padTop,
           left: padLeft),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(50)),
-                  color: color),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Opacity(
-                  opacity: opacity,
-                  child: Consumer(builder: (context, ref, child) {
-                    return MyPieChart(
-                      includeUncat: true,
-                      isDialogBox: true,
-                      parentCategory: widget.parentCategory,
-                      useSubCat: true,
-                      entriesOfGivenMonth: sortEntrysByParentCategory(widget.parentCategory, widget.entriesOfGivenMonth),
-                      width: widget.width,
-                      analysisBySubCats:
-                          sortIntoSubCategories(sortEntrysByParentCategory(
-                        widget.parentCategory, widget.entriesOfGivenMonth
-                      )),
-                    );
-                  }),
-                ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(50)),
+                color: color),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Opacity(
+                opacity: opacity,
+                child: Consumer(builder: (context, ref, child) {
+                  return MyPieChart(
+                    includeUncat: true,
+                    isDialogBox: true,
+                    parentCategory: widget.parentCategory,
+                    useSubCat: true,
+                    width: widget.width,
+                    analysisBySubCats:
+                        sortIntoSubCategories(sortEntrysByParentCategory(
+                      widget.parentCategory, widget.entriesOfGivenMonth
+                    )),
+                  );
+                }),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

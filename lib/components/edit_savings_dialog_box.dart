@@ -13,8 +13,7 @@ class EditSavingsDialogBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      alignment: Alignment.center,
       color: Colors.black.withOpacity(0.5),
       child: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 30.0),
@@ -23,31 +22,49 @@ class EditSavingsDialogBox extends StatelessWidget {
   }
 }
 
-class ThisContainerFinal extends StatelessWidget {
+class ThisContainerFinal extends StatefulWidget {
   const ThisContainerFinal({super.key});
 
   @override
+  State<ThisContainerFinal> createState() => _ThisContainerFinalState();
+}
+
+class _ThisContainerFinalState extends State<ThisContainerFinal> {
+  final _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        ThisContainerOfTheDialogBox(
-          opacity: 0,
-          padBottom: 0,
-          padLeft: 8,
-          padRight: 0,
-          padTop: 8,
-          color: Theme.of(context).colorScheme.onTertiary,
-        ),
-        ThisContainerOfTheDialogBox(
-          opacity: 1,
-          padBottom: 8,
-          padLeft: 0,
-          padRight: 8,
-          padTop: 0,
-          color: Theme.of(context).colorScheme.tertiary,
-        )
-      ],
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              ThisContainerOfTheDialogBox(
+                opacity: 0,
+                padBottom: 0,
+                padLeft: 8,
+                padRight: 0,
+                padTop: 8,
+                color: Theme.of(context).colorScheme.onTertiary,
+              ),
+              ThisContainerOfTheDialogBox(
+                opacity: 1,
+                padBottom: 8,
+                padLeft: 0,
+                padRight: 8,
+                padTop: 0,
+                color: Theme.of(context).colorScheme.tertiary,
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

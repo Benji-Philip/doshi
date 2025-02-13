@@ -16,12 +16,19 @@ class EntrysInSubCatDialog extends ConsumerStatefulWidget {
 }
 
 class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
+  final _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
       color: Colors.black.withOpacity(0.5),
       child: SingleChildScrollView(
+        controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         child: Padding(
                 padding: const EdgeInsets.symmetric( vertical: 36.0),

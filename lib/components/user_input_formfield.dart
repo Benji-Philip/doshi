@@ -28,9 +28,16 @@ class MyTextFormField extends StatefulWidget {
 }
 
 class _MyTextFormFieldState extends State<MyTextFormField> {
+  final _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -13,13 +13,6 @@ class IsSavingsDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<IsSavingsDialog> {
-  double scrollOffset = 0.0;
-  final _listViewScrollController = ScrollController();
-  @override
-  void dispose() {
-    _listViewScrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

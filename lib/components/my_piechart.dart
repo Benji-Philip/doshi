@@ -14,7 +14,6 @@ class MyPieChart extends ConsumerStatefulWidget {
   final bool? isDialogBox;
   final String? parentCategory;
   final bool useSubCat;
-  final List<Entry> entriesOfGivenMonth;
   final double width;
   final List<SubCategoryAnalysisEntry>? analysisBySubCats;
   const MyPieChart({
@@ -22,7 +21,6 @@ class MyPieChart extends ConsumerStatefulWidget {
     this.isDialogBox,
     required this.width,
     this.analysisBySubCats,
-    required this.entriesOfGivenMonth,
     required this.useSubCat,
     this.parentCategory,
     required this.includeUncat,
@@ -34,17 +32,16 @@ class MyPieChart extends ConsumerStatefulWidget {
 
 class _MyPieChart extends ConsumerState<MyPieChart> {
   List pieChartData = [];
-
+  List<Entry> entriesOfGivenMonth = [];
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    entriesOfGivenMonth = sortExpensesByGivenMonth(
+        ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses,
+        ref.read(dateToDisplay));
     if (widget.useSubCat) {
       List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
-          sortIntoSubCategories(widget.entriesOfGivenMonth);
+          sortIntoSubCategories(entriesOfGivenMonth);
       List<SubCategoryAnalysisEntry> temp2 = [];
       if (!widget.includeUncat) {
         for (var i = 0; i < temp.length; i++) {
@@ -59,8 +56,37 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
         pieChartData = temp;
       }
     } else {
-      pieChartData = sortIntoCategories(widget.entriesOfGivenMonth);
+      pieChartData = sortIntoCategories(entriesOfGivenMonth);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen((dateToDisplay), (prev, next) {
+      print("changed");
+      entriesOfGivenMonth = sortExpensesByGivenMonth(
+          ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses,
+          next);
+      if (widget.useSubCat) {
+        List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
+            sortIntoSubCategories(entriesOfGivenMonth);
+        List<SubCategoryAnalysisEntry> temp2 = [];
+        if (!widget.includeUncat) {
+          for (var i = 0; i < temp.length; i++) {
+            if (temp[i].subCategoryName == "Uncategorised" ||
+                temp[i].subCategoryName == null) {
+            } else {
+              temp2.add(temp[i]);
+            }
+          }
+          pieChartData = temp2;
+        } else {
+          pieChartData = temp;
+        }
+      } else {
+        pieChartData = sortIntoCategories(entriesOfGivenMonth);
+      }
+    });
     return Column(
       children: [
         Visibility(
@@ -124,8 +150,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                 barrierDismissible: false,
                                 pageBuilder: (BuildContext context, _, __) {
                                   return SubCatPieChartDialog(
-                                      entriesOfGivenMonth:
-                                          widget.entriesOfGivenMonth,
+                                      entriesOfGivenMonth: entriesOfGivenMonth,
                                       parentCategory: name ?? "Uncategorised",
                                       analysisBySubCats:
                                           widget.analysisBySubCats,
@@ -139,10 +164,9 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                             ref.read(entriesForSubCatDialog.notifier).update(
                                 (state) =>
                                     name == null || name == "Uncategorised"
-                                        ? sortEntriesByDate(
-                                            widget.entriesOfGivenMonth)
+                                        ? sortEntriesByDate(entriesOfGivenMonth)
                                         : sortEntrysBySubCategory(
-                                            name, widget.entriesOfGivenMonth));
+                                            name, entriesOfGivenMonth));
                             Navigator.of(context).push(PageRouteBuilder(
                                 opaque: false,
                                 barrierDismissible: false,
