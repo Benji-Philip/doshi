@@ -187,6 +187,7 @@ List<Entry> sortEntrysByParentCategory(
   }
   return filteredEntrys;
 }
+
 List<Entry> sortEntrysBySubCategory(
     String subCategory, List<Entry> expensesThisMonth) {
   List<Entry> filteredEntrys = [];
@@ -196,5 +197,28 @@ List<Entry> sortEntrysBySubCategory(
     }
   }
   filteredEntrys = sortEntriesByDate(filteredEntrys);
+  return filteredEntrys;
+}
+
+List<Entry> sortEntrysByParentCategoryAndSubCategory(
+    String parentCategory, List<Entry> expensesThisMonth) {
+  List<Entry> filteredEntrys = [];
+  for (var entry in expensesThisMonth) {
+    if (entry.category == parentCategory &&
+        entry.subCategory == "Uncategorised") {
+      filteredEntrys.add(entry);
+    }
+  }
+  return filteredEntrys;
+}
+
+List<Entry> sortEntrysByParentCategoryAndNullSubCategory(
+    String parentCategory, List<Entry> expensesThisMonth) {
+  List<Entry> filteredEntrys = [];
+  for (var entry in expensesThisMonth) {
+    if (entry.category == parentCategory && entry.subCategory == null) {
+      filteredEntrys.add(entry);
+    }
+  }
   return filteredEntrys;
 }

@@ -1,35 +1,39 @@
 import 'package:doshi/components/my_button.dart';
 import 'package:doshi/components/my_piechart.dart';
 import 'package:doshi/isar/entry.dart';
-import 'package:doshi/logic/sort_entries.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SubCatPieChartDialog extends StatefulWidget {
-  final List<Entry> entriesOfGivenMonth;
+final entriesGivenMonth = StateProvider<List<Entry>>((state) => []);
+
+class SubCatPieChartDialog extends ConsumerStatefulWidget {
   final String parentCategory;
   final double width;
-  final List<SubCategoryAnalysisEntry>? analysisBySubCats;
   const SubCatPieChartDialog({
     super.key,
-    required this.analysisBySubCats,
     required this.width,
     required this.parentCategory,
-    required this.entriesOfGivenMonth,
   });
 
   @override
-  State<SubCatPieChartDialog> createState() => _SubCatPieChartDialogState();
+  ConsumerState<SubCatPieChartDialog> createState() =>
+      _SubCatPieChartDialogState();
 }
 
-class _SubCatPieChartDialogState extends State<SubCatPieChartDialog> {
+class _SubCatPieChartDialogState extends ConsumerState<SubCatPieChartDialog> {
   final _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,7 +96,7 @@ class _SubCatPieChartDialogState extends State<SubCatPieChartDialog> {
   }
 }
 
-class ThisContainer extends StatelessWidget {
+class ThisContainer extends StatefulWidget {
   final double padTop;
   final double padBottom;
   final double padLeft;
@@ -113,13 +117,18 @@ class ThisContainer extends StatelessWidget {
   final SubCatPieChartDialog widget;
 
   @override
+  State<ThisContainer> createState() => _ThisContainerState();
+}
+
+class _ThisContainerState extends State<ThisContainer> {
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-          bottom: padBottom + MediaQuery.of(context).viewInsets.bottom,
-          right: padRight,
-          top: padTop,
-          left: padLeft),
+          bottom: widget.padBottom + MediaQuery.of(context).viewInsets.bottom,
+          right: widget.padRight,
+          top: widget.padTop,
+          left: widget.padLeft),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -129,24 +138,18 @@ class ThisContainer extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
-                color: color),
+                color: widget.color),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Opacity(
-                opacity: opacity,
-                child: Consumer(builder: (context, ref, child) {
-                  return MyPieChart(
-                    includeUncat: true,
-                    isDialogBox: true,
-                    parentCategory: widget.parentCategory,
-                    useSubCat: true,
-                    width: widget.width,
-                    analysisBySubCats:
-                        sortIntoSubCategories(sortEntrysByParentCategory(
-                      widget.parentCategory, widget.entriesOfGivenMonth
-                    )),
-                  );
-                }),
+                opacity: widget.opacity,
+                child: MyPieChart(
+                  includeUncat: true,
+                  isDialogBox: true,
+                  parentCategory: widget.widget.parentCategory,
+                  useSubCat: true,
+                  width: widget.widget.width,
+                ),
               ),
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:doshi/components/entrys_in_subcat_dialog.dart';
+import 'package:doshi/components/subcat_piechart_dialog.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
@@ -283,6 +284,10 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                             .notifier)
                                         .fetchEntries();
                                     if (analysisDialog) {
+                                      List<Entry> temp3 =
+                                          ref.read(entriesGivenMonth);
+                                      List<Entry> temp4 =
+                                          ref.read(entriesGivenMonth);
                                       List<Entry> temp1 =
                                           ref.read(entriesForSubCatDialog);
                                       List<Entry> temp2 =
@@ -292,13 +297,20 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                           temp1.removeAt(i);
                                         }
                                       }
+                                      for (var i = 0; i < temp4.length; i++) {
+                                        if (temp3[i].id == id) {
+                                          temp3.removeAt(i);
+                                        }
+                                      }
                                       ref
                                           .read(entriesForSubCatDialog.notifier)
-                                          .state = [];
+                                          .state = [...temp1];
                                       ref
-                                          .read(entriesForSubCatDialog.notifier)
-                                          .update((state) => temp1);
+                                          .read(entriesGivenMonth.notifier)
+                                          .state = [...temp3];
                                       if (temp1.isEmpty) {
+                                        Navigator.of(context).pop();
+                                      }if (temp3.isEmpty && analysisDialog) {
                                         Navigator.of(context).pop();
                                       }
                                     }

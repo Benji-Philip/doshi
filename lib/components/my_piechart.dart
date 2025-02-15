@@ -31,6 +31,7 @@ class MyPieChart extends ConsumerStatefulWidget {
 }
 
 class _MyPieChart extends ConsumerState<MyPieChart> {
+  List<SubCategoryAnalysisEntry> subCatAnalysis = [];
   List pieChartData = [];
   List<Entry> entriesOfGivenMonth = [];
   @override
@@ -39,6 +40,10 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
     entriesOfGivenMonth = sortExpensesByGivenMonth(
         ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses,
         ref.read(dateToDisplay));
+    if (widget.isDialogBox ?? false) {
+      subCatAnalysis = sortIntoSubCategories(sortEntrysByParentCategory(
+          widget.parentCategory!, ref.read(entriesGivenMonth)));
+    }
     if (widget.useSubCat) {
       List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
           sortIntoSubCategories(entriesOfGivenMonth);
@@ -62,11 +67,41 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    final watcher1 = ref.watch(entriesGivenMonth);
+    // ignore: unused_local_variable
+    final watcher2 = ref.watch(entryDatabaseProvider);
+    ref.listen((entryDatabaseProvider), (prev, next) {
+      entriesOfGivenMonth = next;
+      if (!widget.useSubCat) {
+        pieChartData = sortIntoCategories(entriesOfGivenMonth);
+      } else {
+        List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
+            sortIntoSubCategories(entriesOfGivenMonth);
+        List<SubCategoryAnalysisEntry> temp2 = [];
+        if (!widget.includeUncat) {
+          for (var i = 0; i < temp.length; i++) {
+            if (temp[i].subCategoryName == "Uncategorised" ||
+                temp[i].subCategoryName == null) {
+            } else {
+              temp2.add(temp[i]);
+            }
+          }
+          pieChartData = temp2;
+        } else {
+          pieChartData = temp;
+        }
+      }
+    });
+    ref.listen((entriesGivenMonth), (prev, next) {
+      if (widget.isDialogBox ?? false) {
+        pieChartData = sortIntoSubCategories(
+            sortEntrysByParentCategory(widget.parentCategory!, next));
+      }
+    });
     ref.listen((dateToDisplay), (prev, next) {
-      print("changed");
       entriesOfGivenMonth = sortExpensesByGivenMonth(
-          ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses,
-          next);
+          ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses, next);
       if (widget.useSubCat) {
         List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
             sortIntoSubCategories(entriesOfGivenMonth);
@@ -145,28 +180,37 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                         onTap: () {
                           if (!widget.useSubCat && name != "Uncategorised") {
                             HapticFeedback.lightImpact();
+                            ref
+                                .read(entriesGivenMonth.notifier)
+                                .update((state) => entriesOfGivenMonth);
                             Navigator.of(context).push(PageRouteBuilder(
                                 opaque: false,
                                 barrierDismissible: false,
                                 pageBuilder: (BuildContext context, _, __) {
                                   return SubCatPieChartDialog(
-                                      entriesOfGivenMonth: entriesOfGivenMonth,
                                       parentCategory: name ?? "Uncategorised",
-                                      analysisBySubCats:
-                                          widget.analysisBySubCats,
                                       width: widget.width);
                                 }));
                           } else {
                             HapticFeedback.lightImpact();
-                            if (widget.isDialogBox ?? false) {
-                              Navigator.of(context).pop();
-                            }
                             ref.read(entriesForSubCatDialog.notifier).update(
-                                (state) =>
-                                    name == null || name == "Uncategorised"
-                                        ? sortEntriesByDate(entriesOfGivenMonth)
+                                (state) => widget.useSubCat
+                                    ? name == null || name == "Uncategorised"
+                                        ? name == null
+                                            ? sortEntrysByParentCategoryAndNullSubCategory(
+                                                widget.parentCategory ??
+                                                    "Uncategorised",
+                                                entriesOfGivenMonth)
+                                            : sortEntrysByParentCategoryAndSubCategory(
+                                                widget.parentCategory ??
+                                                    "Uncategorised",
+                                                entriesOfGivenMonth)
                                         : sortEntrysBySubCategory(
-                                            name, entriesOfGivenMonth));
+                                            name, entriesOfGivenMonth)
+                                    : sortEntriesByDate(
+                                        sortEntrysByParentCategory(
+                                            "Uncategorised",
+                                            entriesOfGivenMonth)));
                             Navigator.of(context).push(PageRouteBuilder(
                                 opaque: false,
                                 barrierDismissible: false,

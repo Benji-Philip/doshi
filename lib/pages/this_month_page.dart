@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
-import 'package:doshi/components/backup_restore_dialog.dart';
+import 'package:doshi/components/settings_dialog.dart';
 import 'package:doshi/components/break_savings_dialog.dart';
 import 'package:doshi/components/edit_savings_dialog_box.dart';
 import 'package:doshi/components/mybox.dart';
@@ -45,39 +45,42 @@ List<Widget> thisMonthPage(
               padding: const EdgeInsets.only(top: 43.0, right: 20),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      HapticFeedback.heavyImpact();
-                      showCurrencyPicker(
-                        context: context,
-                        showFlag: true,
-                        showCurrencyName: true,
-                        showCurrencyCode: true,
-                        onSelect: (Currency currency) {
-                          HapticFeedback.lightImpact();
-                          ref
-                              .read(appSettingsDatabaseProvider.notifier)
-                              .editSetting(
-                                  3, "CurrencySymbol", currency.symbol);
-                          ref
-                              .read(currencyProvider.notifier)
-                              .update((state) => currency.symbol);
-                        },
-                      );
-                      scrollController.animateTo(-80,
-                          duration: const Duration(milliseconds: 100),
-                          curve: Curves.easeInCubic);
-                    },
-                    child: Container(
-                      height: 35,
-                      constraints: const BoxConstraints(minWidth: 35),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(color: Colors.white)),
-                      child: Text(
-                        ref.watch(currencyProvider),
-                        style: const TextStyle(fontSize: 20),
+                  IgnorePointer(
+                    ignoring: true,
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.heavyImpact();
+                        showCurrencyPicker(
+                          context: context,
+                          showFlag: true,
+                          showCurrencyName: true,
+                          showCurrencyCode: true,
+                          onSelect: (Currency currency) {
+                            HapticFeedback.lightImpact();
+                            ref
+                                .read(appSettingsDatabaseProvider.notifier)
+                                .editSetting(
+                                    3, "CurrencySymbol", currency.symbol);
+                            ref
+                                .read(currencyProvider.notifier)
+                                .update((state) => currency.symbol);
+                          },
+                        );
+                        scrollController.animateTo(-80,
+                            duration: const Duration(milliseconds: 100),
+                            curve: Curves.easeInCubic);
+                      },
+                      child: Container(
+                        height: 35,
+                        constraints: const BoxConstraints(minWidth: 35),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border.all(color: Colors.white)),
+                        child: Text(
+                          ref.watch(currencyProvider),
+                          style: const TextStyle(fontSize: 20),
+                        ),
                       ),
                     ),
                   ),
@@ -355,10 +358,11 @@ List<Widget> thisMonthPage(
                   ),
                   Expanded(
                       child: MyBox(
-                          borderColor: entriesDatabaseNotifier.sumOfthisWeeksExpenses >
-                                  entriesDatabaseNotifier.perWeekForecast
-                              ? Colors.red
-                              : Theme.of(context).colorScheme.onTertiary,
+                          borderColor:
+                              entriesDatabaseNotifier.sumOfthisWeeksExpenses >
+                                      entriesDatabaseNotifier.perWeekForecast
+                                  ? Colors.red
+                                  : Theme.of(context).colorScheme.onTertiary,
                           width: width,
                           label: 'This Week',
                           forecastAmount: entriesDatabaseNotifier

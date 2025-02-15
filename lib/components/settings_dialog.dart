@@ -20,6 +20,7 @@ class BackupRestoreDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
+  final String versionNumber = "0.5.2";
   final InAppPurchase _iap = InAppPurchase.instance;
   late List<ProductDetails> product;
   bool _iapAvailable = false;
@@ -60,11 +61,12 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Dialog(
-        backgroundColor: const Color.fromARGB(0, 255, 255, 255),
-        child: SingleChildScrollView(
-          controller: _scrollController,
+    return Dialog(
+      backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -397,7 +399,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                       borderRadius: BorderRadius.circular(25),
                                       color: Theme.of(context).colorScheme.onTertiary),
                                   child: Text(
-                                    "Version 0.5.1",
+                                    "Version $versionNumber",
                                     softWrap: true,
                                     style: GoogleFonts.montserrat(
                                         color: Theme.of(context).colorScheme.primary,

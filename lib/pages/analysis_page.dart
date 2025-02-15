@@ -134,14 +134,14 @@ List<Widget> analysisPage(
                       ),
                     ),
                   ),
-                ), 
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                         child: MyPieChart(
-                          includeUncat: true,
+                      includeUncat: true,
                       useSubCat: false,
                       width: width,
                     )),
@@ -266,7 +266,6 @@ List<Widget> analysisPage(
                   flex: 2,
                   child: GestureDetector(
                     onTap: () async {
-                      final List<CategoryAnalysisEntry> tempCatList = [];
                       HapticFeedback.lightImpact();
                       late DateTime? date;
                       await showMonthPicker(
@@ -289,13 +288,6 @@ List<Widget> analysisPage(
                       });
                       ref.read(dateToDisplay.notifier).state =
                           date ?? DateTime.now();
-                      tempCatList.addAll(sortIntoCategories(
-                          sortExpensesByGivenMonth(
-                              entriesDatabaseNotifier.theListOfTheExpenses,
-                              date ?? DateTime.now())));
-                      ref
-                          .read(analysisOfCatExpenses.notifier)
-                          .update((state) => tempCatList);
                     },
                     child: Container(
                       alignment: Alignment.center,

@@ -142,8 +142,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     analysisOfSubCategories.clear();
     analysisOfSubCategories
         .addAll(sortIntoSubCategories(theListOfExpensesThisMonth));
-    state = [];
-    state = sortedList;
+    state = [...sortedList];
   }
 
   Future<void> resetThisWeekExpensesByDays() async {

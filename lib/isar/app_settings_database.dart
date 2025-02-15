@@ -27,9 +27,12 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
   //Initialise
   static Future<void> initialise() async {
     final dir = await getApplicationDocumentsDirectory();
-    isar = await Isar.open(
-        [AppSettingEntrySchema, CategoryEntrySchema, EntrySchema, SubCategoryEntrySchema],
-        directory: dir.path);
+    isar = await Isar.open([
+      AppSettingEntrySchema,
+      CategoryEntrySchema,
+      EntrySchema,
+      SubCategoryEntrySchema
+    ], directory: dir.path);
   }
 
   //create
@@ -62,18 +65,19 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
       editSetting(
           currentSettings[0].id, "FirstAppOpen&SecondAppOpen", "true&true");
     }
-    if (currentSettings.length<=1) {
+    if (currentSettings.length <= 1) {
       // inititating setting 2 if it doesnt exist
       addSetting("SelfiePath", "");
-    }if (currentSettings.length<=2) {
+    }
+    if (currentSettings.length <= 2) {
       // inititating setting 3 if it doesnt exist
       addSetting("CurrencySymbol", "\$");
-    }if (currentSettings.length<=3) {
+    }
+    if (currentSettings.length <= 3) {
       // inititating setting 3 if it doesnt exist
       addSetting("EnableCamera", "false");
     }
-    state = [];
-    state = currentSettings;
+    state = [...currentSettings];
   }
 
   Future<List<AppSettingEntry>> fetchSettings() async {

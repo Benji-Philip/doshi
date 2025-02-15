@@ -214,8 +214,7 @@ class SubCategoryDatabaseNotifier
       currentSubCategories.addAll(fetchedEntries);
     }
 
-    state = [];
-    state = currentSubCategories;
+    state = [...currentSubCategories];
   }
 
   //edit

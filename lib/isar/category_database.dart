@@ -87,8 +87,7 @@ class CategoryDatabaseNotifier extends StateNotifier<List<CategoryEntry>> {
         currentCategories.clear();
         currentCategories.addAll(fetchedEntries);
       }
-    state = [];
-    state = currentCategories;
+    state = [...currentCategories];
   }
 
   //edit

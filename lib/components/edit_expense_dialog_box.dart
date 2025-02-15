@@ -416,10 +416,7 @@ class _ThisContainerOfTheDialogBoxState
                                       ref.read(subCategoryColorInt);
                                   ref
                                       .read(entriesForSubCatDialog.notifier)
-                                      .state = [];
-                                  ref
-                                      .read(entriesForSubCatDialog.notifier)
-                                      .update((state) => temp1);
+                                      .state = [...temp1];
                                 }
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(

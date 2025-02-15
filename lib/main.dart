@@ -80,7 +80,6 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
             .read(appOpenedTime.notifier)
             .update((state) => DateFormat('d').format(DateTime.now()));
       }
-      ref.read(currentPage.notifier).update((state) => "Home");
     }
   }
 

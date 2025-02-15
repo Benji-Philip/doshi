@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final showCamera = StateProvider((state) => true);
 
+
 class HomePage extends ConsumerStatefulWidget {
   final CameraDescription camera;
   final CameraDescription backcamera;
@@ -509,10 +510,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                       const BoxDecoration(
                                                           color: Colors
                                                               .transparent),
-                                                  child: Text(
-                                                    ref.watch(currencyProvider),
-                                                    style: const TextStyle(
-                                                        fontSize: 20),
+                                                  child: Opacity(
+                                                    opacity: 0,
+                                                    child: Text(
+                                                      ref.watch(currencyProvider),
+                                                      style: const TextStyle(
+                                                          fontSize: 20),
+                                                    ),
                                                   ),
                                                 ),
                                                 Container(
@@ -650,7 +654,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     },
                     child: Consumer(builder: (context, ref, child) {
                       // ignore: unused_local_variable
-                      final watcher = ref.watch(analysisOfCatExpenses);
+                      final watcher = ref.watch(entryDatabaseProvider);
                       return CustomScrollView(
                           physics: BouncingScrollPhysics(
                               parent: preventScrollSpam || canChangePage
@@ -675,7 +679,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   _scrollController)
                               : analysisPage(
                                   ref
-                                      .read(entryDatabaseProvider.notifier)
+                                      .watch(entryDatabaseProvider.notifier)
                                       .theListOfTheExpenses,
                                   _spaceFromTop,
                                   context,
