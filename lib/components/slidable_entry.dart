@@ -91,8 +91,10 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
           width: widget.width * 0.86,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color:Theme.of(context).colorScheme.tertiary,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            color: widget.analysisDialog
+                ? Theme.of(context).colorScheme.onTertiary
+                : Theme.of(context).colorScheme.tertiary,
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
           ),
           child: Slidable(
             controller: _slidableController,
@@ -100,7 +102,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
               motion: const DrawerMotion(),
               children: [
                 SlidableAction(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   onPressed: (context) async {
                     HapticFeedback.heavyImpact();
                     await showGeneralDialog(
@@ -210,12 +212,13 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: widget.analysisDialog
-                ? Theme.of(context).colorScheme.onTertiary
-                :  Theme.of(context).colorScheme.tertiary,
+                      ? Theme.of(context).colorScheme.onTertiary
+                      : Theme.of(context).colorScheme.tertiary,
                   border: Border.all(
                       color: widget.analysisDialog
-                ? Theme.of(context).colorScheme.onTertiary
-                :  Theme.of(context).colorScheme.tertiary, width: 3),
+                          ? Theme.of(context).colorScheme.onTertiary
+                          : Theme.of(context).colorScheme.tertiary,
+                      width: 3),
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Padding(

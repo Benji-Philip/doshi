@@ -1,5 +1,6 @@
 import 'package:doshi/components/category_selector.dart';
 import 'package:doshi/components/entrys_in_subcat_dialog.dart';
+import 'package:doshi/components/subcat_piechart_dialog.dart';
 import 'package:doshi/components/user_input_dialog.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/decimal_text_input_formatter.dart';
@@ -68,6 +69,7 @@ class _ThisContainerFinalState extends State<ThisContainerFinal> {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -174,23 +176,21 @@ class _ThisContainerOfTheDialogBoxState
                         text: TextSpan(
                           children: [
                             TextSpan(
-                                text:
-                                    DateFormat('dMMMM').format(varDateTime) !=
-                                            DateFormat('dMMMM')
-                                                .format(DateTime.now())
-                                        ? "I meant, on "
-                                        : "I meant, "),
+                                text: DateFormat('dMMMM').format(varDateTime) !=
+                                        DateFormat('dMMMM')
+                                            .format(DateTime.now())
+                                    ? "I meant, on "
+                                    : "I meant, "),
                             TextSpan(
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
                                   HapticFeedback.lightImpact();
-                                  final DateTime? picked =
-                                      await showDatePicker(
-                                          initialDate: DateTime.now(),
-                                          context: context,
-                                          firstDate: DateTime(
-                                              DateTime.now().year - 10),
-                                          lastDate: DateTime.now());
+                                  final DateTime? picked = await showDatePicker(
+                                      initialDate: DateTime.now(),
+                                      context: context,
+                                      firstDate:
+                                          DateTime(DateTime.now().year - 10),
+                                      lastDate: DateTime.now());
                                   setState(() {
                                     if (picked != null &&
                                         picked != ref.read(dateTimeVar)) {
@@ -200,11 +200,9 @@ class _ThisContainerOfTheDialogBoxState
                                 },
                               text: DateFormat('d MMM yy')
                                           .format(DateTime.now()) ==
-                                      DateFormat('d MMM yy')
-                                          .format(varDateTime)
+                                      DateFormat('d MMM yy').format(varDateTime)
                                   ? "Today"
-                                  : DateFormat('d MMM yy')
-                                      .format(varDateTime),
+                                  : DateFormat('d MMM yy').format(varDateTime),
                               style: GoogleFonts.montserrat(
                                   fontWeight: FontWeight.w700,
                                   color: Colors.amber,
@@ -270,20 +268,17 @@ class _ThisContainerOfTheDialogBoxState
                                               child:
                                                   const CategoryListSelector());
                                         },
-                                        transitionDuration: const Duration(
-                                            milliseconds: 200));
+                                        transitionDuration:
+                                            const Duration(milliseconds: 200));
                                   },
-                                text:
-                                    ref.watch(categoryText) == "Uncategorised"
-                                        ? "nothing in particular"
-                                        : ref.watch(subCategoryText) ==
-                                                "Uncategorised"
-                                            ? ref
-                                                .watch(categoryText)
-                                                .toLowerCase()
-                                            : ref
-                                                .watch(subCategoryText)
-                                                .toLowerCase(),
+                                text: ref.watch(categoryText) == "Uncategorised"
+                                    ? "nothing in particular"
+                                    : ref.watch(subCategoryText) ==
+                                            "Uncategorised"
+                                        ? ref.watch(categoryText).toLowerCase()
+                                        : ref
+                                            .watch(subCategoryText)
+                                            .toLowerCase(),
                                 style: GoogleFonts.montserrat(
                                     fontWeight: FontWeight.w700,
                                     color: Color(ref.watch(subCategoryText) ==
@@ -362,13 +357,12 @@ class _ThisContainerOfTheDialogBoxState
                             },
                             child: Container(
                                 alignment: Alignment.center,
-                                width:
-                                    MediaQuery.of(context).size.width / 3.1,
+                                width: MediaQuery.of(context).size.width / 3.1,
                                 height: 50,
                                 decoration: const BoxDecoration(
                                     color: Colors.redAccent,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(50))),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50))),
                                 child: const Icon(
                                   Icons.close_rounded,
                                   size: 40,
@@ -398,7 +392,11 @@ class _ThisContainerOfTheDialogBoxState
                                 if (widget.analysisDialog) {
                                   List<Entry> temp1 =
                                       ref.read(entriesForSubCatDialog);
+                                  List<Entry> temp2 =
+                                      ref.read(entriesGivenMonth);
                                   int i = temp1.indexWhere(
+                                      (entry) => entry.id == widget.id);
+                                  int j = temp2.indexWhere(
                                       (entry) => entry.id == widget.id);
                                   temp1[i].id = widget.id;
                                   temp1[i].category = ref.read(categoryText);
@@ -414,9 +412,27 @@ class _ThisContainerOfTheDialogBoxState
                                       ref.read(subCategoryText);
                                   temp1[i].subCategoryColor =
                                       ref.read(subCategoryColorInt);
+
+                                  temp2[j].id = widget.id;
+                                  temp2[j].category = ref.read(categoryText);
+                                  temp2[j].amount =
+                                      double.parse(ref.read(amountText));
+                                  temp2[j].dateTime = varDateTime;
+                                  temp2[j].isExpense = true;
+                                  temp2[j].categoryColor =
+                                      ref.read(categoryColorInt);
+                                  temp2[j].isSavings = ref.read(isSavings);
+                                  temp2[j].note = addNoteTEC.text;
+                                  temp2[j].subCategory =
+                                      ref.read(subCategoryText);
+                                  temp2[j].subCategoryColor =
+                                      ref.read(subCategoryColorInt);
                                   ref
                                       .read(entriesForSubCatDialog.notifier)
                                       .state = [...temp1];
+                                  ref.read(entriesGivenMonth.notifier).state = [
+                                    ...temp2
+                                  ];
                                 }
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -428,16 +444,14 @@ class _ThisContainerOfTheDialogBoxState
                                         backgroundColor: Colors.redAccent,
                                         content: Text(
                                           'Invalid amount',
-                                          style:
-                                              TextStyle(color: Colors.white),
+                                          style: TextStyle(color: Colors.white),
                                         )));
                                 Navigator.of(context).pop();
                               }
                             },
                             child: Container(
                                 alignment: Alignment.center,
-                                width:
-                                    MediaQuery.of(context).size.width / 3.1,
+                                width: MediaQuery.of(context).size.width / 3.1,
                                 height: 50,
                                 decoration: BoxDecoration(
                                     color:

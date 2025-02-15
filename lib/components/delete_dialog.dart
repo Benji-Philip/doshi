@@ -310,8 +310,6 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                           .state = [...temp3];
                                       if (temp1.isEmpty) {
                                         Navigator.of(context).pop();
-                                      }if (temp3.isEmpty && analysisDialog) {
-                                        Navigator.of(context).pop();
                                       }
                                     }
                                     Navigator.of(context).pop();

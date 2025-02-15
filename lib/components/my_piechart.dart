@@ -45,8 +45,9 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
           widget.parentCategory!, ref.read(entriesGivenMonth)));
     }
     if (widget.useSubCat) {
-      List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
-          sortIntoSubCategories(entriesOfGivenMonth);
+      List<SubCategoryAnalysisEntry> temp = subCatAnalysis.isEmpty
+          ? sortIntoSubCategories(entriesOfGivenMonth)
+          : subCatAnalysis;
       List<SubCategoryAnalysisEntry> temp2 = [];
       if (!widget.includeUncat) {
         for (var i = 0; i < temp.length; i++) {
@@ -75,6 +76,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
       entriesOfGivenMonth = next;
       if (!widget.useSubCat) {
         pieChartData = sortIntoCategories(entriesOfGivenMonth);
+      } else if (widget.isDialogBox ?? false) {
       } else {
         List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
             sortIntoSubCategories(entriesOfGivenMonth);
@@ -178,6 +180,14 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          print(name);
+                          print(name);
+                          print(name);
+                          print(name);
+                          print(name);
+                          print(name);
+                          print(name);
+                          print(name);
                           if (!widget.useSubCat && name != "Uncategorised") {
                             HapticFeedback.lightImpact();
                             ref
