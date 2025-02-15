@@ -48,7 +48,7 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
                       padLeft: 8,
                       padRight: 0,
                       padTop: 8,
-                      color: Theme.of(context).colorScheme.tertiary,
+                      color: Theme.of(context).colorScheme.onTertiary,
                     ),
                     ThisContainer(
                       opacity: 1,
@@ -56,7 +56,7 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
                       padLeft: 0,
                       padRight: 8,
                       padTop: 0,
-                      color: Theme.of(context).colorScheme.surface,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                   ],
                 ),

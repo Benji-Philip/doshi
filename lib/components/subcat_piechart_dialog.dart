@@ -38,7 +38,7 @@ class _SubCatPieChartDialogState extends ConsumerState<SubCatPieChartDialog> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Colors.black.withOpacity(0.5),
+      color: Colors.black.withOpacity(0.75),
       child: SingleChildScrollView(
         controller: _scrollController,
         child: Column(
@@ -58,7 +58,7 @@ class _SubCatPieChartDialogState extends ConsumerState<SubCatPieChartDialog> {
                     padLeft: 8,
                     padRight: 0,
                     padTop: 8,
-                    color: Theme.of(context).colorScheme.tertiary,
+                    color: Theme.of(context).colorScheme.onTertiary,
                   ),
                   ThisContainer(
                     widget: widget,
@@ -67,7 +67,7 @@ class _SubCatPieChartDialogState extends ConsumerState<SubCatPieChartDialog> {
                     padLeft: 0,
                     padRight: 8,
                     padTop: 0,
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ],
               ),

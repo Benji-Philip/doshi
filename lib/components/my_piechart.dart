@@ -184,13 +184,23 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                 .read(entriesGivenMonth.notifier)
                                 .update((state) => entriesOfGivenMonth);
                             Navigator.of(context).push(PageRouteBuilder(
-                                opaque: false,
-                                barrierDismissible: false,
-                                pageBuilder: (BuildContext context, _, __) {
-                                  return SubCatPieChartDialog(
-                                      parentCategory: name ?? "Uncategorised",
-                                      width: widget.width);
-                                }));
+                              opaque: false,
+                              barrierDismissible: false,
+                              pageBuilder: (BuildContext context, _, __) {
+                                return SubCatPieChartDialog(
+                                    parentCategory: name ?? "Uncategorised",
+                                    width: widget.width);
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              transitionDuration:
+                                  const Duration(milliseconds: 200),
+                            ));
                           } else {
                             HapticFeedback.lightImpact();
                             ref.read(entriesForSubCatDialog.notifier).update(
@@ -212,15 +222,26 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                             "Uncategorised",
                                             entriesOfGivenMonth)));
                             Navigator.of(context).push(PageRouteBuilder(
-                                opaque: false,
-                                barrierDismissible: false,
-                                pageBuilder: (BuildContext context, _, __) {
-                                  return const EntrysInSubCatDialog();
-                                }));
+                              opaque: false,
+                              barrierDismissible: false,
+                              pageBuilder: (BuildContext context, _, __) {
+                                return const EntrysInSubCatDialog();
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              transitionDuration:
+                                  const Duration(milliseconds: 200),
+                            ));
                           }
                         },
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 6),
+                          padding: const EdgeInsets.only(
+                              top: 8.0, bottom: 6, left: 6, right: 6),
                           child: FittedBox(
                             fit: BoxFit.contain,
                             child: Row(
@@ -231,19 +252,28 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                   width: widget.width * 0.85,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
+                                    color: widget.isDialogBox != null
+                                        ? widget.isDialogBox!
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .onTertiary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
                                     border: Border.all(
                                         color: Theme.of(context)
                                             .colorScheme
                                             .tertiary,
                                         width: 5),
                                     borderRadius: const BorderRadius.all(
-                                        Radius.circular(15)),
+                                        Radius.circular(100)),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 4,
+                                        left: 10,
                                         right: 21.0,
                                         top: 10,
                                         bottom: 10),

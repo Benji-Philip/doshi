@@ -91,7 +91,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
           width: widget.width * 0.86,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.tertiary,
+            color:Theme.of(context).colorScheme.tertiary,
             borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
           child: Slidable(
@@ -164,7 +164,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                         widget.index <
                                             widget.currentEntries.length
                                     ? EditEntryDialogBox(
-                                      analysisDialog: widget.analysisDialog,
+                                        analysisDialog: widget.analysisDialog,
                                         id: widget
                                             .currentEntries[widget.index].id,
                                       )
@@ -209,9 +209,13 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.tertiary,
+                  color: widget.analysisDialog
+                ? Theme.of(context).colorScheme.onTertiary
+                :  Theme.of(context).colorScheme.tertiary,
                   border: Border.all(
-                      color: Theme.of(context).colorScheme.tertiary, width: 3),
+                      color: widget.analysisDialog
+                ? Theme.of(context).colorScheme.onTertiary
+                :  Theme.of(context).colorScheme.tertiary, width: 3),
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Padding(
