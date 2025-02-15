@@ -311,6 +311,19 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                       if (temp1.isEmpty) {
                                         Navigator.of(context).pop();
                                       }
+                                    } else {
+                                      List<Entry> temp1 =
+                                          ref.read(entriesForSubCatDialog);
+                                      List<Entry> temp2 =
+                                          ref.read(entriesForSubCatDialog);
+                                      for (var i = 0; i < temp2.length; i++) {
+                                        if (temp1[i].id == id) {
+                                          temp1.removeAt(i);
+                                        }
+                                      }
+                                      ref
+                                          .read(entriesForSubCatDialog.notifier)
+                                          .state = [...temp1];
                                     }
                                     Navigator.of(context).pop();
                                   },

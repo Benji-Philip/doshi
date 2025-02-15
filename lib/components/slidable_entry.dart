@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class SlidableEntry extends ConsumerStatefulWidget {
+  final bool useColorChange;
   final bool analysisDialog;
   final double spaceFromTop;
   final double width;
@@ -20,6 +21,7 @@ class SlidableEntry extends ConsumerStatefulWidget {
   const SlidableEntry({
     super.key,
     required this.currentEntries,
+    required this.useColorChange,
     required this.ref,
     required this.spaceFromTop,
     required this.width,
@@ -91,10 +93,10 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
           width: widget.width * 0.86,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: widget.analysisDialog
+            color: widget.useColorChange
                 ? Theme.of(context).colorScheme.onTertiary
                 : Theme.of(context).colorScheme.tertiary,
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            borderRadius: BorderRadius.all(Radius.circular(widget.useColorChange? 20 : 15)),
           ),
           child: Slidable(
             controller: _slidableController,
@@ -211,15 +213,15 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: widget.analysisDialog
+                  color: widget.useColorChange
                       ? Theme.of(context).colorScheme.onTertiary
                       : Theme.of(context).colorScheme.tertiary,
                   border: Border.all(
-                      color: widget.analysisDialog
+                      color: widget.useColorChange
                           ? Theme.of(context).colorScheme.onTertiary
                           : Theme.of(context).colorScheme.tertiary,
                       width: 3),
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  borderRadius: BorderRadius.all(Radius.circular(widget.useColorChange? 20 : 15)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(

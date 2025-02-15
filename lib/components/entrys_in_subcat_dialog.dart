@@ -3,12 +3,18 @@ import 'package:doshi/components/slidable_entry.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final entriesForSubCatDialog = StateProvider<List<Entry>>((ref) => []);
 
 class EntrysInSubCatDialog extends ConsumerStatefulWidget {
-  const EntrysInSubCatDialog({super.key});
+  final bool useColorChange;
+  final bool analysisDialogBox;
+  const EntrysInSubCatDialog(
+      {super.key,
+      required this.analysisDialogBox,
+      required this.useColorChange});
 
   @override
   ConsumerState<EntrysInSubCatDialog> createState() =>
@@ -22,6 +28,7 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,18 +38,20 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
         controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         child: Padding(
-                padding: const EdgeInsets.symmetric( vertical: 36.0),
+          padding: const EdgeInsets.symmetric(vertical: 36.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric( horizontal: 30.0),
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     ThisContainer(
+                      useColorChange: widget.useColorChange,
+                      analysisDialogBox: widget.analysisDialogBox,
                       opacity: 0,
                       padBottom: 0,
                       padLeft: 8,
@@ -51,6 +60,8 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
                       color: Theme.of(context).colorScheme.onTertiary,
                     ),
                     ThisContainer(
+                      useColorChange: widget.useColorChange,
+                      analysisDialogBox: widget.analysisDialogBox,
                       opacity: 1,
                       padBottom: 8,
                       padLeft: 0,
@@ -87,6 +98,8 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
 }
 
 class ThisContainer extends StatefulWidget {
+  final bool useColorChange;
+  final bool analysisDialogBox;
   final double padTop;
   final double padBottom;
   final double padLeft;
@@ -95,6 +108,8 @@ class ThisContainer extends StatefulWidget {
   final double opacity;
   const ThisContainer({
     super.key,
+    required this.analysisDialogBox,
+    required this.useColorChange,
     required this.padBottom,
     required this.padLeft,
     required this.padRight,
@@ -131,17 +146,31 @@ class _ThisContainerState extends State<ThisContainer> {
               child: Opacity(
                 opacity: widget.opacity,
                 child: Consumer(builder: (context, ref, child) {
-                  return Column(
-                    children: List.generate(ref.watch(entriesForSubCatDialog).length, (index) {
+                  return Column(children: [
+                    ...List.generate(ref.watch(entriesForSubCatDialog).length,
+                        (index) {
                       return SlidableEntry(
-                        analysisDialog: true,
+                          useColorChange: widget.useColorChange,
+                          analysisDialog: widget.analysisDialogBox,
                           currentEntries: ref.watch(entriesForSubCatDialog),
                           ref: ref,
                           spaceFromTop: 0,
                           width: MediaQuery.of(context).size.width,
                           index: index);
                     }),
-                  );
+                    Visibility(
+                      visible: ref.watch(entriesForSubCatDialog).isEmpty,
+                      child: Text(
+                        '( Nothing added )',
+                        style: GoogleFonts.montserrat(
+                            decorationColor:
+                                const Color.fromARGB(0, 255, 255, 255),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.onTertiary),
+                      ),
+                    )
+                  ]);
                 }),
               ),
             ),

@@ -172,6 +172,7 @@ List<Widget> analysisPage(
                   ),
                 ),
                 MyPieChart(
+                  isDialogBox: false,
                   includeUncat: false,
                   width: width,
                   useSubCat: true,

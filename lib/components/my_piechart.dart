@@ -73,7 +73,8 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
     // ignore: unused_local_variable
     final watcher2 = ref.watch(entryDatabaseProvider);
     ref.listen((entryDatabaseProvider), (prev, next) {
-      entriesOfGivenMonth = next;
+      entriesOfGivenMonth =
+          sortExpensesByGivenMonth(next, ref.read(dateToDisplay));
       if (!widget.useSubCat) {
         pieChartData = sortIntoCategories(entriesOfGivenMonth);
       } else if (widget.isDialogBox ?? false) {
@@ -180,14 +181,6 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          print(name);
-                          print(name);
-                          print(name);
-                          print(name);
-                          print(name);
-                          print(name);
-                          print(name);
-                          print(name);
                           if (!widget.useSubCat && name != "Uncategorised") {
                             HapticFeedback.lightImpact();
                             ref
@@ -235,7 +228,11 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                               opaque: false,
                               barrierDismissible: false,
                               pageBuilder: (BuildContext context, _, __) {
-                                return const EntrysInSubCatDialog();
+                                return EntrysInSubCatDialog(
+                                  analysisDialogBox:
+                                      widget.isDialogBox ?? false,
+                                  useColorChange: true,
+                                );
                               },
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {

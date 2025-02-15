@@ -433,6 +433,28 @@ class _ThisContainerOfTheDialogBoxState
                                   ref.read(entriesGivenMonth.notifier).state = [
                                     ...temp2
                                   ];
+                                } else {
+                                  List<Entry> temp1 =
+                                      ref.read(entriesForSubCatDialog);
+                                  int i = temp1.indexWhere(
+                                      (entry) => entry.id == widget.id);
+                                  temp1[i].id = widget.id;
+                                  temp1[i].category = ref.read(categoryText);
+                                  temp1[i].amount =
+                                      double.parse(ref.read(amountText));
+                                  temp1[i].dateTime = varDateTime;
+                                  temp1[i].isExpense = true;
+                                  temp1[i].categoryColor =
+                                      ref.read(categoryColorInt);
+                                  temp1[i].isSavings = ref.read(isSavings);
+                                  temp1[i].note = addNoteTEC.text;
+                                  temp1[i].subCategory =
+                                      ref.read(subCategoryText);
+                                  temp1[i].subCategoryColor =
+                                      ref.read(subCategoryColorInt);
+                                  ref
+                                      .read(entriesForSubCatDialog.notifier)
+                                      .state = [...temp1];
                                 }
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -443,7 +465,7 @@ class _ThisContainerOfTheDialogBoxState
                                     .showSnackBar(const SnackBar(
                                         backgroundColor: Colors.redAccent,
                                         content: Text(
-                                          'Invalid amount',
+                                          "Invalid Amount",
                                           style: TextStyle(color: Colors.white),
                                         )));
                                 Navigator.of(context).pop();
