@@ -96,7 +96,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
             color: widget.useColorChange
                 ? Theme.of(context).colorScheme.onTertiary
                 : Theme.of(context).colorScheme.tertiary,
-            borderRadius: BorderRadius.all(Radius.circular(widget.useColorChange? 20 : 15)),
+            borderRadius: BorderRadius.all(
+                Radius.circular(widget.useColorChange ? 20 : 15)),
           ),
           child: Slidable(
             controller: _slidableController,
@@ -119,6 +120,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                       widget.index <
                                           widget.currentEntries.length
                                   ? DeleteEntryDialogBox(
+                                      useColorChange: widget.useColorChange,
                                       analysisDialog: widget.analysisDialog,
                                       id: widget
                                           .currentEntries[widget.index].id)
@@ -168,6 +170,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                         widget.index <
                                             widget.currentEntries.length
                                     ? EditEntryDialogBox(
+                                        useColorChange: widget.useColorChange,
                                         analysisDialog: widget.analysisDialog,
                                         id: widget
                                             .currentEntries[widget.index].id,
@@ -221,7 +224,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                           ? Theme.of(context).colorScheme.onTertiary
                           : Theme.of(context).colorScheme.tertiary,
                       width: 3),
-                  borderRadius: BorderRadius.all(Radius.circular(widget.useColorChange? 20 : 15)),
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(widget.useColorChange ? 20 : 15)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(

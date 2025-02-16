@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 
 class EditEntryDialogBox extends ConsumerStatefulWidget {
+  final bool useColorChange;
   final bool analysisDialog;
   final Id id;
 
@@ -21,6 +22,7 @@ class EditEntryDialogBox extends ConsumerStatefulWidget {
     super.key,
     required this.id,
     required this.analysisDialog,
+    required this.useColorChange
   });
 
   @override
@@ -42,6 +44,7 @@ class _AddExpenseDialogBoxState extends ConsumerState<EditEntryDialogBox> {
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: ThisContainerFinal(
+                useColorChange: widget.useColorChange,
             analysisDialog: widget.analysisDialog,
             id: widget.id,
           )),
@@ -50,10 +53,12 @@ class _AddExpenseDialogBoxState extends ConsumerState<EditEntryDialogBox> {
 }
 
 class ThisContainerFinal extends StatefulWidget {
+  final bool useColorChange;
   final bool analysisDialog;
   final Id id;
   const ThisContainerFinal({
     super.key,
+    required this.useColorChange,
     required this.id,
     required this.analysisDialog,
   });
@@ -80,6 +85,7 @@ class _ThisContainerFinalState extends State<ThisContainerFinal> {
             alignment: Alignment.topCenter,
             children: [
               ThisContainerOfTheDialogBox(
+                useColorChange: widget.useColorChange,
                 analysisDialog: widget.analysisDialog,
                 id: widget.id,
                 opacity: 0,
@@ -90,6 +96,7 @@ class _ThisContainerFinalState extends State<ThisContainerFinal> {
                 color: Theme.of(context).colorScheme.onTertiary,
               ),
               ThisContainerOfTheDialogBox(
+                useColorChange: widget.useColorChange,
                 analysisDialog: widget.analysisDialog,
                 id: widget.id,
                 opacity: 1,
@@ -108,6 +115,7 @@ class _ThisContainerFinalState extends State<ThisContainerFinal> {
 }
 
 class ThisContainerOfTheDialogBox extends ConsumerStatefulWidget {
+  final bool useColorChange;
   final bool analysisDialog;
   final double padTop;
   final double padBottom;
@@ -118,6 +126,7 @@ class ThisContainerOfTheDialogBox extends ConsumerStatefulWidget {
   final Id id;
   const ThisContainerOfTheDialogBox(
       {super.key,
+      required this.useColorChange,
       required this.padBottom,
       required this.padLeft,
       required this.padRight,
@@ -433,7 +442,7 @@ class _ThisContainerOfTheDialogBoxState
                                   ref.read(entriesGivenMonth.notifier).state = [
                                     ...temp2
                                   ];
-                                } else {
+                                } else if(widget.useColorChange){
                                   List<Entry> temp1 =
                                       ref.read(entriesForSubCatDialog);
                                   int i = temp1.indexWhere(

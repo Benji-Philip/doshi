@@ -546,7 +546,7 @@ List<Widget> thisMonthPage(
     ),
     const SliverToBoxAdapter(
         child: SizedBox(
-      height: 150,
+      height: 220,
     ))
   ];
   homePage.insertAll(3, historyPage(spaceFromTop, width, ref, currentEntries));

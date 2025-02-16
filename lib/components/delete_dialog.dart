@@ -11,10 +11,12 @@ import 'package:isar/isar.dart';
 class DeleteEntryDialogBox extends ConsumerWidget {
   final Id id;
   final bool analysisDialog;
+  final bool useColorChange;
   const DeleteEntryDialogBox({
     super.key,
     required this.id,
     required this.analysisDialog,
+    required this.useColorChange,
   });
 
   @override
@@ -311,7 +313,7 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                       if (temp1.isEmpty) {
                                         Navigator.of(context).pop();
                                       }
-                                    } else {
+                                    } else if (useColorChange) {
                                       List<Entry> temp1 =
                                           ref.read(entriesForSubCatDialog);
                                       List<Entry> temp2 =
@@ -325,6 +327,14 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                           .read(entriesForSubCatDialog.notifier)
                                           .state = [...temp1];
                                     }
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                            backgroundColor: Colors.redAccent,
+                                            content: Text(
+                                              "Deleted",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            )));
                                     Navigator.of(context).pop();
                                   },
                                   child: Container(

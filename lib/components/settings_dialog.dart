@@ -20,7 +20,7 @@ class BackupRestoreDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
-  final String versionNumber = "0.5.3";
+  final String versionNumber = "0.5.4";
   final InAppPurchase _iap = InAppPurchase.instance;
   late List<ProductDetails> product;
   bool _iapAvailable = false;
@@ -128,10 +128,10 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                       .update((state) => true);
                                   await widget.entriesDatabaseNotifier
                                       .tryRestore(ref);
-                                    
+
                                   ref
-                                      .read(appSettingsDatabaseProvider
-                                          .notifier)
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
                                       .fetchEntries();
                                   ref
                                       .read(entryDatabaseProvider.notifier)
@@ -140,17 +140,16 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                       .read(categoryDatabaseProvider.notifier)
                                       .fetchEntries();
                                   ref
-                                      .read(subCategoryDatabaseProvider
-                                          .notifier)
+                                      .read(
+                                          subCategoryDatabaseProvider.notifier)
                                       .fetchEntries();
                                   final List appSettings = await ref
-                                      .read(appSettingsDatabaseProvider
-                                          .notifier)
+                                      .read(
+                                          appSettingsDatabaseProvider.notifier)
                                       .fetchSettings();
                                   if (appSettings.length > 2) {
-                                    ref
-                                        .read(currencyProvider.notifier)
-                                        .update((state) =>
+                                    ref.read(currencyProvider.notifier).update(
+                                        (state) =>
                                             appSettings[2].appSettingValue);
                                   } else {
                                     ref
@@ -197,8 +196,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                           height: 3,
                           decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.onTertiary,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(100))),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(100))),
                         ),
                       ),
                       Row(
@@ -209,7 +208,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                               child: GestureDetector(
                                 onTap: () {
                                   HapticFeedback.heavyImpact();
-                                    
+
                                   HapticFeedback.heavyImpact();
                                   showCurrencyPicker(
                                     context: context,
@@ -314,8 +313,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                           height: 3,
                           decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.onTertiary,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(100))),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(100))),
                         ),
                       ),
                       Row(
@@ -357,9 +356,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                 onTap: () {
                                   HapticFeedback.heavyImpact();
                                   if (_iapAvailable) {
-                                    PurchaseParam purchaseParam =
-                                        PurchaseParam(
-                                            productDetails: product[0]);
+                                    PurchaseParam purchaseParam = PurchaseParam(
+                                        productDetails: product[0]);
                                     _iap.buyConsumable(
                                         purchaseParam: purchaseParam);
                                   }
@@ -376,7 +374,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                     style: GoogleFonts.montserrat(
                                         color: Colors.black,
                                         fontSize: 28,
-                                        fontWeight: FontWeight.w700),   
+                                        fontWeight: FontWeight.w700),
                                   ),
                                 ),
                               ),
@@ -390,19 +388,22 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: GestureDetector(
-                                onTap: () {
-                                },
+                                onTap: () {},
                                 child: Container(
                                   alignment: Alignment.center,
                                   height: 60,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(25),
-                                      color: Theme.of(context).colorScheme.onTertiary),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onTertiary),
                                   child: Text(
                                     "Version $versionNumber",
                                     softWrap: true,
                                     style: GoogleFonts.montserrat(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         fontSize: 28,
                                         fontWeight: FontWeight.w700),
                                   ),
