@@ -38,48 +38,47 @@ class _CategoryListState extends ConsumerState<CategoryListSelector> {
         ref.watch(subCategoryDatabaseProvider.notifier);
     List<SubCategoryEntry> currentSubCategories =
         subCategoriesDatabaseNotifier.currentSubCategories.reversed.toList();
-    return SafeArea(
-      child: Dialog(
-        backgroundColor: Colors.transparent,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(25)),
-                        color: Theme.of(context).colorScheme.tertiary),
-                    child: Padding(
-                      padding: const EdgeInsets.all(21.0),
-                      child: CategoryList(
-                          editMode: widget.editMode,
-                          currentCategories: currentCategories,
-                          currentSubCategories: currentSubCategories),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 24.0),
-                child: MyButton(
-                  borderRadius: 50,
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    Navigator.of(context).pop();
-                  },
-                  width: 50,
-                  height: 50,
-                  iconSize: 32,
-                  myIcon: Icons.close_rounded,
-                  iconColor: Colors.white,
-                  buttonColor: Colors.redAccent,
-                  splashColor: Colors.red.shade900,
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(25)),
+                    color: Theme.of(context).colorScheme.tertiary),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 21.0,
+                      vertical: widget.editMode ?? false ? 0 : 12),
+                  child: CategoryList(
+                      editMode: widget.editMode,
+                      currentCategories: currentCategories,
+                      currentSubCategories: currentSubCategories),
                 ),
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 0.0),
+              child: MyButton(
+                borderRadius: 50,
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.of(context).pop();
+                },
+                width: 50,
+                height: 50,
+                iconSize: 32,
+                myIcon: Icons.close_rounded,
+                iconColor: Colors.white,
+                buttonColor: Colors.redAccent,
+                splashColor: Colors.red.shade900,
+              ),
+            ),
+          ],
         ),
       ),
     );

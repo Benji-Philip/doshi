@@ -106,6 +106,34 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
               motion: const BehindMotion(),
               children: [
                 SlidableAction(
+                  padding: const EdgeInsets.only(right: 0, top: 5),
+                  onPressed: (context) {
+                    HapticFeedback.heavyImpact();
+                    if (widget.subCatId != null) {
+                      if (widget.subCatId == null) {
+                        return;
+                      }
+                      HapticFeedback.lightImpact();
+                      ref.read(categoryColor.notifier).update((state) =>
+                          Color(widget.subCategoryColor ?? Colors.white.value));
+                      ref
+                          .read(categoryText.notifier)
+                          .update((state) => widget.text);
+                      Navigator.of(context).push(PageRouteBuilder(
+                          opaque: false,
+                          barrierDismissible: false,
+                          pageBuilder: (BuildContext context, _, __) {
+                            return EditSubCategory(
+                                id: widget.subCatId ?? -1,
+                                parentCategory: widget.parentCategory);
+                          }));
+                    }
+                  },
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Theme.of(context).colorScheme.surface,
+                  icon: Icons.edit_rounded,
+                ),
+                SlidableAction(
                   padding: const EdgeInsets.only(right: 5, top: 5),
                   onPressed: (context) {
                     HapticFeedback.heavyImpact();

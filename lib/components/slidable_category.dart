@@ -114,6 +114,33 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                   motion: const BehindMotion(),
                   children: [
                     SlidableAction(
+                      padding: const EdgeInsets.only(right: 0),
+                      onPressed: (context) {
+                        if (widget.notInList || widget.index == 0) {
+                          return;
+                        }
+                        HapticFeedback.lightImpact();
+
+                        HapticFeedback.lightImpact();
+                        ref.read(categoryColor.notifier).update((state) =>
+                            Color(widget.currentCategories[widget.index]
+                                .categoryColor));
+                        ref.read(categoryText.notifier).update((state) =>
+                            widget.currentCategories[widget.index].category);
+                        Navigator.of(context).push(PageRouteBuilder(
+                            opaque: false,
+                            barrierDismissible: false,
+                            pageBuilder: (BuildContext context, _, __) {
+                              return EditCategory(
+                                id: widget.currentCategories[widget.index].id,
+                              );
+                            }));
+                      },
+                      backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+                      foregroundColor: Theme.of(context).colorScheme.surface,
+                      icon: Icons.edit_rounded,
+                    ),
+                    SlidableAction(
                       padding: const EdgeInsets.only(right: 5),
                       onPressed: (context) {
                         HapticFeedback.heavyImpact();
@@ -137,7 +164,7 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                       backgroundColor: Colors.transparent,
                       foregroundColor: Theme.of(context).colorScheme.surface,
                       icon: Icons.delete_rounded,
-                    )
+                    ),
                   ]),
               child: IgnorePointer(
                 ignoring: ref.read(openSubCats) == widget.index &&
