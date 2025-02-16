@@ -1,15 +1,20 @@
 import 'package:doshi/components/category_list.dart';
+import 'package:doshi/components/color_picker_dialogbox.dart';
 import 'package:doshi/components/delete_category_confirm_dialog.dart';
+import 'package:doshi/components/edit_category_dialogbox.dart';
 import 'package:doshi/isar/category_entry.dart';
 import 'package:doshi/isar/subcategory_entry.dart';
 import 'package:doshi/logic/sort_entries.dart';
+import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 
 class SlidableCategory extends ConsumerStatefulWidget {
+  final Id id;
   final bool editMode;
   final List<SubCategoryEntry> currentSubCategories;
   final List<CategoryEntry> currentCategories;
@@ -18,6 +23,7 @@ class SlidableCategory extends ConsumerStatefulWidget {
   final bool openSubCat;
   const SlidableCategory(
       {super.key,
+      required this.id,
       required this.notInList,
       required this.currentCategories,
       required this.index,
@@ -139,6 +145,24 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                     ? false
                     : true,
                 child: GestureDetector(
+                  onLongPress: () {
+                    if (widget.index == 0 || widget.notInList) {
+                      return;
+                    }
+                    HapticFeedback.lightImpact();
+                    ref.read(categoryColor.notifier).update((state) => Color(
+                        widget.currentCategories[widget.index].categoryColor));
+                    ref.read(categoryText.notifier).update((state) =>
+                        widget.currentCategories[widget.index].category);
+                    Navigator.of(context).push(PageRouteBuilder(
+                        opaque: false,
+                        barrierDismissible: false,
+                        pageBuilder: (BuildContext context, _, __) {
+                          return EditCategory(
+                            id: widget.id,
+                          );
+                        }));
+                  },
                   onTap: () {
                     HapticFeedback.lightImpact();
                     if (widget.index == 0 || widget.notInList) {

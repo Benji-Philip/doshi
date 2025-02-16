@@ -1,4 +1,6 @@
 import 'package:doshi/components/add_category_dialogbox.dart';
+import 'package:doshi/components/color_picker_dialogbox.dart';
+import 'package:doshi/components/edit_category_dialogbox.dart';
 import 'package:doshi/components/slidable_category.dart';
 import 'package:doshi/components/subcategory_list.dart';
 import 'package:doshi/isar/category_entry.dart';
@@ -90,6 +92,27 @@ class CategoryList extends ConsumerWidget {
                       child: Column(
                         children: [
                           GestureDetector(
+                            onLongPress: () {
+                              if (notInList || index == 0) {
+                                return;
+                              }
+                              HapticFeedback.lightImpact();
+
+                              HapticFeedback.lightImpact();
+                              ref.read(categoryColor.notifier).update((state) =>
+                                  Color(
+                                      currentCategories[index].categoryColor));
+                              ref.read(categoryText.notifier).update(
+                                  (state) => currentCategories[index].category);
+                              Navigator.of(context).push(PageRouteBuilder(
+                                  opaque: false,
+                                  barrierDismissible: false,
+                                  pageBuilder: (BuildContext context, _, __) {
+                                    return EditCategory(
+                                      id: currentCategories[index].id,
+                                    );
+                                  }));
+                            },
                             onTap: () {
                               if (notInList) {
                                 HapticFeedback.lightImpact();
@@ -135,6 +158,9 @@ class CategoryList extends ConsumerWidget {
                               }
                             },
                             child: SlidableCategory(
+                                id: notInList
+                                    ? -1
+                                    : currentCategories[index].id,
                                 editMode: editMode ?? false,
                                 currentSubCategories: currentSubCategories,
                                 openSubCat: openSubCat,

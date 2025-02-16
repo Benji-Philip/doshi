@@ -47,6 +47,8 @@ class SubCategoryList extends ConsumerWidget {
                         }
                       },
                       child: SlidableSubcategory(
+                        parentCategory:
+                            currentSubCategories[index].parentCategory,
                         editMode: editMode,
                         subCatId: currentSubCategories[index].id,
                         slidableEnabled: true,
@@ -73,6 +75,7 @@ class SubCategoryList extends ConsumerWidget {
                             }));
                       },
                       child: const SlidableSubcategory(
+                        parentCategory: "Uncategorised",
                         editMode: false,
                         slidableEnabled: false,
                         text: "Add New",

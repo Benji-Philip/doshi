@@ -1,7 +1,8 @@
-import 'dart:ui';
-
 import 'package:doshi/isar/app_settings.dart';
 import 'package:doshi/isar/subcategory_entry.dart';
+import 'package:doshi/logic/sort_entries.dart';
+import 'package:doshi/riverpod/states.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -218,15 +219,46 @@ class SubCategoryDatabaseNotifier
   }
 
   //edit
-  Future<void> editCategory(
-      int id, String newSubCategory, int newSubCategoryColor, String newParentCategory) async {
+  Future<void> editSubCategory(WidgetRef ref, int id, String newSubCategory,
+      int newSubCategoryColor, String parentCategory) async {
     final existingSubCategory = await isar.subCategoryEntrys.get(id);
     if (existingSubCategory != null) {
-      existingSubCategory.parentCategory = newParentCategory;
+      final listOfAllExpenses = sortEntrysByParentCategory(parentCategory,
+          ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses);
       existingSubCategory.subCategory = newSubCategory;
       existingSubCategory.subCategoryColor = newSubCategoryColor;
       await isar
           .writeTxn(() => isar.subCategoryEntrys.put(existingSubCategory));
+      for (var expense in listOfAllExpenses) {
+        if (expense.subCategory == existingSubCategory.subCategory) {
+          ref
+              .read(amountText.notifier)
+              .update((state) => expense.amount.toString());
+          ref.read(noteText.notifier).update((state) => expense.note ?? "");
+          ref.read(dateTimeVar.notifier).update((state) => expense.dateTime);
+          ref.read(isExpense.notifier).update((state) => expense.isExpense);
+          ref
+              .read(categoryText.notifier)
+              .update((state) => expense.category ?? "Uncategorised");
+          ref
+              .read(categoryColorInt.notifier)
+              .update((state) => expense.categoryColor ?? Colors.white.value);
+          ref
+              .read(isSavings.notifier)
+              .update((state) => expense.isSavings ?? false);
+          ref.read(entryDatabaseProvider.notifier).editEntry(
+              expense.id,
+              ref.read(categoryText),
+              double.parse(ref.read(amountText)),
+              ref.read(noteText),
+              ref.read(dateTimeVar),
+              ref.read(isExpense),
+              ref.read(categoryColorInt),
+              ref.read(isSavings),
+              newSubCategory,
+              newSubCategoryColor);
+        }
+      }
       await fetchEntries();
     }
   }

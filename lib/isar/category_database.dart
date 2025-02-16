@@ -1,7 +1,7 @@
-import 'dart:ui';
-
 import 'package:doshi/isar/app_settings.dart';
 import 'package:doshi/isar/category_entry.dart';
+import 'package:doshi/riverpod/states.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -73,31 +73,63 @@ class CategoryDatabaseNotifier extends StateNotifier<List<CategoryEntry>> {
     fetchedEntries = fetchedEntries.reversed.toList();
     currentCategories.clear();
     currentCategories.addAll(fetchedEntries);
-      if (currentCategories.isEmpty) {
-        await isar.writeTxn(() => isar.categoryEntrys.put(uncategorised));
-        await isar.writeTxn(() => isar.categoryEntrys.put(food));
-        await isar.writeTxn(() => isar.categoryEntrys.put(groceries));
-        await isar.writeTxn(() => isar.categoryEntrys.put(transportation));
-        await isar.writeTxn(() => isar.categoryEntrys.put(utilities));
-        await isar.writeTxn(() => isar.categoryEntrys.put(healthcare));
-        await isar.writeTxn(() => isar.categoryEntrys.put(entertainment));
-        await isar.writeTxn(() => isar.categoryEntrys.put(internet));
-        await isar.writeTxn(() => isar.categoryEntrys.put(miscellaneous));
-        fetchedEntries = await isar.categoryEntrys.where().findAll();
-        currentCategories.clear();
-        currentCategories.addAll(fetchedEntries);
-      }
+    if (currentCategories.isEmpty) {
+      await isar.writeTxn(() => isar.categoryEntrys.put(uncategorised));
+      await isar.writeTxn(() => isar.categoryEntrys.put(food));
+      await isar.writeTxn(() => isar.categoryEntrys.put(groceries));
+      await isar.writeTxn(() => isar.categoryEntrys.put(transportation));
+      await isar.writeTxn(() => isar.categoryEntrys.put(utilities));
+      await isar.writeTxn(() => isar.categoryEntrys.put(healthcare));
+      await isar.writeTxn(() => isar.categoryEntrys.put(entertainment));
+      await isar.writeTxn(() => isar.categoryEntrys.put(internet));
+      await isar.writeTxn(() => isar.categoryEntrys.put(miscellaneous));
+      fetchedEntries = await isar.categoryEntrys.where().findAll();
+      currentCategories.clear();
+      currentCategories.addAll(fetchedEntries);
+    }
     state = [...currentCategories];
   }
 
   //edit
   Future<void> editCategory(
-      int id, String newCategory, int newCategoryColor) async {
+      WidgetRef ref, int id, String newCategory, int newCategoryColor) async {
     final existingCategory = await isar.categoryEntrys.get(id);
     if (existingCategory != null) {
+      final listOfAllExpenses =
+          ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses;
       existingCategory.category = newCategory;
       existingCategory.categoryColor = newCategoryColor;
       await isar.writeTxn(() => isar.categoryEntrys.put(existingCategory));
+      for (var expense in listOfAllExpenses) {
+        if (expense.category == existingCategory.category) {
+          ref
+              .read(amountText.notifier)
+              .update((state) => expense.amount.toString());
+          ref.read(noteText.notifier).update((state) => expense.note ?? "");
+          ref.read(dateTimeVar.notifier).update((state) => expense.dateTime);
+          ref.read(isExpense.notifier).update((state) => expense.isExpense);
+          ref
+              .read(isSavings.notifier)
+              .update((state) => expense.isSavings ?? false);
+          ref
+              .read(subCategoryText.notifier)
+              .update((state) => expense.subCategory ?? "Uncategorised");
+          ref.read(subCategoryColorInt.notifier).update(
+              (state) => expense.subCategoryColor ?? Colors.white.value);
+          print("done");
+          ref.read(entryDatabaseProvider.notifier).editEntry(
+              expense.id,
+              newCategory,
+              double.parse(ref.read(amountText)),
+              ref.read(noteText),
+              ref.read(dateTimeVar),
+              ref.read(isExpense),
+              newCategoryColor,
+              ref.read(isSavings),
+              ref.read(subCategoryText),
+              ref.read(subCategoryColorInt));
+        }
+      }
       await fetchEntries();
     }
   }

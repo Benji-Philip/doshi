@@ -214,10 +214,10 @@ class _ThisContainerOfTheDialogBoxState
                             width: 10,
                           ),
                           GestureDetector(
-                            onTap: () async {
+                            onTap: () {
                               HapticFeedback.lightImpact();
                               try {
-                                    await ref
+                                     ref
                                         .read(entryDatabaseProvider.notifier)
                                         .editSavings(ref);
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(

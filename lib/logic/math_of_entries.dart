@@ -1,4 +1,3 @@
-import 'package:doshi/logic/sort_entries.dart';
 import 'package:intl/intl.dart';
 
 import '../isar/entry.dart';
@@ -14,11 +13,10 @@ int numberOfExpensesGroupedByDay(List<Entry> listOfExpenses) {
     return 1;
   } else {
     List<Entry> currentEntries = listOfExpenses;
-    sortEntriesByDate(currentEntries);
     Duration difference = currentEntries[listOfExpenses.length - 1]
         .dateTime
         .difference(DateTime.now());
-    return -(difference.inDays - 1);
+    return -(difference.inDays-1);
   }
 }
 
@@ -67,7 +65,6 @@ int weekNumber(DateTime date) {
 }
 
 double expenditurePerDay(double amountInVault, List<Entry> listOfExpenses) {
-  //what i should do instead => calculate how much i had in the vault at the start of the day and use that as amount in vault
   List<Entry> expensesToday = [];
   for (var i = 0; i < listOfExpenses.length; i++) {
     if (DateFormat('dMMMMyyyy').format(listOfExpenses[i].dateTime) ==
@@ -80,8 +77,10 @@ double expenditurePerDay(double amountInVault, List<Entry> listOfExpenses) {
   double sumUptoToday = amountInVault + sumOfEntries(expensesToday);
   DateTime today = DateTime.now();
   DateTime endOfMonth = DateTime(today.year, today.month + 1, 0);
-  int numberOfDaysLeft = endOfMonth.day - today.day + 1;
-  double dailyExpenditureForecast = sumUptoToday / numberOfDaysLeft;
+  int numberOfDaysLeft = endOfMonth.day - today.day;
+  double dailyExpenditureForecast = numberOfDaysLeft == 0
+      ? sumUptoToday / 1
+      : sumUptoToday / numberOfDaysLeft;
   return dailyExpenditureForecast;
 }
 
@@ -100,6 +99,7 @@ double expenditurePerWeek(double amountInVault, List<Entry> listOfExpenses) {
     }
   }
   double sumUptoThisWeek = amountInVault + sumOfEntries(expensesThisWeek);
-  double weeklyExpenditureForecast = sumUptoThisWeek / (weeksLeft<0?1:weeksLeft);
+  double weeklyExpenditureForecast =
+      sumUptoThisWeek / (weeksLeft < 0 ? 1 : weeksLeft);
   return weeklyExpenditureForecast;
 }

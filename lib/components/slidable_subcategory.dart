@@ -1,4 +1,7 @@
+import 'package:doshi/components/color_picker_dialogbox.dart';
 import 'package:doshi/components/delete_subcategory_confirm_dialog.dart';
+import 'package:doshi/components/edit_subcategory_dialogbox.dart';
+import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -7,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 class SlidableSubcategory extends ConsumerStatefulWidget {
+  final String parentCategory;
   final bool editMode;
   final Id? subCatId;
   final bool slidableEnabled;
@@ -16,6 +20,7 @@ class SlidableSubcategory extends ConsumerStatefulWidget {
   final String text;
   const SlidableSubcategory(
       {super.key,
+      required this.parentCategory,
       required this.text,
       this.bgColor,
       this.textColor,
@@ -53,7 +58,7 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
         Visibility(
           visible: widget.subCategoryColor == null ? false : true,
           child: Padding(
-            padding: const EdgeInsets.only(left: 3, right: 3, top:3),
+            padding: const EdgeInsets.only(left: 3, right: 3, top: 3),
             child: Container(
               width: MediaQuery.of(context).size.width * 0.8,
               decoration: BoxDecoration(
@@ -128,6 +133,23 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
           child: IgnorePointer(
             ignoring: !widget.editMode,
             child: GestureDetector(
+              onLongPress: () {
+                if (widget.subCatId == null) {
+                  return;
+                }
+                HapticFeedback.lightImpact();
+                ref.read(categoryColor.notifier).update((state) =>
+                    Color(widget.subCategoryColor ?? Colors.white.value));
+                ref.read(categoryText.notifier).update((state) => widget.text);
+                Navigator.of(context).push(PageRouteBuilder(
+                    opaque: false,
+                    barrierDismissible: false,
+                    pageBuilder: (BuildContext context, _, __) {
+                      return EditSubCategory(
+                          id: widget.subCatId ?? -1,
+                          parentCategory: widget.parentCategory);
+                    }));
+              },
               onTap: () {
                 HapticFeedback.lightImpact();
                 _slidableController.openEndActionPane();
