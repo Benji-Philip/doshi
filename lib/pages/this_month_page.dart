@@ -474,7 +474,7 @@ List<Widget> thisMonthPage(
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
                           border: Border.all(
-                              color: Theme.of(context).colorScheme.tertiary,
+                              color: Theme.of(context).colorScheme.onTertiary,
                               width: 5),
                           color: Theme.of(context).colorScheme.onPrimary,
                           borderRadius:

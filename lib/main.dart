@@ -22,11 +22,8 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  await AppSettingsDatabaseNotifier.initialise();
-  await EntryDatabaseNotifier.initialise();
-  await CategoryDatabaseNotifier.initialise();
-  await SubCategoryDatabaseNotifier.initialise();
-  await BudgetDatabaseNotifier.initialise();
+
+  await Initialiser().initialiseDatabses();
 
   // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
@@ -42,6 +39,16 @@ Future<void> main() async {
     camera: firstCamera,
     backcamera: secondCamera,
   )));
+}
+
+class Initialiser {
+  Future<void> initialiseDatabses()async{
+  await AppSettingsDatabaseNotifier.initialise();
+  await EntryDatabaseNotifier.initialise();
+  await CategoryDatabaseNotifier.initialise();
+  await SubCategoryDatabaseNotifier.initialise();
+  await BudgetDatabaseNotifier.initialise();
+  }
 }
 
 class MyApp extends ConsumerStatefulWidget {

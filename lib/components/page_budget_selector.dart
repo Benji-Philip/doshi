@@ -30,18 +30,21 @@ class _ScrollableBudgetSelectorState
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     final watcher = ref.watch(budgetDatabaseProvider);
+    // ignore: unused_local_variable
+    final watcher2 = ref.watch(appSettingsDatabaseProvider);
 
     items = [
       ...ref.watch(budgetDatabaseProvider.notifier).currentBudgets,
       addNew
     ];
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0, left: 4),
+      padding: const EdgeInsets.only(bottom: 15.0, left: 4),
       child: Row(
         children: [
           GestureDetector(
             onTap: () {
               HapticFeedback.heavyImpact();
+              ref.read(budgetDatabaseProvider.notifier).fetchEntries();
               showGeneralDialog(
                   pageBuilder: (context, anim1, anim2) {
                     return const Placeholder();
@@ -54,42 +57,44 @@ class _ScrollableBudgetSelectorState
                   transitionDuration: const Duration(milliseconds: 200));
             },
             child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 0.5,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 45,
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.5,
+              ),
+              padding: const EdgeInsets.only(left: 16),
               decoration: BoxDecoration(
                 color: Theme.of(context)
                     .colorScheme
-                    .onTertiary, // Solid color background
+                    .onTertiary
+                    .withOpacity(0.7), // Solid color background
                 borderRadius: BorderRadius.circular(15), // Curved corners
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: FittedBox(
-                        alignment: Alignment.centerLeft,
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          ref.watch(budgetName),
-                          style: GoogleFonts.montserrat(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.primary),
-                        ),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        ref
+                            .watch(appSettingsDatabaseProvider.notifier)
+                            .currentSettings[4]
+                            .appSettingValue,
+                        style: GoogleFonts.montserrat(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.primary),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: RotatedBox(
-                          quarterTurns: 3,
-                          child: Icon(Icons.switch_right_rounded)),
-                    )
-                  ],
+                      const Padding(
+                        padding: EdgeInsets.only(left: 12.0, right: 12),
+                        child: RotatedBox(
+                            quarterTurns: 3,
+                            child: Icon(Icons.switch_right_rounded)),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

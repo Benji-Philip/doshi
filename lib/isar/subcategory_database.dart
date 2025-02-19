@@ -41,11 +41,11 @@ class SubCategoryDatabaseNotifier
   final meat = SubCategoryEntry()
     ..parentCategory = "Groceries"
     ..subCategory = "Meat"
-    ..subCategoryColor = const Color.fromARGB(255, 164, 243, 255).value;
+    ..subCategoryColor = const Color.fromARGB(255, 255, 75, 75).value;
   final milk = SubCategoryEntry()
     ..parentCategory = "Groceries"
     ..subCategory = "Dairy"
-    ..subCategoryColor = const Color.fromARGB(255, 164, 243, 255).value;
+    ..subCategoryColor = const Color.fromARGB(255, 164, 231, 255).value;
   final fruits = SubCategoryEntry()
     ..parentCategory = "Groceries"
     ..subCategory = "Fruits"
@@ -73,7 +73,7 @@ class SubCategoryDatabaseNotifier
   final repairs = SubCategoryEntry()
     ..parentCategory = "Transportation"
     ..subCategory = "Repairs"
-    ..subCategoryColor = const Color.fromARGB(255, 177, 123, 61).value;
+    ..subCategoryColor = const Color.fromARGB(255, 255, 178, 91).value;
   final electricity = SubCategoryEntry()
     ..parentCategory = "Utilities"
     ..subCategory = "Electricity"
@@ -117,7 +117,7 @@ class SubCategoryDatabaseNotifier
   final vpn = SubCategoryEntry()
     ..parentCategory = "Internet"
     ..subCategory = "VPN"
-    ..subCategoryColor = const Color.fromARGB(255, 63, 130, 255).value;
+    ..subCategoryColor = const Color.fromARGB(255, 131, 75, 167).value;
   final wifi = SubCategoryEntry()
     ..parentCategory = "Internet"
     ..subCategory = "WiFi"
@@ -137,15 +137,15 @@ class SubCategoryDatabaseNotifier
   final gifts = SubCategoryEntry()
     ..parentCategory = "Miscellaneous"
     ..subCategory = "Gifts"
-    ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
+    ..subCategoryColor = const Color.fromARGB(255, 255, 102, 227).value;
   final clothing = SubCategoryEntry()
     ..parentCategory = "Miscellaneous"
     ..subCategory = "Clothing"
-    ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
+    ..subCategoryColor = const Color.fromARGB(255, 255, 199, 44).value;
   final personal = SubCategoryEntry()
     ..parentCategory = "Miscellaneous"
     ..subCategory = "Personal"
-    ..subCategoryColor = const Color.fromARGB(255, 54, 244, 181).value;
+    ..subCategoryColor = const Color.fromARGB(255, 95, 54, 244).value;
 
   //list of entries
 
@@ -167,7 +167,7 @@ class SubCategoryDatabaseNotifier
     await isar.writeTxn(() => isar.subCategoryEntrys.put(newSubCategory));
 
     //update from database
-    fetchEntries();
+    await fetchEntries();
   }
 
   //read/fetch & update state

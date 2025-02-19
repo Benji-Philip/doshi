@@ -1,10 +1,8 @@
 import 'dart:io' as io;
-import 'package:doshi/isar/app_settings_database.dart';
-import 'package:doshi/isar/category_database.dart';
 import 'package:doshi/isar/entry.dart';
-import 'package:doshi/isar/subcategory_database.dart';
 import 'package:doshi/logic/math_of_entries.dart';
 import 'package:doshi/logic/sort_entries.dart';
+import 'package:doshi/main.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -241,10 +239,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       final dbPath = '${dbDir.path}/default.isar';
       await backupFile.copy(dbPath);
 
-      await AppSettingsDatabaseNotifier.initialise();
-      await EntryDatabaseNotifier.initialise();
-      await CategoryDatabaseNotifier.initialise();
-      await SubCategoryDatabaseNotifier.initialise();
+      await Initialiser().initialiseDatabses();
       showToast("Restored successfully");
     } else {
       showToast("Cancelled");

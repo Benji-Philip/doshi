@@ -65,29 +65,18 @@ class _CategoryListState extends ConsumerState<BudgetSelector> {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    HapticFeedback.heavyImpact();
-                                    if (!isSelected) {
-                                      ref
-                                          .read(budgetDatabaseProvider.notifier)
-                                          .selectBudget(
-                                              ref, currentBudgets[index].id);
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  child: Container(
-                                      height: 60,
-                                      decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(25))),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: SlidableBudget(
-                                        isSelected: isSelected,
-                                        thisBudgetName:
-                                            currentBudgets[index].budgetName,
-                                      )),
-                                ),
+                                child: Container(
+                                    height: 60,
+                                    decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(25))),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: SlidableBudget(
+                                      id: currentBudgets[index].id,
+                                      isSelected: isSelected,
+                                      thisBudgetName:
+                                          currentBudgets[index].budgetName,
+                                    )),
                               ),
                             ),
                           ],
