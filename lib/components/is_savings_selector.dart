@@ -13,14 +13,65 @@ class IsSavingsDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<IsSavingsDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        IsSavingsContainer(
+          opacity: 0,
+          padBottom: 0,
+          padLeft: 8,
+          padRight: 0,
+          padTop: 8,
+          color: Theme.of(context).colorScheme.onTertiary,
+        ),
+        IsSavingsContainer(
+          opacity: 1,
+          padBottom: 8,
+          padLeft: 0,
+          padRight: 8,
+          padTop: 0,
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+      ],
+    );
+  }
+}
 
+class IsSavingsContainer extends ConsumerStatefulWidget {
+  final double padTop;
+  final double padBottom;
+  final double padLeft;
+  final double padRight;
+  final Color color;
+  final double opacity;
+  const IsSavingsContainer({
+    super.key,
+    required this.padBottom,
+    required this.padLeft,
+    required this.padRight,
+    required this.padTop,
+    required this.color,
+    required this.opacity,
+  });
+
+  @override
+  ConsumerState<IsSavingsContainer> createState() => _IsSavingsContainerState();
+}
+
+class _IsSavingsContainerState extends ConsumerState<IsSavingsContainer> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Dialog(
         backgroundColor: const Color.fromARGB(0, 255, 255, 255),
         child: Padding(
-          padding: const EdgeInsets.only(left: 0.0, top: 0),
+          padding: EdgeInsets.only(
+              bottom:
+                  widget.padBottom + MediaQuery.of(context).viewInsets.bottom,
+              right: widget.padRight,
+              top: widget.padTop,
+              left: widget.padLeft),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -28,7 +79,7 @@ class _CategoryListState extends ConsumerState<IsSavingsDialog> {
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(25)),
-                    color: Theme.of(context).colorScheme.tertiary),
+                    color: widget.color),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(

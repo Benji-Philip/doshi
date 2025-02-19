@@ -172,6 +172,7 @@ class _ThisContainerOfTheDialogBoxState
                                         decoration: TextDecoration.underline,
                                         decorationStyle:
                                             TextDecorationStyle.dashed))),
+                            const TextSpan(text: " in total."),
                           ],
                           style: GoogleFonts.montserrat(
                               height: 1.4,

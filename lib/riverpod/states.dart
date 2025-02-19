@@ -1,5 +1,6 @@
 import 'package:doshi/components/category_list.dart';
 import 'package:doshi/isar/app_settings_database.dart';
+import 'package:doshi/isar/budget_database.dart';
 import 'package:doshi/isar/category_database.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/isar/entry.dart';
@@ -47,6 +48,8 @@ final subCategoryDatabaseProvider =
     StateNotifierProvider((ref) => SubCategoryDatabaseNotifier());
 final appSettingsDatabaseProvider =
     StateNotifierProvider((ref) => AppSettingsDatabaseNotifier());
+final budgetDatabaseProvider =
+    StateNotifierProvider((ref) => BudgetDatabaseNotifier());
 
 void setDefaultValues(WidgetRef ref) {
   ref.read(openSubCats.notifier).update((state) => -1);

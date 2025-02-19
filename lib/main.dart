@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:doshi/isar/app_settings.dart';
 import 'package:doshi/isar/app_settings_database.dart';
+import 'package:doshi/isar/budget_database.dart';
 import 'package:doshi/isar/category_database.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/isar/subcategory_database.dart';
@@ -24,6 +26,7 @@ Future<void> main() async {
   await EntryDatabaseNotifier.initialise();
   await CategoryDatabaseNotifier.initialise();
   await SubCategoryDatabaseNotifier.initialise();
+  await BudgetDatabaseNotifier.initialise();
 
   // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
@@ -84,11 +87,12 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   }
 
   void readEntries() async {
-    ref.read(appSettingsDatabaseProvider.notifier).fetchEntries();
-    ref.read(entryDatabaseProvider.notifier).fetchEntries();
-    ref.read(categoryDatabaseProvider.notifier).fetchEntries();
-    ref.read(subCategoryDatabaseProvider.notifier).fetchEntries();
-    final List appSettings =
+    await ref.read(appSettingsDatabaseProvider.notifier).fetchEntries();
+    await ref.read(entryDatabaseProvider.notifier).fetchEntries();
+    await ref.read(categoryDatabaseProvider.notifier).fetchEntries();
+    await ref.read(subCategoryDatabaseProvider.notifier).fetchEntries();
+    await ref.read(budgetDatabaseProvider.notifier).fetchEntries();
+    final List<AppSettingEntry> appSettings =
         await ref.read(appSettingsDatabaseProvider.notifier).fetchSettings();
     if (appSettings.length > 2) {
       ref
@@ -103,6 +107,13 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           .update((state) => appSettings[3].appSettingValue == "true");
     } else {
       ref.read(showCamera.notifier).update((state) => false);
+    }
+    if (appSettings.length > 4) {
+      ref
+          .read(budgetName.notifier)
+          .update((state) => appSettings[4].appSettingValue);
+    } else {
+      ref.read(budgetName.notifier).update((state) => "Default");
     }
   }
 

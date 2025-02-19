@@ -116,7 +116,6 @@ class CategoryDatabaseNotifier extends StateNotifier<List<CategoryEntry>> {
               .update((state) => expense.subCategory ?? "Uncategorised");
           ref.read(subCategoryColorInt.notifier).update(
               (state) => expense.subCategoryColor ?? Colors.white.value);
-          print("done");
           ref.read(entryDatabaseProvider.notifier).editEntry(
               expense.id,
               newCategory,

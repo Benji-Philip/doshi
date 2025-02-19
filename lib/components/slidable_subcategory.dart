@@ -37,6 +37,7 @@ class SlidableSubcategory extends ConsumerStatefulWidget {
 class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
     with SingleTickerProviderStateMixin {
   late SlidableController _slidableController;
+  bool openEnd = false;
 
   @override
   void initState() {
@@ -101,12 +102,12 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
         Slidable(
           controller: _slidableController,
           enabled: widget.slidableEnabled,
-          endActionPane: ActionPane(
+          startActionPane: ActionPane(
               extentRatio: 0.3,
               motion: const BehindMotion(),
               children: [
                 SlidableAction(
-                  padding: const EdgeInsets.only(right: 0, top: 5),
+                  padding: const EdgeInsets.only(right: 0, top: 9),
                   onPressed: (context) {
                     HapticFeedback.heavyImpact();
                     if (widget.subCatId != null) {
@@ -133,8 +134,13 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
                   foregroundColor: Theme.of(context).colorScheme.surface,
                   icon: Icons.edit_rounded,
                 ),
+              ]),
+          endActionPane: ActionPane(
+              extentRatio: 0.3,
+              motion: const BehindMotion(),
+              children: [
                 SlidableAction(
-                  padding: const EdgeInsets.only(right: 5, top: 5),
+                  padding: const EdgeInsets.only(right: 0, top: 9),
                   onPressed: (context) {
                     HapticFeedback.heavyImpact();
                     if (widget.subCatId != null) {
@@ -180,7 +186,13 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
               },
               onTap: () {
                 HapticFeedback.lightImpact();
-                _slidableController.openEndActionPane();
+                if (openEnd) {
+                  _slidableController.openStartActionPane();
+                  openEnd = false;
+                } else {
+                  _slidableController.openEndActionPane();
+                  openEnd = true;
+                }
               },
               child: Container(
                   alignment: Alignment.center,

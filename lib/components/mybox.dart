@@ -46,7 +46,7 @@ class MyBox extends StatelessWidget {
                       )
                     ],
                     style: GoogleFonts.montserrat(
-                        fontSize: 20, fontWeight: FontWeight.w700),
+                        fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),

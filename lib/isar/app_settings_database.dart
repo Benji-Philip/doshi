@@ -1,4 +1,5 @@
 import 'package:doshi/isar/app_settings.dart';
+import 'package:doshi/isar/budget.dart';
 import 'package:doshi/isar/category_entry.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/isar/subcategory_entry.dart';
@@ -16,13 +17,26 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
   // 2 = SelfiePath
   // 3 = CurrencySymbol
   // 4 = EnableCamera
+  // 5 = currentBudgetName
 
   final firstAppOpen = AppSettingEntry()
     ..appSettingName = "FirstAppOpen&SecondAppOpen"
     ..appSettingValue = "true&false";
+  final selfiePathSetting = AppSettingEntry()
+    ..appSettingName = "SelfiePath"
+    ..appSettingValue = "";
+  final currencySymbolSetting = AppSettingEntry()
+    ..appSettingName = "CurrencySymbol"
+    ..appSettingValue = "\$";
+  final enableCameraSetting = AppSettingEntry()
+    ..appSettingName = "EnableCamera"
+    ..appSettingValue = "false";
+  final currentBudgetNameSetting = AppSettingEntry()
+    ..appSettingName = "currentBudgetName"
+    ..appSettingValue = "Default";
   //list of entries
 
-  final List<AppSettingEntry> currentSettings = [];
+  List<AppSettingEntry> currentSettings = [];
 
   //Initialise
   static Future<void> initialise() async {
@@ -31,7 +45,8 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
       AppSettingEntrySchema,
       CategoryEntrySchema,
       EntrySchema,
-      SubCategoryEntrySchema
+      SubCategoryEntrySchema,
+      BudgetSchema,
     ], directory: dir.path);
   }
 
@@ -55,29 +70,49 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
 
   //read/fetch & update state
   Future<void> fetchEntries() async {
+    List<AppSettingEntry> newCurrentSettings = [];
     List<AppSettingEntry> fetchedEntries =
         await isar.appSettingEntrys.where().findAll();
     currentSettings.clear();
     currentSettings.addAll(fetchedEntries);
     if (currentSettings.isEmpty) {
       await isar.writeTxn(() => isar.appSettingEntrys.put(firstAppOpen));
-    } else if (currentSettings[0].appSettingValue == "true&false") {
-      editSetting(
-          currentSettings[0].id, "FirstAppOpen&SecondAppOpen", "true&true");
+      await isar.writeTxn(() => isar.appSettingEntrys.put(selfiePathSetting));
+      await isar
+          .writeTxn(() => isar.appSettingEntrys.put(currencySymbolSetting));
+      await isar.writeTxn(() => isar.appSettingEntrys.put(enableCameraSetting));
+      await isar
+          .writeTxn(() => isar.appSettingEntrys.put(currentBudgetNameSetting));
+    } else {
+      newCurrentSettings = await isar.appSettingEntrys.where().findAll();
+      if (newCurrentSettings.length < 2) {
+        // inititating setting 2 if it doesnt exist
+        await addSetting("SelfiePath", "");
+      }
+      newCurrentSettings = await isar.appSettingEntrys.where().findAll();
+      if (newCurrentSettings.length < 3) {
+        // inititating setting 3 if it doesnt exist
+        await addSetting("CurrencySymbol", "\$");
+      }
+      newCurrentSettings = await isar.appSettingEntrys.where().findAll();
+      if (newCurrentSettings.length < 4) {
+        // inititating setting 4 if it doesnt exist
+        await addSetting("EnableCamera", "false");
+      }
+      newCurrentSettings = await isar.appSettingEntrys.where().findAll();
+      if (newCurrentSettings.length < 5) {
+        // inititating setting 5 if it doesnt exist
+        await addSetting("currentBudgetName", "Default");
+      }
+      newCurrentSettings = await isar.appSettingEntrys.where().findAll();
+      if (currentSettings[0].appSettingValue == "true&false") {
+        editSetting(
+            currentSettings[0].id, "FirstAppOpen&SecondAppOpen", "true&true");
+      }
     }
-    if (currentSettings.length <= 1) {
-      // inititating setting 2 if it doesnt exist
-      addSetting("SelfiePath", "");
-    }
-    if (currentSettings.length <= 2) {
-      // inititating setting 3 if it doesnt exist
-      addSetting("CurrencySymbol", "\$");
-    }
-    if (currentSettings.length <= 3) {
-      // inititating setting 3 if it doesnt exist
-      addSetting("EnableCamera", "false");
-    }
-    state = [...currentSettings];
+    newCurrentSettings = await isar.appSettingEntrys.where().findAll();
+    currentSettings = [...newCurrentSettings];
+    state = [...newCurrentSettings];
   }
 
   Future<List<AppSettingEntry>> fetchSettings() async {

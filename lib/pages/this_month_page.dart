@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
+import 'package:doshi/components/page_budget_selector.dart';
 import 'package:doshi/components/settings_dialog.dart';
 import 'package:doshi/components/break_savings_dialog.dart';
 import 'package:doshi/components/edit_savings_dialog_box.dart';
@@ -20,7 +20,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 List<Widget> thisMonthPage(
-  double scrollOffset,
   double spaceFromTop,
   BuildContext context,
   double width,
@@ -37,8 +36,30 @@ List<Widget> thisMonthPage(
   List<Widget> homePage = [
     SliverToBoxAdapter(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          GestureDetector(
+            onTap: () {
+            },
+            // ignore: avoid_unnecessary_containers
+            child: Container(
+              height: spaceFromTop - 30,
+              color: Colors.transparent,
+              child: SizedBox(
+                width: width * 0.7,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text("Home",
+                    style: GoogleFonts.montserrat(
+                        color: Colors.transparent,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ),
+          ),
           Opacity(
             opacity: 0,
             child: Padding(
@@ -125,6 +146,7 @@ List<Widget> thisMonthPage(
             EdgeInsets.only(top: -20.0 + spaceFromTop, right: 21, left: 21),
         child: Column(
           children: [
+            const ScrollableBudgetSelector(),
             Padding(
                 padding: const EdgeInsets.only(bottom: 24.0, top: 0),
                 child: Flex(
@@ -133,7 +155,7 @@ List<Widget> thisMonthPage(
                     Flexible(
                       flex: 3,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
+                        padding: EdgeInsets.only(right: ref.watch(showCamera)?12.0:0.0),
                         child: GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
@@ -162,8 +184,9 @@ List<Widget> thisMonthPage(
                                 ],
                                 border: Border.all(
                                     width: 5,
-                                    color:
-                                        Theme.of(context).colorScheme.tertiary),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiary),
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(25)),
                                 color: Theme.of(context).colorScheme.onPrimary),
@@ -176,7 +199,7 @@ List<Widget> thisMonthPage(
                                     SizedBox(
                                       height: 60,
                                       child: FittedBox(
-                                        fit: BoxFit.contain,
+                                        fit: BoxFit.scaleDown,
                                         child: Text(
                                           amountInVault == 0.0
                                               ? "${ref.watch(currencyProvider)}0.0"
@@ -184,7 +207,7 @@ List<Widget> thisMonthPage(
                                                   amountInVault
                                                       .toStringAsFixed(2),
                                           style: GoogleFonts.montserrat(
-                                              fontSize: 60,
+                                              fontSize: 38,
                                               fontWeight: FontWeight.w700,
                                               color: amountInVault > 0.0
                                                   ? Theme.of(context)
@@ -292,7 +315,7 @@ List<Widget> thisMonthPage(
                                           width: 5,
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .tertiary),
+                                              .onTertiary),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(25)),
                                       color: Colors.transparent),
@@ -321,13 +344,10 @@ List<Widget> thisMonthPage(
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: Text(
-                            'This Month',
-                            style: GoogleFonts.montserrat(
-                                fontSize: 24, fontWeight: FontWeight.w700),
-                          ),
+                        child: Text(
+                          'This Month',
+                          style: GoogleFonts.montserrat(
+                              fontSize: 20, fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -419,13 +439,10 @@ List<Widget> thisMonthPage(
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                      'Savings',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 24, fontWeight: FontWeight.w700),
-                    ),
+                  child: Text(
+                    'Savings',
+                    style: GoogleFonts.montserrat(
+                        fontSize: 20, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -473,7 +490,7 @@ List<Widget> thisMonthPage(
                                   entriesDatabaseNotifier.amountInSavings
                                       .toStringAsFixed(2),
                               style: GoogleFonts.montserrat(
-                                fontSize: 21,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),

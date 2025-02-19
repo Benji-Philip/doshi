@@ -20,7 +20,7 @@ class BackupRestoreDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
-  final String versionNumber = "0.5.4";
+  final String versionNumber = "0.5.6";
   final InAppPurchase _iap = InAppPurchase.instance;
   late List<ProductDetails> product;
   bool _iapAvailable = false;

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MyTextField extends ConsumerStatefulWidget {
+  final bool? isBudget;
   final double width;
   final double? innerHorizontalPadding;
   final TextEditingController? myController;
@@ -33,6 +34,7 @@ class MyTextField extends ConsumerStatefulWidget {
     this.iconVisible,
     this.myHintTextStyle,
     this.validator,
+    this.isBudget,
   });
 
   @override
@@ -57,6 +59,7 @@ class _MyTextFieldState extends ConsumerState<MyTextField> {
           children: [
             Expanded(
               child: TextFormField(
+                maxLines: null,
                 autofocus: true,
                 inputFormatters: widget.myTextFilter,
                 validator: (textField) {
@@ -64,6 +67,30 @@ class _MyTextFieldState extends ConsumerState<MyTextField> {
                   if (textField == null ||
                       textField.isEmpty && validator == true) {
                     return 'cannot be empty';
+                  } else if (widget.isBudget ?? false) {
+                    for (var i = 0;
+                        i <
+                            ref
+                                    .read(budgetDatabaseProvider.notifier)
+                                    .currentBudgets
+                                    .length +
+                                1;
+                        i++) {
+                      if (i !=
+                          ref
+                              .read(budgetDatabaseProvider.notifier)
+                              .currentBudgets
+                              .length) {
+                        if (textField.toLowerCase() ==
+                            ref
+                                .read(budgetDatabaseProvider.notifier)
+                                .currentBudgets[i]
+                                .budgetName
+                                .toLowerCase()) {
+                          return 'already exists';
+                        }
+                      }
+                    }
                   } else {
                     for (var i = 0;
                         i <

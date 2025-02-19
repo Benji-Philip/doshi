@@ -28,13 +28,10 @@ List<Widget> historyPage(
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                      'History',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 24, fontWeight: FontWeight.w700),
-                    ),
+                  child: Text(
+                    'History',
+                    style: GoogleFonts.montserrat(
+                        fontSize: 20, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),

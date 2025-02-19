@@ -36,6 +36,7 @@ class SlidableEntry extends ConsumerStatefulWidget {
 class _SlidableEntryState extends ConsumerState<SlidableEntry>
     with SingleTickerProviderStateMixin {
   late SlidableController _slidableController;
+  bool openEnd = false;
 
   @override
   void initState() {
@@ -44,8 +45,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
   }
 
   @override
-  void dispose() {
-    _slidableController.dispose();
+    void dispose() {
+      _slidableController.dispose();
     super.dispose();
   }
 
@@ -54,7 +55,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(bottom: widget.index == 0 ? 0 : 13),
+          padding: EdgeInsets.only(bottom: widget.index == 0 ? 0 : 0),
           child: Visibility(
             visible: widget.index == 0
                 ? true
@@ -66,7 +67,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                     : true,
             child: Padding(
               padding:
-                  EdgeInsets.only(top: widget.index == 0 ? 0 : 20, bottom: 15),
+                  EdgeInsets.only(top: widget.index == 0 ? 0 : 0, bottom: 12),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: FittedBox(
@@ -81,7 +82,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                     style: GoogleFonts.montserrat(
                         color: Theme.of(context).colorScheme.primary,
                         decorationColor: const Color.fromARGB(0, 255, 255, 255),
-                        fontSize: 21,
+                        fontSize: 16,
                         fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -89,76 +90,109 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
             ),
           ),
         ),
-        Container(
-          width: widget.width * 0.86,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            color: widget.useColorChange
-                ? Theme.of(context).colorScheme.onTertiary
-                : Theme.of(context).colorScheme.tertiary,
-            borderRadius: BorderRadius.all(
-                Radius.circular(widget.useColorChange ? 20 : 15)),
-          ),
-          child: Slidable(
-            controller: _slidableController,
-            endActionPane: ActionPane(
-              motion: const DrawerMotion(),
-              children: [
-                SlidableAction(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: (context) async {
-                    HapticFeedback.heavyImpact();
-                    await showGeneralDialog(
-                        pageBuilder: (context, anim1, anim2) {
-                          return const Placeholder();
-                        },
-                        context: context,
-                        transitionBuilder: (context, anim1, anim2, child) {
-                          return Opacity(
-                              opacity: anim1.value,
-                              child: widget.currentEntries.isNotEmpty &&
-                                      widget.index <
-                                          widget.currentEntries.length
-                                  ? DeleteEntryDialogBox(
-                                      useColorChange: widget.useColorChange,
-                                      analysisDialog: widget.analysisDialog,
-                                      id: widget
-                                          .currentEntries[widget.index].id)
-                                  : const Text(""));
-                        },
-                        transitionDuration: const Duration(milliseconds: 200));
-                  },
-                  backgroundColor: const Color(0xFFFE4A49),
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete_rounded,
-                ),
-                SlidableAction(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: (context) {
-                    HapticFeedback.heavyImpact();
-                    ref.read(amountText.notifier).update((state) =>
-                        widget.currentEntries[widget.index].amount.toString());
-                    ref.read(dateTimeVar.notifier).update((state) =>
-                        widget.currentEntries[widget.index].dateTime);
-                    ref.read(categoryText.notifier).update((state) =>
-                        widget.currentEntries[widget.index].category ??
-                        "Uncategorised");
-                    ref.read(subCategoryText.notifier).update((state) =>
-                        widget.currentEntries[widget.index].subCategory ??
-                        "Uncategorised");
-                    ref.read(noteText.notifier).update((state) =>
-                        widget.currentEntries[widget.index].note ?? "");
-                    ref.read(isExpense.notifier).update((state) =>
-                        widget.currentEntries[widget.index].isExpense);
-                    ref.read(categoryColorInt.notifier).update((state) =>
-                        widget.currentEntries[widget.index].categoryColor ??
-                        Colors.white.value);
-                    ref.read(subCategoryColorInt.notifier).update((state) =>
-                        widget.currentEntries[widget.index].subCategoryColor ??
-                        Colors.white.value);
-                    if (widget.currentEntries[widget.index].isExpense == true) {
-                      ref.read(isExpense.notifier).update((state) => true);
-                      showGeneralDialog(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: Container(
+            width: widget.width * 0.86,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: widget.useColorChange
+                  ? Theme.of(context).colorScheme.onTertiary
+                  : Theme.of(context).colorScheme.tertiary,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(widget.useColorChange ? 20 : 15)),
+            ),
+            child: Slidable(
+              controller: _slidableController,
+              startActionPane: ActionPane(
+                extentRatio: 0.3,
+                motion: const DrawerMotion(),
+                children: [
+                  SlidableAction(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: (context) {
+                      HapticFeedback.heavyImpact();
+                      ref.read(amountText.notifier).update((state) =>
+                          widget.currentEntries[widget.index].amount.toString());
+                      ref.read(dateTimeVar.notifier).update((state) =>
+                          widget.currentEntries[widget.index].dateTime);
+                      ref.read(categoryText.notifier).update((state) =>
+                          widget.currentEntries[widget.index].category ??
+                          "Uncategorised");
+                      ref.read(subCategoryText.notifier).update((state) =>
+                          widget.currentEntries[widget.index].subCategory ??
+                          "Uncategorised");
+                      ref.read(noteText.notifier).update((state) =>
+                          widget.currentEntries[widget.index].note ?? "");
+                      ref.read(isExpense.notifier).update((state) =>
+                          widget.currentEntries[widget.index].isExpense);
+                      ref.read(categoryColorInt.notifier).update((state) =>
+                          widget.currentEntries[widget.index].categoryColor ??
+                          Colors.white.value);
+                      ref.read(subCategoryColorInt.notifier).update((state) =>
+                          widget.currentEntries[widget.index].subCategoryColor ??
+                          Colors.white.value);
+                      if (widget.currentEntries[widget.index].isExpense == true) {
+                        ref.read(isExpense.notifier).update((state) => true);
+                        showGeneralDialog(
+                            pageBuilder: (context, anim1, anim2) {
+                              return const Placeholder();
+                            },
+                            context: context,
+                            transitionBuilder: (context, anim1, anim2, child) {
+                              return Opacity(
+                                  opacity: anim1.value,
+                                  child: widget.currentEntries.isNotEmpty &&
+                                          widget.index <
+                                              widget.currentEntries.length
+                                      ? EditEntryDialogBox(
+                                          useColorChange: widget.useColorChange,
+                                          analysisDialog: widget.analysisDialog,
+                                          id: widget
+                                              .currentEntries[widget.index].id,
+                                        )
+                                      : const Text(""));
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 200));
+                      } else {
+                        ref.read(isExpense.notifier).update((state) => false);
+                        showGeneralDialog(
+                            pageBuilder: (context, anim1, anim2) {
+                              return const Placeholder();
+                            },
+                            context: context,
+                            transitionBuilder: (context, anim1, anim2, child) {
+                              return Opacity(
+                                  opacity: anim1.value,
+                                  child: widget.currentEntries.isNotEmpty &&
+                                          widget.index <
+                                              widget.currentEntries.length
+                                      ? EditIncomeDialogBox(
+                                          id: widget
+                                              .currentEntries[widget.index].id,
+                                        )
+                                      : const Text(""));
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 200));
+                      }
+                    },
+                    backgroundColor: const Color(0xFF21B7CA),
+                    foregroundColor: Colors.white,
+                    icon: Icons.edit_rounded,
+                  ),
+                ],
+              ),
+              endActionPane: ActionPane(
+                extentRatio: 0.3,
+                motion: const DrawerMotion(),
+                children: [
+                  SlidableAction(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: (context) async {
+                      HapticFeedback.heavyImpact();
+                      await showGeneralDialog(
                           pageBuilder: (context, anim1, anim2) {
                             return const Placeholder();
                           },
@@ -169,230 +203,163 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                 child: widget.currentEntries.isNotEmpty &&
                                         widget.index <
                                             widget.currentEntries.length
-                                    ? EditEntryDialogBox(
+                                    ? DeleteEntryDialogBox(
                                         useColorChange: widget.useColorChange,
                                         analysisDialog: widget.analysisDialog,
                                         id: widget
-                                            .currentEntries[widget.index].id,
-                                      )
+                                            .currentEntries[widget.index].id)
                                     : const Text(""));
                           },
-                          transitionDuration:
-                              const Duration(milliseconds: 200));
-                    } else {
-                      ref.read(isExpense.notifier).update((state) => false);
-                      showGeneralDialog(
-                          pageBuilder: (context, anim1, anim2) {
-                            return const Placeholder();
-                          },
-                          context: context,
-                          transitionBuilder: (context, anim1, anim2, child) {
-                            return Opacity(
-                                opacity: anim1.value,
-                                child: widget.currentEntries.isNotEmpty &&
-                                        widget.index <
-                                            widget.currentEntries.length
-                                    ? EditIncomeDialogBox(
-                                        id: widget
-                                            .currentEntries[widget.index].id,
-                                      )
-                                    : const Text(""));
-                          },
-                          transitionDuration:
-                              const Duration(milliseconds: 200));
-                    }
-                  },
-                  backgroundColor: const Color(0xFF21B7CA),
-                  foregroundColor: Colors.white,
-                  icon: Icons.edit_rounded,
-                ),
-              ],
-            ),
-            child: GestureDetector(
-              onTap: () {
-                HapticFeedback.lightImpact();
-                _slidableController.openEndActionPane();
-              },
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: widget.useColorChange
-                      ? Theme.of(context).colorScheme.onTertiary
-                      : Theme.of(context).colorScheme.tertiary,
-                  border: Border.all(
-                      color: widget.useColorChange
-                          ? Theme.of(context).colorScheme.onTertiary
-                          : Theme.of(context).colorScheme.tertiary,
-                      width: 3),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(widget.useColorChange ? 20 : 15)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 4, right: 21.0, top: 10, bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        flex: 2,
-                        child: Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8),
-                                        child: Container(
-                                          width: 10,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                              color: widget
-                                                          .currentEntries[
-                                                              widget.index]
-                                                          .isExpense ==
-                                                      false
-                                                  ? Colors.lightGreen
-                                                  : Color(widget
-                                                          .currentEntries[
-                                                              widget.index]
-                                                          .categoryColor ??
-                                                      Colors.white.value),
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(100))),
+                          transitionDuration: const Duration(milliseconds: 200));
+                    },
+                    backgroundColor: const Color(0xFFFE4A49),
+                    foregroundColor: Colors.white,
+                    icon: Icons.delete_rounded,
+                  ),
+                ],
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  if (openEnd) {
+                    _slidableController.openStartActionPane();
+                    openEnd = false;
+                  } else {
+                    _slidableController.openEndActionPane();
+                    openEnd = true;
+                  }
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: widget.useColorChange
+                        ? Theme.of(context).colorScheme.onTertiary
+                        : Theme.of(context).colorScheme.tertiary,
+                    border: Border.all(
+                        color: widget.useColorChange
+                            ? Theme.of(context).colorScheme.onTertiary
+                            : Theme.of(context).colorScheme.tertiary,
+                        width: 3),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(widget.useColorChange ? 20 : 15)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 4, right: 21.0, top: 10, bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          flex: 2,
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8),
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                                color: widget
+                                                            .currentEntries[
+                                                                widget.index]
+                                                            .isExpense ==
+                                                        false
+                                                    ? Colors.lightGreen
+                                                    : Color(widget
+                                                            .currentEntries[
+                                                                widget.index]
+                                                            .categoryColor ??
+                                                        Colors.white.value),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(100))),
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                2.3,
-                                        child: Text(
-                                          widget.currentEntries[widget.index]
-                                                      .category ==
-                                                  "Uncategorised"
-                                              ? widget
-                                                      .currentEntries[
-                                                          widget.index]
-                                                      .isExpense
-                                                  ? 'Expense'
-                                                  : 'Income'
-                                              : widget
-                                                      .currentEntries[
-                                                          widget.index]
-                                                      .category ??
-                                                  '',
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                              decorationColor:
-                                                  const Color.fromARGB(
-                                                      0, 255, 255, 255),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700),
+                                        SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width /
+                                                  2.3,
+                                          child: Text(
+                                            widget.currentEntries[widget.index]
+                                                        .category ==
+                                                    "Uncategorised"
+                                                ? widget
+                                                        .currentEntries[
+                                                            widget.index]
+                                                        .isExpense
+                                                    ? 'Expense'
+                                                    : 'Income'
+                                                : widget
+                                                        .currentEntries[
+                                                            widget.index]
+                                                        .category ??
+                                                    '',
+                                            softWrap: true,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.montserrat(
+                                                decorationColor:
+                                                    const Color.fromARGB(
+                                                        0, 255, 255, 255),
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700),
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Visibility(
-                                  visible: widget.currentEntries[widget.index]
-                                              .subCategory !=
-                                          null &&
-                                      widget.currentEntries[widget.index]
-                                              .subCategory !=
-                                          "Uncategorised",
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 20, right: 6),
-                                        child: Container(
-                                          width: 8,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                              color: Color(widget
-                                                      .currentEntries[
-                                                          widget.index]
-                                                      .subCategoryColor ??
-                                                  Colors.white.value),
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(100))),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        child: Text(
-                                          widget.currentEntries[widget.index]
-                                                  .isExpense
-                                              ? widget
-                                                          .currentEntries[
-                                                              widget.index]
-                                                          .subCategory !=
-                                                      "Uncategorised"
-                                                  ? widget
-                                                          .currentEntries[
-                                                              widget.index]
-                                                          .subCategory ??
-                                                      ''
-                                                  : ''
-                                              : '',
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                              decorationColor:
-                                                  const Color.fromARGB(
-                                                      0, 255, 255, 255),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withOpacity(0.75),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: widget.currentEntries[widget.index]
-                                              .note !=
-                                          ""
-                                      ? true
-                                      : false,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 19.0),
+                                  Visibility(
+                                    visible: widget.currentEntries[widget.index]
+                                                .subCategory !=
+                                            null &&
+                                        widget.currentEntries[widget.index]
+                                                .subCategory !=
+                                            "Uncategorised",
                                     child: Row(
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 4, right: 9),
+                                              left: 20, right: 6),
                                           child: Container(
-                                            width: 3,
-                                            height: 10,
+                                            width: 8,
+                                            height: 8,
                                             decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
-                                                    .withOpacity(0.5),
+                                                color: Color(widget
+                                                        .currentEntries[
+                                                            widget.index]
+                                                        .subCategoryColor ??
+                                                    Colors.white.value),
                                                 borderRadius:
                                                     const BorderRadius.all(
-                                                        Radius.circular(5))),
+                                                        Radius.circular(100))),
                                           ),
                                         ),
                                         SizedBox(
-                                          width: widget.width * 0.4,
                                           child: Text(
                                             widget.currentEntries[widget.index]
-                                                    .note ??
-                                                '',
+                                                    .isExpense
+                                                ? widget
+                                                            .currentEntries[
+                                                                widget.index]
+                                                            .subCategory !=
+                                                        "Uncategorised"
+                                                    ? widget
+                                                            .currentEntries[
+                                                                widget.index]
+                                                            .subCategory ??
+                                                        ''
+                                                    : ''
+                                                : '',
                                             softWrap: true,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.montserrat(
@@ -403,44 +370,94 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                     .colorScheme
                                                     .primary
                                                     .withOpacity(0.75),
-                                                fontSize: 10,
+                                                fontSize: 12,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Flexible(
-                        flex: 1,
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: Text(
-                            widget.currentEntries[widget.index].isExpense
-                                ? "-${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}"
-                                : "+${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}",
-                            softWrap: true,
-                            style: GoogleFonts.montserrat(
-                                decorationColor:
-                                    const Color.fromARGB(0, 255, 255, 255),
-                                color: widget
-                                        .currentEntries[widget.index].isExpense
-                                    ? Colors.redAccent
-                                    : Colors.lightGreen,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700),
+                                  Visibility(
+                                    visible: widget.currentEntries[widget.index]
+                                                .note !=
+                                            ""
+                                        ? true
+                                        : false,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 19.0),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 4, right: 9),
+                                            child: Container(
+                                              width: 3,
+                                              height: 10,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                      .withOpacity(0.5),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(5))),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: widget.width * 0.4,
+                                            child: Text(
+                                              widget.currentEntries[widget.index]
+                                                      .note ??
+                                                  '',
+                                              softWrap: true,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.montserrat(
+                                                  decorationColor:
+                                                      const Color.fromARGB(
+                                                          0, 255, 255, 255),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                      .withOpacity(0.75),
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              widget.currentEntries[widget.index].isExpense
+                                  ? "-${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}"
+                                  : "+${ref.watch(currencyProvider)}${widget.currentEntries[widget.index].amount}",
+                              softWrap: true,
+                              style: GoogleFonts.montserrat(
+                                  decorationColor:
+                                      const Color.fromARGB(0, 255, 255, 255),
+                                  color: widget
+                                          .currentEntries[widget.index].isExpense
+                                      ? Colors.redAccent
+                                      : Colors.lightGreen,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -38,6 +38,7 @@ class SlidableCategory extends ConsumerStatefulWidget {
 class _SlidableCategoryState extends ConsumerState<SlidableCategory>
     with SingleTickerProviderStateMixin {
   late SlidableController _slidableController;
+  bool openEnd = true;
 
   @override
   void initState() {
@@ -109,7 +110,7 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
             Slidable(
               controller: _slidableController,
               enabled: widget.index == 0 || widget.notInList ? false : true,
-              endActionPane: ActionPane(
+              startActionPane: ActionPane(
                   extentRatio: 0.3,
                   motion: const BehindMotion(),
                   children: [
@@ -139,9 +140,14 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                       backgroundColor: const Color.fromARGB(0, 255, 255, 255),
                       foregroundColor: Theme.of(context).colorScheme.surface,
                       icon: Icons.edit_rounded,
-                    ),
+                    )
+                  ]),
+              endActionPane: ActionPane(
+                  extentRatio: 0.3,
+                  motion: const BehindMotion(),
+                  children: [
                     SlidableAction(
-                      padding: const EdgeInsets.only(right: 5),
+                      padding: const EdgeInsets.only(right: 0),
                       onPressed: (context) {
                         HapticFeedback.heavyImpact();
                         showGeneralDialog(
@@ -195,7 +201,13 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                     if (widget.index == 0 || widget.notInList) {
                       return;
                     }
-                    _slidableController.openEndActionPane();
+                    if (openEnd) {
+                      _slidableController.openStartActionPane();
+                      openEnd = false;
+                    } else {
+                      _slidableController.openEndActionPane();
+                      openEnd = true;
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),

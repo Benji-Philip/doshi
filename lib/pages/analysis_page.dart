@@ -83,10 +83,10 @@ List<Widget> analysisPage(
                           style: GoogleFonts.montserrat(
                               color: Theme.of(context).colorScheme.primary,
                               decorationThickness: 2,
-                              fontSize: 24,
+                              fontSize: 20,
                               fontWeight: FontWeight.w700,
                               decoration: TextDecoration.underline,
-                              decorationStyle: TextDecorationStyle.dotted,
+                              decorationStyle: TextDecorationStyle.dashed,
                               decorationColor:
                                   Theme.of(context).colorScheme.primary),
                         ),
@@ -116,11 +116,11 @@ List<Widget> analysisPage(
                     alignment: Alignment.center,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
-                        color: Theme.of(context).colorScheme.onTertiary),
+                      borderRadius: const BorderRadius.all(Radius.circular(15),),
+                      color: Theme.of(context).colorScheme.onTertiary
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
                         "Categories",
                         style: GoogleFonts.montserrat(
@@ -156,7 +156,7 @@ List<Widget> analysisPage(
                             const BorderRadius.all(Radius.circular(15)),
                         color: Theme.of(context).colorScheme.onTertiary),
                     child: Padding(
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
                         "Subcategories",
                         style: GoogleFonts.montserrat(
@@ -201,7 +201,7 @@ List<Widget> analysisPage(
                     child: Text(
                       'This Week',
                       style: GoogleFonts.montserrat(
-                          fontSize: 24, fontWeight: FontWeight.w700),
+                          fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),

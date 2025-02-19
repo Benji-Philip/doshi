@@ -343,4 +343,14 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
         Colors.white.value);
     await fetchEntries();
   }
+
+  void updateWithBudget(listOfEntries) async {
+    await isar.writeTxn(() => isar.entrys.clear());
+    List<Entry> entryList = [];
+    for (var entry in listOfEntries) {
+      entryList.add(entry);
+    }
+    await isar.writeTxn(() => isar.entrys.putAll(entryList));
+    fetchEntries();
+  }
 }

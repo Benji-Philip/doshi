@@ -256,27 +256,16 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                               children: [
                                 Container(
                                   height: 55,
-                                  width: widget.width * 0.85,
+                                  width: widget.width * 0.8,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: widget.isDialogBox != null
-                                        ? widget.isDialogBox!
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .onTertiary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
                                     border: Border.all(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .tertiary,
+                                            .onTertiary,
                                         width: 5),
                                     borderRadius: const BorderRadius.all(
-                                        Radius.circular(100)),
+                                        Radius.circular(20)),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only(
