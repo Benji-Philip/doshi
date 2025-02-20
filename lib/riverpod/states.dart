@@ -15,6 +15,10 @@ final analysisOfCatExpenses = StateProvider(
     (ref) => ref.read(entryDatabaseProvider.notifier).analysisOfCategories);
 final analysisOfSubCatExpenses = StateProvider(
     (ref) => ref.read(entryDatabaseProvider.notifier).analysisOfSubCategories);
+    final totalAnalysisOfCatExpenses = StateProvider(
+    (ref) => ref.read(entryDatabaseProvider.notifier).totalAnalysisOfCategories);
+final totalAnalysisOfSubCatExpenses = StateProvider(
+    (ref) => ref.read(entryDatabaseProvider.notifier).totalAnalysisOfSubCategories);
 
 final appOpened = StateProvider((ref) => false);
 final exceedVault = StateProvider((ref) => false);

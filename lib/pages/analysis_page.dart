@@ -1,5 +1,7 @@
-import 'package:doshi/components/bar_graph_weekly.dart';
+
 import 'package:doshi/components/my_piechart.dart';
+import 'package:doshi/components/my_total_piechart.dart';
+import 'package:doshi/components/mybox.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/sort_entries.dart';
@@ -22,12 +24,15 @@ List<Widget> analysisPage(
 ) {
   bool headers = true;
   return [
-    Consumer(builder: (context, ref, child) {
+    SliverToBoxAdapter(
+      child: SizedBox(
+        height: 70 + spaceFromTop,
+      ),
+    ),Consumer(builder: (context, ref, child) {
       final dateToDisp = ref.watch(dateToDisplay);
       return SliverToBoxAdapter(
         child: Padding(
-          padding: EdgeInsets.only(
-              top: 70 + spaceFromTop, right: 21, left: 21, bottom: 10),
+          padding: const EdgeInsets.only(right: 21, left: 21, bottom: 10),
           child: Flex(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -116,9 +121,10 @@ List<Widget> analysisPage(
                     alignment: Alignment.center,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(15),),
-                      color: Theme.of(context).colorScheme.onTertiary
-                    ),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                        color: Theme.of(context).colorScheme.onTertiary),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
@@ -199,7 +205,7 @@ List<Widget> analysisPage(
                   child: FittedBox(
                     fit: BoxFit.contain,
                     child: Text(
-                      'This Week',
+                      'All Expenses',
                       style: GoogleFonts.montserrat(
                           fontSize: 20, fontWeight: FontWeight.w700),
                     ),
@@ -211,31 +217,109 @@ List<Widget> analysisPage(
         ),
       ),
     ),
-    SliverToBoxAdapter(
-      child: Padding(
-          padding:
-              const EdgeInsets.only(right: 21.0, left: 21, top: 21, bottom: 10),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: width,
-              height: 150,
-              child: BarGraph(
-                linearGradColor1: Theme.of(context).colorScheme.primary,
-                linearGradColor2: Theme.of(context).colorScheme.primary,
-                mon: entriesDatabaseNotifier.monday,
-                tue: entriesDatabaseNotifier.tuesday,
-                wed: entriesDatabaseNotifier.wednesday,
-                thur: entriesDatabaseNotifier.thursday,
-                fri: entriesDatabaseNotifier.friday,
-                sat: entriesDatabaseNotifier.saturday,
-                sun: entriesDatabaseNotifier.sunday,
-                avg: entriesDatabaseNotifier.sumOfthisWeeksExpenses / 7,
-                context: context,
+    Consumer(builder: (context, ref, child) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 0, right: 21, left: 21,),
+          child: Column(
+            children: [
+              Padding(
+              padding: const EdgeInsets.only(bottom: 12.0,top: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      child: MyBox(
+                          width: width,
+                          label: 'Total',
+                          amount:
+                              "${ref.watch(currencyProvider)}${entriesDatabaseNotifier.totalExpenses}")),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                      child: MyBox(
+                          width: width,
+                          label: 'Daily Average',
+                          amount: ref.watch(currencyProvider) +
+                              entriesDatabaseNotifier.totalDailyAverage
+                                  .toStringAsFixed(2)))
+                ],
               ),
             ),
-          )),
-    ),
+              Visibility(
+                visible: headers,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                        color: Theme.of(context).colorScheme.onTertiary),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Categories",
+                        style: GoogleFonts.montserrat(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                      child: MyTotalPieChart(
+                    includeUncat: true,
+                    useSubCat: false,
+                    width: width,
+                  )),
+                ],
+              ),
+              Visibility(
+                visible: headers,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(15)),
+                        color: Theme.of(context).colorScheme.onTertiary),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Subcategories",
+                        style: GoogleFonts.montserrat(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              MyTotalPieChart(
+                isDialogBox: false,
+                includeUncat: false,
+                width: width,
+                useSubCat: true,
+              )
+            ],
+          ),
+        ),
+      );
+    }),
     const SliverToBoxAdapter(
       child: SizedBox(
         height: 100,

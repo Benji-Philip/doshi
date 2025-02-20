@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
+import 'package:doshi/components/bar_graph_weekly.dart';
 import 'package:doshi/components/page_budget_selector.dart';
 import 'package:doshi/components/settings_dialog.dart';
 import 'package:doshi/components/break_savings_dialog.dart';
@@ -426,6 +427,63 @@ List<Widget> thisMonthPage(
     ),
     SliverToBoxAdapter(
       child: Padding(
+        padding:
+            const EdgeInsets.only(top: 20, bottom: 16.0, right: 21, left: 21),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.amber, width: 3),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'This Week',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+    SliverToBoxAdapter(
+      child: Padding(
+          padding:
+              const EdgeInsets.only(right: 21.0, left: 21, top: 21, bottom: 24),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: width,
+              height: 150,
+              child: BarGraph(
+                linearGradColor1: Theme.of(context).colorScheme.primary,
+                linearGradColor2: Theme.of(context).colorScheme.primary,
+                mon: entriesDatabaseNotifier.monday,
+                tue: entriesDatabaseNotifier.tuesday,
+                wed: entriesDatabaseNotifier.wednesday,
+                thur: entriesDatabaseNotifier.thursday,
+                fri: entriesDatabaseNotifier.friday,
+                sat: entriesDatabaseNotifier.saturday,
+                sun: entriesDatabaseNotifier.sunday,
+                avg: entriesDatabaseNotifier.sumOfthisWeeksExpenses / 7,
+                context: context,
+              ),
+            ),
+          )),
+    ),
+    SliverToBoxAdapter(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 21.0),
         child: Column(
           children: [
@@ -566,6 +624,6 @@ List<Widget> thisMonthPage(
       height: 220,
     ))
   ];
-  homePage.insertAll(3, historyPage(spaceFromTop, width, ref, currentEntries));
+  homePage.insertAll(5, historyPage(spaceFromTop, width, ref, currentEntries));
   return homePage;
 }

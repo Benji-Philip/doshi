@@ -37,9 +37,6 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
   double saturday = 0.0;
   double sunday = 0.0;
 
-  double totalExpenses = 0.0;
-  double totalDailyAverage = 0.0;
-
   final List<Entry> currentIncomesAndExpenses = [];
   double amountInVault = 0.0;
   double amountInSavings = 0.0;
@@ -58,6 +55,21 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
   final List<Entry> thisWeekExpenses = [];
   double totalSumOfExpenditures = 0.0;
 
+  // stuff for yearly insights
+
+  double yearlyDailyAverage = 0.0;
+  double yearlyTotalSpending = 0.0;
+  double yearlyMonthlyAverage = 0.0;
+  final List<CategoryAnalysisEntry> yearlyAnalysisOfCategories = [];
+  final List<SubCategoryAnalysisEntry> yearlyAnalysisOfSubCategories = [];
+
+  // stuff for all time insights
+
+  final List<CategoryAnalysisEntry> totalAnalysisOfCategories = [];
+  final List<SubCategoryAnalysisEntry> totalAnalysisOfSubCategories = [];
+
+  double totalExpenses = 0.0;
+  double totalDailyAverage = 0.0;
   //create
 
   Future<void> addEntry(
@@ -88,7 +100,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     await isar.writeTxn(() => isar.entrys.put(newEntry));
 
     //update from database
-    fetchEntries();
+    await fetchEntries();
   }
 
   //read/fetch & update state
@@ -118,7 +130,6 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     double sumOfExpensesThisMonth = sumOfEntries(theListOfExpensesThisMonth);
     double sumOfSavings = sumOfEntries(listOfSavings);
     amountInSavings = sumOfSavings;
-
     amountInVault = sumOfEntries(listOfIncomes) - sumOfExpenses;
     dailyAverage = double.parse((sumOfExpensesThisMonth /
             numberOfExpensesGroupedByDay(theListOfExpensesThisMonth))
@@ -142,6 +153,11 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     analysisOfSubCategories.clear();
     analysisOfSubCategories
         .addAll(sortIntoSubCategories(theListOfExpensesThisMonth));
+    totalAnalysisOfCategories.clear();
+    analysisOfCategories.addAll(sortIntoCategories(theListOfTheExpenses));
+    totalAnalysisOfSubCategories.clear();
+    analysisOfSubCategories
+        .addAll(sortIntoSubCategories(theListOfTheExpenses));
     state = [...sortedList];
   }
 
