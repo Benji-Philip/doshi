@@ -104,8 +104,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
             ),
             child: Slidable(
               controller: _slidableController,
-              startActionPane: ActionPane(
-                extentRatio: 0.3,
+              endActionPane: ActionPane(
+                extentRatio: 0.5,
                 motion: const DrawerMotion(),
                 children: [
                   SlidableAction(
@@ -182,12 +182,6 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                     foregroundColor: Colors.white,
                     icon: Icons.edit_rounded,
                   ),
-                ],
-              ),
-              endActionPane: ActionPane(
-                extentRatio: 0.3,
-                motion: const DrawerMotion(),
-                children: [
                   SlidableAction(
                     padding: const EdgeInsets.all(0),
                     onPressed: (context) async {

@@ -78,10 +78,7 @@ class _ScrollableBudgetSelectorState
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        ref
-                            .watch(appSettingsDatabaseProvider.notifier)
-                            .currentSettings[4]
-                            .appSettingValue,
+                        ref.watch(budgetName),
                         style: GoogleFonts.montserrat(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,

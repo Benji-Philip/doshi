@@ -1,8 +1,10 @@
 import 'dart:io' as io;
+import 'package:doshi/isar/app_settings.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/math_of_entries.dart';
 import 'package:doshi/logic/sort_entries.dart';
 import 'package:doshi/main.dart';
+import 'package:doshi/pages/home_page.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -240,6 +242,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
       await backupFile.copy(dbPath);
 
       await Initialiser().initialiseDatabses();
+      updateAppSettingProviders(ref);
       showToast("Restored successfully");
     } else {
       showToast("Cancelled");
@@ -347,5 +350,31 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     }
     await isar.writeTxn(() => isar.entrys.putAll(entryList));
     fetchEntries();
+  }
+
+  void updateAppSettingProviders(WidgetRef ref) async {
+    List<AppSettingEntry> appSettings =
+        await ref.read(appSettingsDatabaseProvider.notifier).fetchSettings();
+    if (appSettings.length > 2) {
+      ref
+          .read(currencyProvider.notifier)
+          .update((state) => appSettings[2].appSettingValue);
+    } else {
+      ref.read(currencyProvider.notifier).update((state) => "\$");
+    }
+    if (appSettings.length > 3) {
+      ref
+          .read(showCamera.notifier)
+          .update((state) => appSettings[3].appSettingValue == "true");
+    } else {
+      ref.read(showCamera.notifier).update((state) => false);
+    }
+    if (appSettings.length > 4) {
+      ref
+          .read(budgetName.notifier)
+          .update((state) => appSettings[4].appSettingValue);
+    } else {
+      ref.read(budgetName.notifier).update((state) => "Default");
+    }
   }
 }

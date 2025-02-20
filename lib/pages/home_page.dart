@@ -763,10 +763,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         clampDouble(
                                                     scrollOffset,
                                                     -(pageSwitchScrollLimit /
-                                                        1.3),
-                                                    (pageSwitchScrollLimit/1.3))
+                                                        1.1),
+                                                    (pageSwitchScrollLimit/1.1))
                                                 .abs() /
-                                            (pageSwitchScrollLimit/1.3)
+                                            (pageSwitchScrollLimit/1.1)
                                     :1:1,
                                 child: CustomScrollView(
                                     physics: BouncingScrollPhysics(
@@ -809,7 +809,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   child: Opacity(
                                     opacity: scrollOffset <= 0
                                         ? clampDouble(
-                                                    -scrollOffset-(pageSwitchScrollLimit/5),
+                                                    -scrollOffset-(pageSwitchScrollLimit/1.5),
                                                     0,
                                                     pageSwitchScrollLimit)
                                                 .abs() /

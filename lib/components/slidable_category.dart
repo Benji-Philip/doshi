@@ -109,13 +109,15 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
             ),
             Slidable(
               controller: _slidableController,
-              enabled: widget.index == 0 || widget.notInList ? false : true,
-              startActionPane: ActionPane(
-                  extentRatio: 0.3,
-                  motion: const BehindMotion(),
+              enabled: widget.index == 0 || widget.notInList || !widget.editMode
+                  ? false
+                  : true,
+              endActionPane: ActionPane(
+                  extentRatio: 0.5,
+                  motion:const DrawerMotion(),
                   children: [
                     SlidableAction(
-                      padding: const EdgeInsets.only(right: 0),
+                      padding: const EdgeInsets.only(left: 10),
                       onPressed: (context) {
                         if (widget.notInList || widget.index == 0) {
                           return;
@@ -140,14 +142,9 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                       backgroundColor: const Color.fromARGB(0, 255, 255, 255),
                       foregroundColor: Theme.of(context).colorScheme.surface,
                       icon: Icons.edit_rounded,
-                    )
-                  ]),
-              endActionPane: ActionPane(
-                  extentRatio: 0.3,
-                  motion: const BehindMotion(),
-                  children: [
+                    ),
                     SlidableAction(
-                      padding: const EdgeInsets.only(right: 0),
+                      padding: const EdgeInsets.only(right: 10),
                       onPressed: (context) {
                         HapticFeedback.heavyImpact();
                         showGeneralDialog(
