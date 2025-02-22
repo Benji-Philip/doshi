@@ -234,7 +234,7 @@ List<Widget> analysisPage(
                           width: width,
                           label: 'Total',
                           amount:
-                              "${ref.watch(currencyProvider)}${entriesDatabaseNotifier.totalExpenses}")),
+                              "${ref.read(currencyProvider)}${entriesDatabaseNotifier.totalExpenses}")),
                   const SizedBox(
                     width: 16,
                   ),
@@ -242,7 +242,7 @@ List<Widget> analysisPage(
                       child: MyBox(
                           width: width,
                           label: 'Daily Average',
-                          amount: ref.watch(currencyProvider) +
+                          amount: ref.read(currencyProvider) +
                               entriesDatabaseNotifier.totalDailyAverage
                                   .toStringAsFixed(2)))
                 ],

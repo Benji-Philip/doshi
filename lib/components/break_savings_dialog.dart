@@ -73,48 +73,58 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                                           Theme.of(context).colorScheme.primary,
                                     ),
                                     children: [
-                                      const TextSpan(
-                                          text: "Replenish credit with "),
-                                      TextSpan(
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {
-                                              HapticFeedback.lightImpact();
-                                              amountTEC.clear();
-                                              ref
-                                                  .read(amountText.notifier)
-                                                  .update((state) => "");
-                                              showModalBottomSheet(
-                                                  barrierColor:
-                                                      Colors.transparent,
-                                                  context: context,
-                                                  builder: (builder) {
-                                                    return UserInputDialog(
-                                                      inputFormatters: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly
-                                                      ],
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      textProvider: amountText,
-                                                      label: "amount",
-                                                      commonTextEditingController:
-                                                          amountTEC,
-                                                    );
-                                                  });
-                                            },
-                                          style: GoogleFonts.montserrat(
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.lightGreen,
-                                              textStyle: const TextStyle(
-                                                  color: Colors.lightGreen,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                  decorationStyle:
-                                                      TextDecorationStyle
-                                                          .dotted)),
-                                          text:
-                                              "${ref.read(currencyProvider)}${ref.read(amountText)}"),
-                                      const TextSpan(text: " ?")
+                                  const TextSpan(text: "Transfer "),
+                                  TextSpan(
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          HapticFeedback.lightImpact();
+                                          showModalBottomSheet(
+                                              barrierColor: Colors.transparent,
+                                              context: context,
+                                              builder: (builder) {
+                                                return UserInputDialog(
+                                                  inputFormatters: [
+                                                    DecimalTextInputFormatter()
+                                                  ],
+                                                  keyboardType:
+                                                      const TextInputType
+                                                          .numberWithOptions(
+                                                          decimal: true),
+                                                  textProvider: amountText,
+                                                  label: "amount",
+                                                  commonTextEditingController:
+                                                      amountTEC,
+                                                );
+                                              });
+                                        },
+                                      style: GoogleFonts.montserrat(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.teal,
+                                          textStyle: const TextStyle(
+                                              color: Colors.teal,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationStyle:
+                                                  TextDecorationStyle.dotted)),
+                                      text:
+                                          "${ref.read(currencyProvider)}${ref.watch(amountText)}"),
+                                  const TextSpan(
+                                    text: " from ",
+                                  ),
+                                  TextSpan(
+                                      text: "savings ",
+                                      style: GoogleFonts.montserrat(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.amber,
+                                      )),
+                                  const TextSpan(text: "to "),
+                                  TextSpan(
+                                    text: "credit",
+                                    style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.lightGreen,
+                                    ),
+                                  ),
                                     ]),
                               ),
                             ),
@@ -146,7 +156,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 14.0),
+                            padding: const EdgeInsets.only(bottom: 24.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -219,64 +229,75 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                             child: RichText(
                               textAlign: TextAlign.left,
                               text: TextSpan(
-                                  children: [
-                                    const TextSpan(
-                                        text: "Replenish credit with "),
-                                    TextSpan(
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            HapticFeedback.lightImpact();
-                                            amountTEC.clear();
-                                            ref
-                                                .read(amountText.notifier)
-                                                .update((state) => "");
-                                            showModalBottomSheet(
-                                                barrierColor:
-                                                    Colors.transparent,
-                                                context: context,
-                                                builder: (builder) {
-                                                  return UserInputDialog(
-                                                    inputFormatters: [
-                                                      DecimalTextInputFormatter()
-                                                    ],
-                                                    keyboardType:
-                                                        const TextInputType
-                                                            .numberWithOptions(
-                                                            decimal: true),
-                                                    textProvider: amountText,
-                                                    label: "amount",
-                                                    commonTextEditingController:
-                                                        amountTEC,
-                                                  );
-                                                });
-                                          },
-                                        style: GoogleFonts.montserrat(
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.lightGreen,
-                                            textStyle: const TextStyle(
-                                                color: Colors.lightGreen,
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                decorationStyle:
-                                                    TextDecorationStyle
-                                                        .dashed)),
-                                        text:
-                                            "${ref.read(currencyProvider)}${ref.watch(amountText)}"),
-                                    const TextSpan(text: " ?")
-                                  ],
-                          style: GoogleFonts.montserrat(
-                              height: 1.4,
-                              fontSize: 34,
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.primary),),
+                                children: [
+                                  const TextSpan(text: "Transfer "),
+                                  TextSpan(
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          HapticFeedback.lightImpact();
+                                          showModalBottomSheet(
+                                              barrierColor: Colors.transparent,
+                                              context: context,
+                                              builder: (builder) {
+                                                return UserInputDialog(
+                                                  inputFormatters: [
+                                                    DecimalTextInputFormatter()
+                                                  ],
+                                                  keyboardType:
+                                                      const TextInputType
+                                                          .numberWithOptions(
+                                                          decimal: true),
+                                                  textProvider: amountText,
+                                                  label: "amount",
+                                                  commonTextEditingController:
+                                                      amountTEC,
+                                                );
+                                              });
+                                        },
+                                      style: GoogleFonts.montserrat(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.teal,
+                                          textStyle: const TextStyle(
+                                              color: Colors.teal,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationStyle:
+                                                  TextDecorationStyle.dotted)),
+                                      text:
+                                          "${ref.read(currencyProvider)}${ref.watch(amountText)}"),
+                                  const TextSpan(
+                                    text: " from ",
+                                  ),
+                                  TextSpan(
+                                      text: "savings ",
+                                      style: GoogleFonts.montserrat(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.amber,
+                                      )),
+                                  const TextSpan(text: "to "),
+                                  TextSpan(
+                                    text: "credit",
+                                    style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.lightGreen,
+                                    ),
+                                  ),
+                                ],
+                                style: GoogleFonts.montserrat(
+                                    height: 1.4,
+                                    fontSize: 34,
+                                    fontWeight: FontWeight.w700,
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              ),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 30.0, right: 30, bottom: 20),
-                          child: Visibility(
-                            visible: ref.watch(exceedSavings),
+                        Visibility(
+                          visible: ref.watch(exceedSavings),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 30.0, right: 30, bottom: 20),
                             child: Container(
                                 alignment: Alignment.center,
                                 width: double.infinity,
@@ -299,7 +320,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 14.0),
+                          padding: const EdgeInsets.only(bottom: 24.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [

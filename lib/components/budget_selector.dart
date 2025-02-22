@@ -37,118 +37,121 @@ class _CategoryListState extends ConsumerState<BudgetSelector> {
     List<Budget> currentBudgets = budgetsDN.currentBudgets;
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(25)),
-                    color: Theme.of(context).colorScheme.tertiary),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 21.0, vertical: 12),
-                  child: Column(children: [
-                    ...List.generate(
-                      currentBudgets.length,
-                      (index) {
-                        bool isSelected = ref
-                                .read(appSettingsDatabaseProvider.notifier)
-                                .currentSettings[4]
-                                .appSettingValue ==
-                            currentBudgets[index].budgetName;
-
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Container(
-                                    height: 60,
-                                    decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(25))),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: SlidableBudget(
-                                      id: currentBudgets[index].id,
-                                      isSelected: isSelected,
-                                      thisBudgetName:
-                                          currentBudgets[index].budgetName,
-                                    )),
+      child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 100.0),
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(25)),
+                      color: Theme.of(context).colorScheme.tertiary),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 21.0, vertical: 12),
+                    child: Column(children: [
+                      ...List.generate(
+                        currentBudgets.length,
+                        (index) {
+                          bool isSelected = ref
+                                  .read(appSettingsDatabaseProvider.notifier)
+                                  .currentSettings[4]
+                                  .appSettingValue ==
+                              currentBudgets[index].budgetName;
+        
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Container(
+                                      height: 60,
+                                      decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(25))),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: SlidableBudget(
+                                        id: currentBudgets[index].id,
+                                        isSelected: isSelected,
+                                        thisBudgetName:
+                                            currentBudgets[index].budgetName,
+                                      )),
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                HapticFeedback.heavyImpact();
-                                showGeneralDialog(
-                                    pageBuilder: (context, anim1, anim2) {
-                                      return const Placeholder();
-                                    },
-                                    context: context,
-                                    transitionBuilder:
-                                        (context, anim1, anim2, child) {
-                                      return Opacity(
-                                          opacity: anim1.value,
-                                          child: const AddBudget());
-                                    },
-                                    transitionDuration:
-                                        const Duration(milliseconds: 200));
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
-                                child: Text(
-                                  "Add new",
-                                  softWrap: true,
-                                  style: GoogleFonts.montserrat(
+                            ],
+                          );
+                        },
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  HapticFeedback.heavyImpact();
+                                  showGeneralDialog(
+                                      pageBuilder: (context, anim1, anim2) {
+                                        return const Placeholder();
+                                      },
+                                      context: context,
+                                      transitionBuilder:
+                                          (context, anim1, anim2, child) {
+                                        return Opacity(
+                                            opacity: anim1.value,
+                                            child: const AddBudget());
+                                      },
+                                      transitionDuration:
+                                          const Duration(milliseconds: 200));
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
                                       color:
-                                          Theme.of(context).colorScheme.surface,
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w700),
+                                          Theme.of(context).colorScheme.primary),
+                                  child: Text(
+                                    "Add new",
+                                    softWrap: true,
+                                    style: GoogleFonts.montserrat(
+                                        color:
+                                            Theme.of(context).colorScheme.surface,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.w700),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ]),
+                        ],
+                      ),
+                    ]),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 0.0),
-              child: MyButton(
-                borderRadius: 50,
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.of(context).pop();
-                },
-                width: 50,
-                height: 50,
-                iconSize: 32,
-                myIcon: Icons.close_rounded,
-                iconColor: Colors.white,
-                buttonColor: Colors.redAccent,
-                splashColor: Colors.red.shade900,
+              Padding(
+                padding: const EdgeInsets.only(top: 0.0),
+                child: MyButton(
+                  borderRadius: 50,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
+                  width: 50,
+                  height: 50,
+                  iconSize: 32,
+                  myIcon: Icons.close_rounded,
+                  iconColor: Colors.white,
+                  buttonColor: Colors.redAccent,
+                  splashColor: Colors.red.shade900,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -39,7 +39,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
   @override
   void initState() {
     super.initState();
-    entriesOfGivenMonth = 
+    entriesOfGivenMonth =
         ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses;
     if (widget.isDialogBox ?? false) {
       subCatAnalysis = sortIntoSubCategories(sortEntrysByParentCategory(
@@ -74,7 +74,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
     // ignore: unused_local_variable
     final watcher2 = ref.watch(entryDatabaseProvider);
     ref.listen((entryDatabaseProvider), (prev, next) {
-      entriesOfGivenMonth =next;
+      entriesOfGivenMonth = next;
       if (!widget.useSubCat) {
         pieChartData = sortIntoCategories(entriesOfGivenMonth);
       } else if (widget.isDialogBox ?? false) {
@@ -177,6 +177,9 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                   int? color = !widget.useSubCat
                       ? pieChartData[index].categoryColor
                       : pieChartData[index].subCategoryColor;
+                  String sumPercent = !widget.useSubCat
+                      ? pieChartData[index].categorySumPercent
+                      : pieChartData[index].subCategorySumPercent;
                   return Column(
                     children: [
                       GestureDetector(
@@ -255,7 +258,6 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  height: 55,
                                   width: widget.width * 0.8,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
@@ -311,14 +313,22 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                                             left: 4.0),
                                                     child: SizedBox(
                                                       width: widget.width / 2.3,
-                                                      child: Text(
-                                                        name ??
-                                                            "no subcategory",
-                                                        softWrap: true,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: GoogleFonts
-                                                            .montserrat(
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            name ??
+                                                                "no subcategory",
+                                                            softWrap: true,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts.montserrat(
                                                                 decorationColor:
                                                                     const Color
                                                                         .fromARGB(
@@ -334,6 +344,33 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w700),
+                                                          ),
+                                                          Text(
+                                                            "($sumPercent%)",
+                                                            softWrap: true,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts.montserrat(
+                                                                decorationColor:
+                                                                    const Color
+                                                                        .fromARGB(
+                                                                        0,
+                                                                        255,
+                                                                        255,
+                                                                        255),
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary
+                                                                    .withOpacity(
+                                                                        0.7),
+                                                                fontSize: 10,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),

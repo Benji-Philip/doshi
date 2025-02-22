@@ -177,6 +177,9 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                   int? color = !widget.useSubCat
                       ? pieChartData[index].categoryColor
                       : pieChartData[index].subCategoryColor;
+                  String sumPercent = !widget.useSubCat
+                      ? pieChartData[index].categorySumPercent
+                      : pieChartData[index].subCategorySumPercent;
                   return Column(
                     children: [
                       GestureDetector(
@@ -255,7 +258,6 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  height: 55,
                                   width: widget.width * 0.8,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
@@ -311,29 +313,57 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                                             left: 4.0),
                                                     child: SizedBox(
                                                       width: widget.width / 2.3,
-                                                      child: Text(
-                                                        name ??
-                                                            "no subcategory",
-                                                        softWrap: true,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                                decorationColor:
-                                                                    const Color
-                                                                        .fromARGB(
-                                                                        0,
-                                                                        255,
-                                                                        255,
-                                                                        255),
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary,
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            name ??
+                                                                "no subcategory",
+                                                            softWrap: true,
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                                    decorationColor:
+                                                                        const Color
+                                                                            .fromARGB(
+                                                                            0,
+                                                                            255,
+                                                                            255,
+                                                                            255),
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .primary,
+                                                                    fontSize: 13,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700),
+                                                          ),
+                                                          Text("($sumPercent%)",
+                                                            softWrap: true,
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                                    decorationColor:
+                                                                        const Color
+                                                                            .fromARGB(
+                                                                            0,
+                                                                            255,
+                                                                            255,
+                                                                            255),
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .primary.withOpacity(0.7),
+                                                                    fontSize: 10,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
@@ -350,8 +380,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                           child: FittedBox(
                                             fit: BoxFit.contain,
                                             child: Text(
-                                              ref.read(currencyProvider) +
-                                                  sum.toStringAsFixed(2),
+                                              ref.read(currencyProvider) + sum.toStringAsFixed(2),
                                               softWrap: true,
                                               style: GoogleFonts.montserrat(
                                                   decorationColor:

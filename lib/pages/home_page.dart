@@ -755,108 +755,52 @@ class _HomePageState extends ConsumerState<HomePage> {
                         child: Consumer(builder: (context, ref, child) {
                           // ignore: unused_local_variable
                           final watcher = ref.watch(entryDatabaseProvider);
-                          return Stack(
-                            children: [
-                              Opacity(
-                                opacity: canChangePage
-                                    ? scrollOffset<=0? 1 -
+                          return Opacity(
+                            opacity: canChangePage
+                                ? scrollOffset <= 0
+                                    ? 1 -
                                         clampDouble(
                                                     scrollOffset,
                                                     -(pageSwitchScrollLimit /
-                                                        1.1),
-                                                    (pageSwitchScrollLimit/1.1))
+                                                        1),
+                                                    (pageSwitchScrollLimit /
+                                                        1))
                                                 .abs() /
-                                            (pageSwitchScrollLimit/1.1)
-                                    :1:1,
-                                child: CustomScrollView(
-                                    physics: BouncingScrollPhysics(
-                                        parent: preventScrollSpam ||
-                                                canChangePage
-                                            ? const AlwaysScrollableScrollPhysics()
-                                            : const NeverScrollableScrollPhysics()),
-                                    controller: _scrollController,
-                                    slivers: ref.watch(currentPage) == "Home"
-                                        ? thisMonthPage(
-                                            _spaceFromTop,
-                                            context,
-                                            width,
-                                            height,
-                                            amountInVault,
-                                            ref,
-                                            entriesDatabaseNotifier,
-                                            currentEntries,
-                                            entriesDatabaseNotifier
-                                                .analysisOfCategories,
-                                            widget.camera,
-                                            widget.backcamera,
-                                            _scrollController)
-                                        : analysisPage(
-                                            ref
-                                                .watch(entryDatabaseProvider
-                                                    .notifier)
-                                                .theListOfTheExpenses,
-                                            _spaceFromTop,
-                                            context,
-                                            width,
-                                            height,
-                                            ref,
-                                            entriesDatabaseNotifier)),
-                              ),
-                              Positioned.fill(
-                                top: -scrollOffset,
-                                child: Visibility(
-                                  visible: canChangePage,
-                                  child: Opacity(
-                                    opacity: scrollOffset <= 0
-                                        ? clampDouble(
-                                                    -scrollOffset-(pageSwitchScrollLimit/1.5),
-                                                    0,
-                                                    pageSwitchScrollLimit)
-                                                .abs() /
-                                            pageSwitchScrollLimit
-                                        : 0,
-                                    child: IgnorePointer(
-                                      ignoring: true,
-                                      child: SizedBox(
-                                        height: height,
-                                        child: CustomScrollView(
-                                            primary: false,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            slivers: ref.watch(currentPage) !=
-                                                    "Home"
-                                                ? thisMonthPage(
-                                                    _spaceFromTop,
-                                                    context,
-                                                    width,
-                                                    height,
-                                                    amountInVault,
-                                                    ref,
-                                                    entriesDatabaseNotifier,
-                                                    currentEntries,
-                                                    entriesDatabaseNotifier
-                                                        .analysisOfCategories,
-                                                    widget.camera,
-                                                    widget.backcamera,
-                                                    _scrollController)
-                                                : analysisPage(
-                                                    ref
-                                                        .watch(
-                                                            entryDatabaseProvider
-                                                                .notifier)
-                                                        .theListOfTheExpenses,
-                                                    _spaceFromTop,
-                                                    context,
-                                                    width,
-                                                    height,
-                                                    ref,
-                                                    entriesDatabaseNotifier)),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                                            (pageSwitchScrollLimit / 1)
+                                    : 1
+                                : 1,
+                            child: CustomScrollView(
+                                physics: BouncingScrollPhysics(
+                                    parent: preventScrollSpam || canChangePage
+                                        ? const AlwaysScrollableScrollPhysics()
+                                        : const NeverScrollableScrollPhysics()),
+                                controller: _scrollController,
+                                slivers: ref.watch(currentPage) == "Home"
+                                    ? thisMonthPage(
+                                        _spaceFromTop,
+                                        context,
+                                        width,
+                                        height,
+                                        amountInVault,
+                                        ref,
+                                        entriesDatabaseNotifier,
+                                        currentEntries,
+                                        entriesDatabaseNotifier
+                                            .analysisOfCategories,
+                                        widget.camera,
+                                        widget.backcamera,
+                                        _scrollController)
+                                    : analysisPage(
+                                        ref
+                                            .watch(
+                                                entryDatabaseProvider.notifier)
+                                            .theListOfTheExpenses,
+                                        _spaceFromTop,
+                                        context,
+                                        width,
+                                        height,
+                                        ref,
+                                        entriesDatabaseNotifier)),
                           );
                         }),
                       ),
