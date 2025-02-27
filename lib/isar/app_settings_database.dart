@@ -18,6 +18,7 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
   // 3 = CurrencySymbol
   // 4 = EnableCamera
   // 5 = currentBudgetName
+  // 6 = ChatGptApiKey
 
   final firstAppOpen = AppSettingEntry()
     ..appSettingName = "FirstAppOpen&SecondAppOpen"
@@ -34,6 +35,9 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
   final currentBudgetNameSetting = AppSettingEntry()
     ..appSettingName = "currentBudgetName"
     ..appSettingValue = "Default";
+  final chatgptApiKey = AppSettingEntry()
+    ..appSettingName = "ChatGptApiKey"
+    ..appSettingValue = "";
   //list of entries
 
   List<AppSettingEntry> currentSettings = [];
@@ -83,6 +87,8 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
       await isar.writeTxn(() => isar.appSettingEntrys.put(enableCameraSetting));
       await isar
           .writeTxn(() => isar.appSettingEntrys.put(currentBudgetNameSetting));
+      await isar
+          .writeTxn(() => isar.appSettingEntrys.put(chatgptApiKey));
     } else {
       newCurrentSettings = await isar.appSettingEntrys.where().findAll();
       if (newCurrentSettings.length < 2) {
@@ -103,6 +109,11 @@ class AppSettingsDatabaseNotifier extends StateNotifier<List<AppSettingEntry>> {
       if (newCurrentSettings.length < 5) {
         // inititating setting 5 if it doesnt exist
         await addSetting("currentBudgetName", "Default");
+      }
+      newCurrentSettings = await isar.appSettingEntrys.where().findAll();
+      if (newCurrentSettings.length < 6) {
+        // inititating setting 5 if it doesnt exist
+        await addSetting("ChatGptApiKey", "");
       }
       newCurrentSettings = await isar.appSettingEntrys.where().findAll();
       if (currentSettings[0].appSettingValue == "true&false") {

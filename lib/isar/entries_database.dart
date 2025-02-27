@@ -13,7 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
   static late Isar isar;
@@ -156,8 +156,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     totalAnalysisOfCategories.clear();
     analysisOfCategories.addAll(sortIntoCategories(theListOfTheExpenses));
     totalAnalysisOfSubCategories.clear();
-    analysisOfSubCategories
-        .addAll(sortIntoSubCategories(theListOfTheExpenses));
+    analysisOfSubCategories.addAll(sortIntoSubCategories(theListOfTheExpenses));
     state = [...sortedList];
   }
 
@@ -232,17 +231,6 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
   }
 
   Future<void> tryRestore(WidgetRef ref) async {
-    // Requesting permissions
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.manageExternalStorage.request();
-      status = await Permission.manageExternalStorage.status;
-      if (!status.isGranted) {
-        // Permission denied, handle accordingly
-        return;
-      }
-    }
-
     // Get external storage directory
     final dbDir = await getApplicationDocumentsDirectory();
     final directory = await FilePicker.platform.pickFiles();
@@ -266,34 +254,22 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
   }
 
   Future<void> tryBackup() async {
-    // Requesting permissions
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.manageExternalStorage.request();
-      status = await Permission.manageExternalStorage.status;
-      if (!status.isGranted) {
-        // Permission denied, handle accordingly
-        return;
-      }
-    }
-
     // Get external storage directory
-    final directory = await FilePicker.platform.getDirectoryPath();
-    if (directory != null) {
-      showToast("Backing up");
-      String fileName = "doshi_backup.isar";
-      String path = directory;
-      int count = 0;
-      String filePath = '$path/$fileName';
-      while (await io.File(filePath).exists()) {
-        count++;
-        filePath = '$path/${fileName.replaceAll('.isar', '_$count.isar')}';
-      }
-      await isar.copyToFile(filePath);
-
-      showToast("Backed up successfully!");
+    final db = await getApplicationDocumentsDirectory();
+    showToast("Backing up");
+    String fileName = "doshi_backup.isar";
+    String path = db.path;
+    String filePath = '$path/$fileName';
+    final backupFile = io.File(filePath);
+    if (await backupFile.exists()) {
+      await backupFile.delete();
+    }
+    await isar.copyToFile(filePath);
+    final result = await Share.shareXFiles([XFile(filePath)]);
+    if (result.status == ShareResultStatus.success) {
+      showToast("Backed up succesfully");
     } else {
-      showToast("Cancelled");
+      showToast("Failed");
     }
   }
 

@@ -114,14 +114,17 @@ class _CategoryListState extends ConsumerState<BudgetSelector> {
                                       borderRadius: BorderRadius.circular(25),
                                       color:
                                           Theme.of(context).colorScheme.primary),
-                                  child: Text(
-                                    "Add new",
-                                    softWrap: true,
-                                    style: GoogleFonts.montserrat(
-                                        color:
-                                            Theme.of(context).colorScheme.surface,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.w700),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text(
+                                      "Add new",
+                                      softWrap: true,
+                                      style: GoogleFonts.montserrat(
+                                          color:
+                                              Theme.of(context).colorScheme.surface,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700),
+                                    ),
                                   ),
                                 ),
                               ),

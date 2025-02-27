@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final entriesGivenMonth = StateProvider<List<Entry>>((state) => []);
+final totalEntriesProvider = StateProvider<List<Entry>>((state) => []);
 
 class SubCatPieChartDialog extends ConsumerStatefulWidget {
   final String parentCategory;

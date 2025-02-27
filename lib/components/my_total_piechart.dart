@@ -9,8 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// entriesOfGivenMonth & entriesGivenMonth represent total entries
-
 class MyTotalPieChart extends ConsumerStatefulWidget {
   final bool includeUncat;
   final bool? isDialogBox;
@@ -35,96 +33,47 @@ class MyTotalPieChart extends ConsumerStatefulWidget {
 class _MyPieChart extends ConsumerState<MyTotalPieChart> {
   List<SubCategoryAnalysisEntry> subCatAnalysis = [];
   List pieChartData = [];
-  List<Entry> entriesOfGivenMonth = [];
+  List<Entry> totalEntries = [];
+
   @override
   void initState() {
     super.initState();
-    entriesOfGivenMonth =
-        ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses;
+    totalEntries = ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses;
     if (widget.isDialogBox ?? false) {
       subCatAnalysis = sortIntoSubCategories(sortEntrysByParentCategory(
           widget.parentCategory!, ref.read(entriesGivenMonth)));
     }
+    _updatePieChartData();
+  }
+
+  void _updatePieChartData() {
     if (widget.useSubCat) {
       List<SubCategoryAnalysisEntry> temp = subCatAnalysis.isEmpty
-          ? sortIntoSubCategories(entriesOfGivenMonth)
+          ? sortIntoSubCategories(totalEntries)
           : subCatAnalysis;
-      List<SubCategoryAnalysisEntry> temp2 = [];
       if (!widget.includeUncat) {
-        for (var i = 0; i < temp.length; i++) {
-          if (temp[i].subCategoryName == "Uncategorised" ||
-              temp[i].subCategoryName == null) {
-          } else {
-            temp2.add(temp[i]);
-          }
-        }
-        pieChartData = temp2;
+        pieChartData = temp.where((entry) =>
+            entry.subCategoryName != "Uncategorised" &&
+            entry.subCategoryName != null).toList();
       } else {
         pieChartData = temp;
       }
     } else {
-      pieChartData = sortIntoCategories(entriesOfGivenMonth);
+      pieChartData = sortIntoCategories(totalEntries);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-    final watcher1 = ref.watch(entriesGivenMonth);
-    // ignore: unused_local_variable
-    final watcher2 = ref.watch(entryDatabaseProvider);
-    ref.listen((entryDatabaseProvider), (prev, next) {
-      entriesOfGivenMonth = next;
-      if (!widget.useSubCat) {
-        pieChartData = sortIntoCategories(entriesOfGivenMonth);
-      } else if (widget.isDialogBox ?? false) {
-      } else {
-        List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
-            sortIntoSubCategories(entriesOfGivenMonth);
-        List<SubCategoryAnalysisEntry> temp2 = [];
-        if (!widget.includeUncat) {
-          for (var i = 0; i < temp.length; i++) {
-            if (temp[i].subCategoryName == "Uncategorised" ||
-                temp[i].subCategoryName == null) {
-            } else {
-              temp2.add(temp[i]);
-            }
-          }
-          pieChartData = temp2;
-        } else {
-          pieChartData = temp;
-        }
-      }
+    ref.listen(entryDatabaseProvider, (prev, next) {
+    totalEntries = ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses;
+    if (widget.isDialogBox ?? false) {
+      subCatAnalysis = sortIntoSubCategories(sortEntrysByParentCategory(
+          widget.parentCategory!, ref.read(entriesGivenMonth)));
+    }
+    _updatePieChartData();
     });
-    ref.listen((entriesGivenMonth), (prev, next) {
-      if (widget.isDialogBox ?? false) {
-        pieChartData = sortIntoSubCategories(
-            sortEntrysByParentCategory(widget.parentCategory!, next));
-      }
-    });
-    ref.listen((dateToDisplay), (prev, next) {
-      entriesOfGivenMonth = sortExpensesByGivenMonth(
-          ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses, next);
-      if (widget.useSubCat) {
-        List<SubCategoryAnalysisEntry> temp = widget.analysisBySubCats ??
-            sortIntoSubCategories(entriesOfGivenMonth);
-        List<SubCategoryAnalysisEntry> temp2 = [];
-        if (!widget.includeUncat) {
-          for (var i = 0; i < temp.length; i++) {
-            if (temp[i].subCategoryName == "Uncategorised" ||
-                temp[i].subCategoryName == null) {
-            } else {
-              temp2.add(temp[i]);
-            }
-          }
-          pieChartData = temp2;
-        } else {
-          pieChartData = temp;
-        }
-      } else {
-        pieChartData = sortIntoCategories(entriesOfGivenMonth);
-      }
-    });
+
     return Column(
       children: [
         Visibility(
@@ -134,10 +83,10 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
             child: SizedBox(
               height: widget.width / 2,
               child: PieChart(
-                  swapAnimationDuration: const Duration(milliseconds: 750),
-                  swapAnimationCurve: Curves.easeInOut,
-                  PieChartData(
-                      sections: List.generate(pieChartData.length, (index) {
+                swapAnimationDuration: const Duration(milliseconds: 750),
+                swapAnimationCurve: Curves.easeInOut,
+                PieChartData(
+                  sections: List.generate(pieChartData.length, (index) {
                     String sumPercent = !widget.useSubCat
                         ? pieChartData[index].categorySumPercent
                         : pieChartData[index].subCategorySumPercent;
@@ -145,17 +94,20 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                         ? pieChartData[index].categoryColor
                         : pieChartData[index].subCategoryColor;
                     return PieChartSectionData(
-                        titlePositionPercentageOffset: 1.6,
-                        titleStyle: GoogleFonts.montserrat(
-                            decorationColor:
-                                const Color.fromARGB(0, 255, 255, 255),
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700),
-                        title: "$sumPercent%",
-                        value: double.parse(sumPercent),
-                        color: Color(color ?? Colors.white.value));
-                  }))),
+                      titlePositionPercentageOffset: 1.6,
+                      titleStyle: GoogleFonts.montserrat(
+                        decorationColor: const Color.fromARGB(0, 255, 255, 255),
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      title: "$sumPercent%",
+                      value: double.parse(sumPercent),
+                      color: Color(color ?? Colors.white.value),
+                    );
+                  }),
+                ),
+              ),
             ),
           ),
         ),
@@ -169,7 +121,6 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                 (index) {
                   String? name = !widget.useSubCat
                       ? pieChartData[index].categoryName
-                      // ignore: prefer_if_null_operators
                       : pieChartData[index].subCategoryName;
                   double sum = !widget.useSubCat
                       ? pieChartData[index].categorySum
@@ -184,70 +135,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (!widget.useSubCat && name != "Uncategorised") {
-                            HapticFeedback.lightImpact();
-                            ref
-                                .read(entriesGivenMonth.notifier)
-                                .update((state) => entriesOfGivenMonth);
-                            Navigator.of(context).push(PageRouteBuilder(
-                              opaque: false,
-                              barrierDismissible: false,
-                              pageBuilder: (BuildContext context, _, __) {
-                                return SubCatPieChartDialog(
-                                    parentCategory: name ?? "Uncategorised",
-                                    width: widget.width);
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                              transitionDuration:
-                                  const Duration(milliseconds: 200),
-                            ));
-                          } else {
-                            HapticFeedback.lightImpact();
-                            ref.read(entriesForSubCatDialog.notifier).update(
-                                (state) => widget.useSubCat
-                                    ? name == null || name == "Uncategorised"
-                                        ? name == null
-                                            ? sortEntrysByParentCategoryAndNullSubCategory(
-                                                widget.parentCategory ??
-                                                    "Uncategorised",
-                                                entriesOfGivenMonth)
-                                            : sortEntrysByParentCategoryAndSubCategory(
-                                                widget.parentCategory ??
-                                                    "Uncategorised",
-                                                entriesOfGivenMonth)
-                                        : sortEntrysBySubCategory(
-                                            name, entriesOfGivenMonth)
-                                    : sortEntriesByDate(
-                                        sortEntrysByParentCategory(
-                                            "Uncategorised",
-                                            entriesOfGivenMonth)));
-                            Navigator.of(context).push(PageRouteBuilder(
-                              opaque: false,
-                              barrierDismissible: false,
-                              pageBuilder: (BuildContext context, _, __) {
-                                return EntrysInSubCatDialog(
-                                  analysisDialogBox:
-                                      widget.isDialogBox ?? false,
-                                  useColorChange: true,
-                                );
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                              transitionDuration:
-                                  const Duration(milliseconds: 200),
-                            ));
-                          }
+                          _handleTap(context, name, sum, color);
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -297,8 +185,8 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                                       borderRadius:
                                                           const BorderRadius
                                                               .all(
-                                                              Radius.circular(
-                                                                  100))),
+                                                                  Radius.circular(
+                                                                      100))),
                                                 ),
                                               ),
                                               Column(
@@ -433,5 +321,56 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
         )
       ],
     );
+  }
+
+  void _handleTap(BuildContext context, String? name, double sum, int? color) {
+    if (!widget.useSubCat && name != "Uncategorised") {
+      HapticFeedback.lightImpact();
+      ref.read(totalEntriesProvider.notifier).update((state) => totalEntries);
+      Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        barrierDismissible: false,
+        pageBuilder: (BuildContext context, _, __) {
+          return SubCatPieChartDialog(
+              parentCategory: name ?? "Uncategorised", width: widget.width);
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 200),
+      ));
+    } else {
+      HapticFeedback.lightImpact();
+      ref.read(entriesForSubCatDialog.notifier).update((state) => widget.useSubCat
+          ? name == null || name == "Uncategorised"
+              ? name == null
+                  ? sortEntrysByParentCategoryAndNullSubCategory(
+                      widget.parentCategory ?? "Uncategorised", totalEntries)
+                  : sortEntrysByParentCategoryAndSubCategory(
+                      widget.parentCategory ?? "Uncategorised", totalEntries)
+              : sortEntrysBySubCategory(name, totalEntries)
+          : sortEntriesByDate(
+              sortEntrysByParentCategory("Uncategorised", totalEntries)));
+      Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        barrierDismissible: false,
+        pageBuilder: (BuildContext context, _, __) {
+          return EntrysInSubCatDialog(
+            analysisDialogBox: widget.isDialogBox ?? false,
+            useColorChange: true,
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 200),
+      ));
+    }
   }
 }

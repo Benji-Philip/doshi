@@ -21,7 +21,7 @@ class BackupRestoreDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
-  final String versionNumber = "0.6.3";
+  final String versionNumber = "1.0.1";
   final InAppPurchase _iap = InAppPurchase.instance;
   late List<ProductDetails> product;
   bool _iapAvailable = false;
@@ -327,6 +327,56 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                           ),
                         ],
                       ),
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(12.0),
+                      //         child: GestureDetector(
+                      //           onTap: () {
+                      //             HapticFeedback.heavyImpact();
+                      //             showGeneralDialog(
+                      //                 pageBuilder: (context, anim1, anim2) {
+                      //                   return const Placeholder();
+                      //                 },
+                      //                 context: context,
+                      //                 transitionBuilder:
+                      //                     (context, anim1, anim2, child) {
+                      //                   return Opacity(
+                      //                       opacity: anim1.value,
+                      //                       child: const AddChatGptApiKeyDialog());
+                      //                 },
+                      //                 transitionDuration:
+                      //                     const Duration(milliseconds: 200));
+                      //           },
+                      //           child: Container(
+                      //             alignment: Alignment.center,
+                      //             height: 60,
+                      //             decoration: BoxDecoration(
+                      //                 borderRadius: BorderRadius.circular(25),
+                      //                 color: Colors.cyan),
+                      //             child: Padding(
+                      //               padding: const EdgeInsets.symmetric(
+                      //                   horizontal: 16.0),
+                      //               child: FittedBox(
+                      //                 fit: BoxFit.scaleDown,
+                      //                 alignment: Alignment.center,
+                      //                 child: Text(
+                      //                   'ChatGPT API Key',
+                      //                   softWrap: true,
+                      //                   style: GoogleFonts.montserrat(
+                      //                       color: Colors.white,
+                      //                       fontSize: 28,
+                      //                       fontWeight: FontWeight.w700),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
