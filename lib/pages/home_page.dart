@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:doshi/onboarding/onboarding.dart';
 import 'package:doshi/components/add_expense_dialog_box.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/isar/entries_database.dart';
@@ -58,18 +59,25 @@ class _HomePageState extends ConsumerState<HomePage> {
     bool watchForHomePageUpdates = ref.watch(showCamera);
     List<Entry> currentEntries = ref.watch(entryDatabaseProvider);
     double amountInVault = entriesDatabaseNotifier.amountInVault;
+    String totalDailyAverage =
+        entriesDatabaseNotifier.totalDailyAverage.toStringAsFixed(2);
+    String totalExpenses =
+        entriesDatabaseNotifier.totalExpenses.toStringAsFixed(2);
+    String currency = ref.watch(currencyProvider);
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: IgnorePointer(
         ignoring: scrollDelta > 0 && scrollOffset > 0 ||
-                ref.watch(currentPage) != "Home"
+                ref.watch(currentPage) != "Home" ||
+                !ref.watch(endOnBoarding)
             ? true
             : false,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 150),
           opacity: scrollDelta > 0 && scrollOffset > 0 ||
-                  ref.watch(currentPage) != "Home"
+                  ref.watch(currentPage) != "Home" ||
+                  !ref.watch(endOnBoarding)
               ? 0
               : 1,
           child: Consumer(builder: (context, ref, child) {
@@ -392,10 +400,10 @@ class _HomePageState extends ConsumerState<HomePage> {
           }),
         ),
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SizedBox(
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SizedBox(
               width: width,
               height: height,
               child: Consumer(builder: (context, ref, child) {
@@ -490,8 +498,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                         child: Opacity(
                                                           opacity: 0,
                                                           child: Text(
-                                                            ref.watch(
-                                                                currencyProvider),
+                                                            currency,
                                                             style:
                                                                 const TextStyle(
                                                                     fontSize:
@@ -604,8 +611,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                       child: Opacity(
                                                         opacity: 0,
                                                         child: Text(
-                                                          ref.watch(
-                                                              currencyProvider),
+                                                          currency,
                                                           style:
                                                               const TextStyle(
                                                                   fontSize: 20),
@@ -763,8 +769,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                     scrollOffset,
                                                     -(pageSwitchScrollLimit /
                                                         1),
-                                                    (pageSwitchScrollLimit /
-                                                        1))
+                                                    (pageSwitchScrollLimit / 1))
                                                 .abs() /
                                             (pageSwitchScrollLimit / 1)
                                     : 1
@@ -800,7 +805,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         width,
                                         height,
                                         ref,
-                                        entriesDatabaseNotifier)),
+                                        entriesDatabaseNotifier,
+                                        currency,
+                                        totalDailyAverage,
+                                        totalExpenses)),
                           );
                         }),
                       ),
@@ -809,8 +817,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                 );
               }),
             ),
-          ],
-        ),
+          ),
+          if(!ref.watch(endOnBoarding)) const Onboarding(),
+        ],
       ),
     );
   }

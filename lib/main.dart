@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:doshi/onboarding/onboarding.dart';
 import 'package:doshi/isar/app_settings.dart';
 import 'package:doshi/isar/app_settings_database.dart';
 import 'package:doshi/isar/budget_database.dart';
@@ -30,6 +31,7 @@ Future<void> main() async {
   // Get a specific camera from the list of available cameras.
   final firstCamera = cameras.firstWhere(
     (camera) => camera.lensDirection == CameraLensDirection.front,
+    orElse: () => cameras.first,
   );
   final secondCamera = cameras.firstWhere(
     (camera) => camera.lensDirection == CameraLensDirection.back,
@@ -121,6 +123,13 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
           .update((state) => appSettings[4].appSettingValue);
     } else {
       ref.read(budgetName.notifier).update((state) => "Default");
+    }
+    if (appSettings.length > 6) {
+      ref
+          .read(endOnBoarding.notifier)
+          .update((state) => appSettings[6].appSettingValue=="true");
+    } else {
+      ref.read(endOnBoarding.notifier).update((state) => false);
     }
   }
 

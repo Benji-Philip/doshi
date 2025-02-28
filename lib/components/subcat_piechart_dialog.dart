@@ -1,5 +1,6 @@
 import 'package:doshi/components/my_button.dart';
 import 'package:doshi/components/my_piechart.dart';
+import 'package:doshi/components/my_total_piechart.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,12 +10,14 @@ final entriesGivenMonth = StateProvider<List<Entry>>((state) => []);
 final totalEntriesProvider = StateProvider<List<Entry>>((state) => []);
 
 class SubCatPieChartDialog extends ConsumerStatefulWidget {
+  final bool isTotal;
   final String parentCategory;
   final double width;
   const SubCatPieChartDialog({
     super.key,
     required this.width,
     required this.parentCategory,
+    required this.isTotal,
   });
 
   @override
@@ -42,55 +45,58 @@ class _SubCatPieChartDialogState extends ConsumerState<SubCatPieChartDialog> {
       color: Colors.black.withOpacity(0.75),
       child: SingleChildScrollView(
         controller: _scrollController,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  ThisContainer(
-                    widget: widget,
-                    opacity: 0,
-                    padBottom: 0,
-                    padLeft: 8,
-                    padRight: 0,
-                    padTop: 8,
-                    color: Theme.of(context).colorScheme.onTertiary,
-                  ),
-                  ThisContainer(
-                    widget: widget,
-                    opacity: 1,
-                    padBottom: 8,
-                    padLeft: 0,
-                    padRight: 8,
-                    padTop: 0,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 48.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ThisContainer(
+                      widget: widget,
+                      opacity: 0,
+                      padBottom: 0,
+                      padLeft: 8,
+                      padRight: 0,
+                      padTop: 8,
+                      color: Theme.of(context).colorScheme.onTertiary,
+                    ),
+                    ThisContainer(
+                      widget: widget,
+                      opacity: 1,
+                      padBottom: 8,
+                      padLeft: 0,
+                      padRight: 8,
+                      padTop: 0,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: MyButton(
-                borderRadius: 50,
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.of(context).pop();
-                },
-                width: 50,
-                height: 50,
-                iconSize: 32,
-                myIcon: Icons.close_rounded,
-                iconColor: Colors.white,
-                buttonColor: Colors.redAccent,
-                splashColor: Colors.red.shade900,
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: MyButton(
+                  borderRadius: 50,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
+                  width: 50,
+                  height: 50,
+                  iconSize: 32,
+                  myIcon: Icons.close_rounded,
+                  iconColor: Colors.white,
+                  buttonColor: Colors.redAccent,
+                  splashColor: Colors.red.shade900,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -122,6 +128,28 @@ class ThisContainer extends StatefulWidget {
 }
 
 class _ThisContainerState extends State<ThisContainer> {
+  late Widget pieChart;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    pieChart = widget.widget.isTotal
+        ? MyTotalPieChart(
+            includeUncat: true,
+            isDialogBox: true,
+            parentCategory: widget.widget.parentCategory,
+            useSubCat: true,
+            width: widget.widget.width,
+          )
+        : MyPieChart(
+            includeUncat: true,
+            isDialogBox: true,
+            parentCategory: widget.widget.parentCategory,
+            useSubCat: true,
+            width: widget.widget.width,
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -144,13 +172,7 @@ class _ThisContainerState extends State<ThisContainer> {
               padding: const EdgeInsets.all(8.0),
               child: Opacity(
                 opacity: widget.opacity,
-                child: MyPieChart(
-                  includeUncat: true,
-                  isDialogBox: true,
-                  parentCategory: widget.widget.parentCategory,
-                  useSubCat: true,
-                  width: widget.widget.width,
-                ),
+                child: pieChart
               ),
             ),
           ),

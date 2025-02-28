@@ -12,7 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
-List<Widget> analysisPage(
+List<Widget> analysisPageOnboarding(
   List<Entry> listOfExpenses,
   double spaceFromTop,
   BuildContext context,
@@ -42,61 +42,30 @@ List<Widget> analysisPage(
             children: [
               Flexible(
                 flex: 2,
-                child: GestureDetector(
-                  onTap: () async {
-                    HapticFeedback.lightImpact();
-                    late DateTime date = DateTime.now();
-                    await showMonthPicker(
-                      monthPickerDialogSettings: MonthPickerDialogSettings(
-                          headerSettings: PickerHeaderSettings(
-                              headerBackgroundColor:
-                                  Theme.of(context).colorScheme.surface),
-                          dialogSettings: PickerDialogSettings(
-                              dialogRoundedCornersRadius: 20,
-                              dialogBackgroundColor:
-                                  Theme.of(context).colorScheme.surface)),
-                      context: context,
-                      initialDate: DateTime.now(),
-                    ).then((selectedDate) {
-                      if (selectedDate != null) {
-                        date = selectedDate;
-                        ref
-                            .read(dateToDisplay.notifier)
-                            .update((state) => date);
-                      } else {
-                        date = DateTime.now();
-                      }
-                    });
-                    List<Entry> entrysInGivenMonth =
-                        sortExpensesByGivenMonth(listOfExpenses, date);
-                    ref.read(analysisOfCatExpenses.notifier).update(
-                        (state) => [...sortIntoCategories(entrysInGivenMonth)]);
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.amber, width: 3),
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          DateFormat('MMMMyyyy').format(dateToDisp) ==
-                                  DateFormat('MMMMyyyy').format(DateTime.now())
-                              ? 'This Month'
-                              : DateFormat('MMMM, yyyy').format(dateToDisp),
-                          style: GoogleFonts.montserrat(
-                              color: Theme.of(context).colorScheme.primary,
-                              decorationThickness: 2,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              decoration: TextDecoration.underline,
-                              decorationStyle: TextDecorationStyle.dashed,
-                              decorationColor:
-                                  Theme.of(context).colorScheme.primary),
-                        ),
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.amber, width: 3),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        DateFormat('MMMMyyyy').format(dateToDisp) ==
+                                DateFormat('MMMMyyyy').format(DateTime.now())
+                            ? 'This Month'
+                            : DateFormat('MMMM, yyyy').format(dateToDisp),
+                        style: GoogleFonts.montserrat(
+                            color: Theme.of(context).colorScheme.primary,
+                            decorationThickness: 2,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.underline,
+                            decorationStyle: TextDecorationStyle.dashed,
+                            decorationColor:
+                                Theme.of(context).colorScheme.primary),
                       ),
                     ),
                   ),

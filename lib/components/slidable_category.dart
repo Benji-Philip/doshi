@@ -38,7 +38,7 @@ class SlidableCategory extends ConsumerStatefulWidget {
 class _SlidableCategoryState extends ConsumerState<SlidableCategory>
     with SingleTickerProviderStateMixin {
   late SlidableController _slidableController;
-  bool openEnd = true;
+  bool openEnd = false;
 
   @override
   void initState() {
