@@ -1,3 +1,4 @@
+import 'package:doshi/logic/sort_entries.dart';
 import 'package:intl/intl.dart';
 
 import '../isar/entry.dart';
@@ -36,10 +37,12 @@ double expensesOfToday(List<Entry> listOfExpenses) {
 }
 
 List<Entry> listOfExpensesThisWeek(List<Entry> listOfExpenses) {
+  //may have to add a way to check if the years match before matching week
   List<Entry> currentEntries = [];
-  for (var i = 0; i < listOfExpenses.length; i++) {
-    if (weekNumber(listOfExpenses[i].dateTime) == weekNumber(DateTime.now())) {
-      currentEntries.add(listOfExpenses[i]);
+  List<Entry> temp = sortEntriesByDate(listOfExpenses);
+  for (var i = 0; i < temp.length; i++) {
+    if (weekNumber(temp[i].dateTime) == weekNumber(DateTime.now())) {
+      currentEntries.add(temp[i]);
     } else {
       break;
     }

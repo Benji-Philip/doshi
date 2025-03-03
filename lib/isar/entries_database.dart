@@ -70,6 +70,8 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
 
   double totalExpenses = 0.0;
   double totalDailyAverage = 0.0;
+  double givenMonthTotalExpenses = 0.0;
+  double givenMonthDailyAverage = 0.0;
   //create
 
   Future<void> addEntry(
@@ -127,6 +129,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     theListOfExpensesThisMonth.addAll(sortExpensesByMonth(listOfExpenses));
     double sumOfExpenses = sumOfEntries(listOfExpenses);
     totalExpenses = sumOfExpenses;
+    givenMonthTotalExpenses = sumOfEntries(theListOfExpensesThisMonth);
     double sumOfExpensesThisMonth = sumOfEntries(theListOfExpensesThisMonth);
     double sumOfSavings = sumOfEntries(listOfSavings);
     amountInSavings = sumOfSavings;
@@ -137,9 +140,12 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     totalDailyAverage = double.parse(
         (totalExpenses / numberOfExpensesGroupedByDay(listOfExpenses))
             .toStringAsFixed(2));
+    givenMonthDailyAverage = double.parse((givenMonthTotalExpenses /
+            numberOfExpensesGroupedByDay(theListOfExpensesThisMonth))
+        .toStringAsFixed(2));
     todaysExpenses = expensesOfToday(theListOfExpensesThisMonth);
     thisWeekExpenses.clear();
-    thisWeekExpenses.addAll(listOfExpensesThisWeek(theListOfExpensesThisMonth));
+    thisWeekExpenses.addAll(listOfExpensesThisWeek(theListOfTheExpenses));
     sumOfthisWeeksExpenses = sumOfEntries(thisWeekExpenses);
     resetThisWeekExpensesByDays();
     sortThisWeekExpensesByDays(thisWeekExpenses);
@@ -368,5 +374,13 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     } else {
       ref.read(budgetName.notifier).update((state) => "Default");
     }
+  }
+
+  void updateGivenMonthTotalAndDailyAverage(date) {
+    List<Entry> temp = sortExpensesByGivenMonth(theListOfTheExpenses, date);
+    givenMonthTotalExpenses = sumOfEntries(temp);
+    givenMonthDailyAverage = double.parse(
+        (givenMonthTotalExpenses / numberOfExpensesGroupedByDay(temp))
+            .toStringAsFixed(2));
   }
 }

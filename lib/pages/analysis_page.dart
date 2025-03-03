@@ -13,19 +13,18 @@ import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 List<Widget> analysisPage(
-  List<Entry> listOfExpenses,
-  double spaceFromTop,
-  BuildContext context,
-  double width,
-  double height,
-  WidgetRef ref,
-  EntryDatabaseNotifier entriesDatabaseNotifier,
-  String curency,
-  String totalDailyAverage,
-  String totalExpenses
-) {
+    List<Entry> listOfExpenses,
+    double spaceFromTop,
+    BuildContext context,
+    double width,
+    double height,
+    WidgetRef ref,
+    EntryDatabaseNotifier entriesDatabaseNotifier,
+    String curency,
+    String totalDailyAverage,
+    String totalExpenses) {
   return [
-     SliverToBoxAdapter(
+    SliverToBoxAdapter(
       child: SizedBox(
         height: 70 + spaceFromTop,
       ),
@@ -109,33 +108,68 @@ List<Widget> analysisPage(
     }),
     Consumer(builder: (context, ref, child) {
       final dateToDisp = ref.watch(dateToDisplay);
+      ref.listen(dateToDisplay, (prev, next) {
+        ref
+            .read(entryDatabaseProvider.notifier)
+            .updateGivenMonthTotalAndDailyAverage(next);
+      });
+      bool visible = DateFormat('MMMMyyyy').format(DateTime.now()) !=
+          DateFormat('MMMMyyyy').format(dateToDisp);
       return SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.only(top: 9, right: 21, left: 21),
           child: Column(
             children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(15),
-                        ),
-                        color: Theme.of(context).colorScheme.onTertiary),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Categories",
-                        style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.primary),
+              Visibility(
+                visible: visible,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0, top: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                          child: MyBox(
+                              width: width,
+                              label: 'Total',
+                              amount:
+                                  "$curency${entriesDatabaseNotifier.givenMonthTotalExpenses.toStringAsFixed(2)}")),
+                      const SizedBox(
+                        width: 16,
                       ),
+                      Expanded(
+                          child: MyBox(
+                              width: width,
+                              label: 'Daily Average',
+                              amount: curency +
+                                  entriesDatabaseNotifier.givenMonthDailyAverage
+                                      .toStringAsFixed(2)))
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                      color: Theme.of(context).colorScheme.onTertiary),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Categories",
+                      style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
@@ -148,27 +182,27 @@ List<Widget> analysisPage(
                   )),
                 ],
               ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
-                        color: Theme.of(context).colorScheme.onTertiary),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Subcategories",
-                        style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.primary),
-                      ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(15)),
+                      color: Theme.of(context).colorScheme.onTertiary),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Subcategories",
+                      style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ),
+              ),
               MyPieChart(
                 isDialogBox: false,
                 includeUncat: false,
@@ -215,54 +249,57 @@ List<Widget> analysisPage(
     Consumer(builder: (context, ref, child) {
       return SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.only(top: 0, right: 21, left: 21,),
+          padding: const EdgeInsets.only(
+            top: 0,
+            right: 21,
+            left: 21,
+          ),
           child: Column(
             children: [
               Padding(
-              padding: const EdgeInsets.only(bottom: 12.0,top: 8),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: MyBox(
-                          width: width,
-                          label: 'Total',
-                          amount:
-                              "$curency$totalExpenses")),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Expanded(
-                      child: MyBox(
-                          width: width,
-                          label: 'Daily Average',
-                          amount:  curency+totalDailyAverage))
-                ],
+                padding: const EdgeInsets.only(bottom: 12.0, top: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: MyBox(
+                            width: width,
+                            label: 'Total',
+                            amount: "$curency$totalExpenses")),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                        child: MyBox(
+                            width: width,
+                            label: 'Daily Average',
+                            amount: curency + totalDailyAverage))
+                  ],
+                ),
               ),
-            ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(15),
-                        ),
-                        color: Theme.of(context).colorScheme.onTertiary),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Categories",
-                        style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.primary),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(15),
                       ),
+                      color: Theme.of(context).colorScheme.onTertiary),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Categories",
+                      style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
@@ -275,27 +312,26 @@ List<Widget> analysisPage(
                   )),
                 ],
               ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
-                        color: Theme.of(context).colorScheme.onTertiary),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Subcategories",
-                        style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.primary),
-                      ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                      color: Theme.of(context).colorScheme.onTertiary),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Subcategories",
+                      style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ),
+              ),
               MyTotalPieChart(
                 isDialogBox: false,
                 includeUncat: false,

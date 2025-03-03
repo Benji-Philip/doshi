@@ -43,7 +43,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
   @override
   void initState() {
     super.initState();
-    _initializeData();
+    _initializeData(ref.read(dateToDisplay));
     hidePieChart = widget.hidePieChart ?? false;
   }
 
@@ -54,10 +54,10 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
     pieChartLegendList = pieChartLegendListGenerator();
   }
 
-  void _initializeData() {
+  void _initializeData(DateTime date) {
     entriesOfGivenMonth = sortExpensesByGivenMonth(
         ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses,
-        ref.read(dateToDisplay));
+        date);
     if (widget.isDialogBox ?? false) {
       subCatAnalysis = sortIntoSubCategories(sortEntrysByParentCategory(
           widget.parentCategory!, ref.read(entriesGivenMonth)));
@@ -93,7 +93,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
     final watcher2 = ref.watch(entriesGivenMonth);
     final watcher3 = ref.watch(dateToDisplay);
     ref.listen(entryDatabaseProvider, (prev, next) {
-      _initializeData();
+      _initializeData(ref.read(dateToDisplay));
       _updatePieChart();
     });
 
@@ -102,14 +102,16 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
         pieChartData = sortIntoSubCategories(
             sortEntrysByParentCategory(widget.parentCategory!, next));
       }
-      _initializeData();
+      _initializeData(ref.read(dateToDisplay));
       _updatePieChart();
     });
 
     ref.listen(dateToDisplay, (prev, next) {
       entriesOfGivenMonth = sortExpensesByGivenMonth(
           ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses, next);
+      _initializeData(next);
       _updatePieChartData();
+      _updatePieChart();
     });
 
     return Column(
