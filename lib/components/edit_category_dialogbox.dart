@@ -71,7 +71,7 @@ class _EditCategoryState extends ConsumerState<EditCategory> {
                                   HapticFeedback.lightImpact();
                                   showDialog(
                                       barrierColor:
-                                          Colors.black.withOpacity(0.8),
+                                          Colors.black.withAlpha((0.8*255).round()),
                                       context: context,
                                       builder: (context) =>
                                           const MyColorPicker());
@@ -158,7 +158,7 @@ class _EditCategoryState extends ConsumerState<EditCategory> {
                                           ref,
                                           widget.id,
                                           _categoryController.text,
-                                          ref.read(categoryColor).value);
+                                          ref.read(categoryColor).toARGB32());
                                   Navigator.of(context).pop();
                                 },
                                 width: 130,

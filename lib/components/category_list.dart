@@ -145,7 +145,7 @@ class CategoryList extends ConsumerWidget {
                                     .update((state) => "Uncategorised");
                                 ref
                                     .read(subCategoryColorInt.notifier)
-                                    .update((state) => Colors.white.value);
+                                    .update((state) => Colors.white.toARGB32());
                                 Navigator.of(context).pop();
                               } else if (!notInList) {
                                 HapticFeedback.heavyImpact();

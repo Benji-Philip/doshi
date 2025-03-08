@@ -159,7 +159,7 @@ class _SlidableEntryOnboardingState extends State<SlidableEntryOnboarding>
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primary
-                                            .withOpacity(0.75),
+                                            .withAlpha((0.75*255).round()),
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600),
                                   ),
@@ -180,7 +180,7 @@ class _SlidableEntryOnboardingState extends State<SlidableEntryOnboarding>
                                           color: Theme.of(context)
                                               .colorScheme
                                               .primary
-                                              .withOpacity(0.5),
+                                              .withAlpha((0.5*255).round()),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(5))),
                                     ),
@@ -198,7 +198,7 @@ class _SlidableEntryOnboardingState extends State<SlidableEntryOnboarding>
                                           color: Theme.of(context)
                                               .colorScheme
                                               .primary
-                                              .withOpacity(0.75),
+                                              .withAlpha((0.75*255).round()),
                                           fontSize: 10,
                                           fontWeight: FontWeight.w600),
                                     ),

@@ -302,20 +302,20 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
         "Uncategorised",
         "",
         false,
-        Colors.white.value,
+        Colors.white.toARGB32(),
         true,
         "Uncategorised",
-        Colors.white.value);
+        Colors.white.toARGB32());
     await addEntry(
         double.parse(ref.read(amountText)),
         DateTime.now(),
         "Uncategorised",
         "From savings",
         false,
-        Colors.white.value,
+        Colors.white.toARGB32(),
         false,
         "Uncategorised",
-        Colors.white.value);
+        Colors.white.toARGB32());
     await fetchEntries();
   }
 
@@ -333,10 +333,10 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
         "Uncategorised",
         "",
         false,
-        Colors.white.value,
+        Colors.white.toARGB32(),
         true,
         "Uncategorised",
-        Colors.white.value);
+        Colors.white.toARGB32());
     await fetchEntries();
   }
 

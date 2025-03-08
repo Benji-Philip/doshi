@@ -128,10 +128,10 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                           widget.currentEntries[widget.index].isExpense);
                       ref.read(categoryColorInt.notifier).update((state) =>
                           widget.currentEntries[widget.index].categoryColor ??
-                          Colors.white.value);
+                          Colors.white.toARGB32());
                       ref.read(subCategoryColorInt.notifier).update((state) =>
                           widget.currentEntries[widget.index].subCategoryColor ??
-                          Colors.white.value);
+                          Colors.white.toARGB32());
                       if (widget.currentEntries[widget.index].isExpense == true) {
                         ref.read(isExpense.notifier).update((state) => true);
                         showGeneralDialog(
@@ -271,7 +271,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                             .currentEntries[
                                                                 widget.index]
                                                             .categoryColor ??
-                                                        Colors.white.value),
+                                                        Colors.white.toARGB32()),
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(100))),
@@ -332,7 +332,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                         .currentEntries[
                                                             widget.index]
                                                         .subCategoryColor ??
-                                                    Colors.white.value),
+                                                    Colors.white.toARGB32()),
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(100))),
@@ -363,7 +363,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .primary
-                                                    .withOpacity(0.75),
+                                                    .withAlpha((0.75*255).round()),
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600),
                                           ),
@@ -391,7 +391,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                   color: Theme.of(context)
                                                       .colorScheme
                                                       .primary
-                                                      .withOpacity(0.5),
+                                                      .withAlpha((0.5*255).round()),
                                                   borderRadius:
                                                       const BorderRadius.all(
                                                           Radius.circular(5))),
@@ -412,7 +412,7 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                   color: Theme.of(context)
                                                       .colorScheme
                                                       .primary
-                                                      .withOpacity(0.75),
+                                                      .withAlpha((0.75*255).round()),
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.w600),
                                             ),

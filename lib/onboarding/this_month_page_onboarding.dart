@@ -77,7 +77,7 @@ List<Widget> thisMonthPageOnboarding(
                               boxShadow: [
                                 BoxShadow(
                                   color: const Color.fromARGB(255, 0, 0, 0)
-                                      .withOpacity(0.3),
+                                      .withAlpha((0.3*255).round()),
                                   spreadRadius: 0,
                                   blurRadius: 20,
                                   offset: const Offset(0, 0),
@@ -136,8 +136,7 @@ List<Widget> thisMonthPageOnboarding(
                                                 fontWeight: FontWeight.w700,
                                                 color: Theme.of(context)
                                                     .colorScheme
-                                                    .primary
-                                                    .withOpacity(1),
+                                                    .primary,
                                               ),
                                             ),
                                           ),

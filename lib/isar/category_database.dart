@@ -19,31 +19,31 @@ class CategoryDatabaseNotifier extends StateNotifier<List<CategoryEntry>> {
 
   final uncategorised = CategoryEntry()
     ..category = "Uncategorised"
-    ..categoryColor = const Color.fromARGB(255, 255, 255, 255).value;
+    ..categoryColor = const Color.fromARGB(255, 255, 255, 255).toARGB32();
   final food = CategoryEntry()
     ..category = "Food"
-    ..categoryColor = const Color.fromARGB(255, 54, 244, 111).value;
+    ..categoryColor = const Color.fromARGB(255, 54, 244, 111).toARGB32();
   final groceries = CategoryEntry()
     ..category = "Groceries"
-    ..categoryColor = const Color.fromARGB(255, 98, 54, 244).value;
+    ..categoryColor = const Color.fromARGB(255, 98, 54, 244).toARGB32();
   final transportation = CategoryEntry()
     ..category = "Transportation"
-    ..categoryColor = const Color.fromARGB(255, 76, 196, 209).value;
+    ..categoryColor = const Color.fromARGB(255, 76, 196, 209).toARGB32();
   final utilities = CategoryEntry()
     ..category = "Utilities"
-    ..categoryColor = const Color.fromARGB(255, 240, 255, 70).value;
+    ..categoryColor = const Color.fromARGB(255, 240, 255, 70).toARGB32();
   final healthcare = CategoryEntry()
     ..category = "Healthcare"
-    ..categoryColor = const Color.fromARGB(255, 244, 54, 155).value;
+    ..categoryColor = const Color.fromARGB(255, 244, 54, 155).toARGB32();
   final entertainment = CategoryEntry()
     ..category = "Entertainment"
-    ..categoryColor = const Color.fromARGB(255, 54, 70, 244).value;
+    ..categoryColor = const Color.fromARGB(255, 54, 70, 244).toARGB32();
   final internet = CategoryEntry()
     ..category = "Internet"
-    ..categoryColor = const Color.fromARGB(255, 255, 63, 63).value;
+    ..categoryColor = const Color.fromARGB(255, 255, 63, 63).toARGB32();
   final miscellaneous = CategoryEntry()
     ..category = "Miscellaneous"
-    ..categoryColor = const Color.fromARGB(255, 54, 244, 181).value;
+    ..categoryColor = const Color.fromARGB(255, 54, 244, 181).toARGB32();
 
   //list of entries
 
@@ -115,7 +115,7 @@ class CategoryDatabaseNotifier extends StateNotifier<List<CategoryEntry>> {
               .read(subCategoryText.notifier)
               .update((state) => expense.subCategory ?? "Uncategorised");
           ref.read(subCategoryColorInt.notifier).update(
-              (state) => expense.subCategoryColor ?? Colors.white.value);
+              (state) => expense.subCategoryColor ?? Colors.white.toARGB32());
           ref.read(entryDatabaseProvider.notifier).editEntry(
               expense.id,
               newCategory,

@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BackupRestoreDialog extends ConsumerStatefulWidget {
@@ -27,7 +26,6 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
   bool _iapAvailable = false;
   double scrollOffset = 0.0;
   final _scrollController = ScrollController();
-  final InAppReview inAppReview = InAppReview.instance;
 
   @override
   void initState() {
@@ -181,6 +179,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                         .update((state) => false);
                                   }
                                   if (mounted) {
+                                    // ignore: use_build_context_synchronously
                                     Navigator.of(context).pop();
                                   }
                                 },
@@ -395,15 +394,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                               child: GestureDetector(
                                 onTap: () async {
                                   HapticFeedback.heavyImpact();
-                                  if (await inAppReview.isAvailable()) {
-                                    try {
-                                      inAppReview.openStoreListing();
-                                    } catch (e) {
-                                      _launchURL();
-                                    }
-                                  } else {
-                                    _launchURL();
-                                  }
+                                  _launchURL();
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
@@ -449,8 +440,8 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.center,
                                     child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
                                       child: Text(
                                         "Buy me a coffee",
                                         softWrap: true,

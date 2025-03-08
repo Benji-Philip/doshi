@@ -1,15 +1,9 @@
-import 'package:doshi/components/slidable_entry.dart';
-import 'package:doshi/onboarding/add_savings_onboarding.dart';
-import 'package:doshi/onboarding/onboardingbutton.dart';
+
 import 'package:doshi/onboarding/slidable_budget_onboarding.dart';
 import 'package:doshi/onboarding/slidable_category_onboarding.dart';
 import 'package:doshi/onboarding/slidable_entry_onboarding.dart';
-import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:lottie/lottie.dart';
 
 class CardSeven extends StatefulWidget {
   const CardSeven({

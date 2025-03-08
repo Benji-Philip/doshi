@@ -16,7 +16,7 @@ class AddIncomeOnboardDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Colors.black.withOpacity(0.5),
+      color: Colors.black.withAlpha((0.5*255).round()),
       child: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 30.0),
           child: ThisContainerFinal()),

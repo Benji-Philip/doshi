@@ -1,10 +1,6 @@
 import 'package:doshi/onboarding/analysis_page_onboarding.dart';
-import 'package:doshi/onboarding/onboarding.dart';
-import 'package:doshi/components/add_expense_dialog_box.dart';
-import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/onboarding/this_month_page_onboarding.dart';
-import 'package:doshi/pages/analysis_page.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +26,6 @@ class _HomePageState extends ConsumerState<HomePageOnboarding> {
   double scrollDelta = 0.0;
   double scrollOffset = 0.0;
   final _scrollController = ScrollController();
-  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
-      GlobalKey<ScaffoldMessengerState>();
   double width = 0;
   double height = 0;
   late EntryDatabaseNotifier entriesDatabaseNotifier;
@@ -303,7 +297,7 @@ class _HomePageState extends ConsumerState<HomePageOnboarding> {
                           boxShadow: [
                             BoxShadow(
                               color: const Color.fromARGB(255, 0, 0, 0)
-                                  .withOpacity(0.3),
+                                  .withAlpha((0.3*255).round()),
                               spreadRadius: 0,
                               blurRadius: 20,
                               offset: const Offset(
@@ -335,7 +329,7 @@ class _HomePageState extends ConsumerState<HomePageOnboarding> {
                           boxShadow: [
                             BoxShadow(
                               color: const Color.fromARGB(255, 0, 0, 0)
-                                  .withOpacity(0.7),
+                                  .withAlpha((0.7*255).round()),
                               spreadRadius: 0,
                               blurRadius: 20,
                               offset: const Offset(

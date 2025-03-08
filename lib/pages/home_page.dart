@@ -98,7 +98,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               boxShadow: [
                                 BoxShadow(
                                   color: const Color.fromARGB(255, 0, 0, 0)
-                                      .withOpacity(0.3),
+                                      .withAlpha((0.3*255).round()),
                                   spreadRadius: 0,
                                   blurRadius: 20,
                                   offset: const Offset(
@@ -198,7 +198,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                             BoxShadow(
                                               color: const Color.fromARGB(
                                                       255, 0, 0, 0)
-                                                  .withOpacity(0.3),
+                                                  .withAlpha((0.3*255).round()),
                                               spreadRadius: 0,
                                               blurRadius: 20,
                                               offset: const Offset(0,
@@ -309,7 +309,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                             BoxShadow(
                                               color: const Color.fromARGB(
                                                       255, 0, 0, 0)
-                                                  .withOpacity(0.3),
+                                                  .withAlpha((0.3*255).round()),
                                               spreadRadius: 0,
                                               blurRadius: 20,
                                               offset: const Offset(0,
@@ -366,7 +366,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: const Color.fromARGB(255, 0, 0, 0)
-                                        .withOpacity(0.3),
+                                        .withAlpha((0.3*255).round()),
                                     spreadRadius: 0,
                                     blurRadius: 20,
                                     offset: const Offset(
@@ -662,7 +662,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             boxShadow: [
                               BoxShadow(
                                 color: const Color.fromARGB(255, 0, 0, 0)
-                                    .withOpacity(0.3),
+                                    .withAlpha((0.3*255).round()),
                                 spreadRadius: 0,
                                 blurRadius: 20,
                                 offset: const Offset(
@@ -694,7 +694,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             boxShadow: [
                               BoxShadow(
                                 color: const Color.fromARGB(255, 0, 0, 0)
-                                    .withOpacity(0.7),
+                                    .withAlpha((0.7*255).round()),
                                 spreadRadius: 0,
                                 blurRadius: 20,
                                 offset: const Offset(

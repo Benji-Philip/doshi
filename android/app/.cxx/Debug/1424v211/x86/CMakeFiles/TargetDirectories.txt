@@ -1,0 +1,2 @@
+/home/benji/repos/doshi/android/app/.cxx/Debug/1424v211/x86/CMakeFiles/rebuild_cache.dir
+/home/benji/repos/doshi/android/app/.cxx/Debug/1424v211/x86/CMakeFiles/edit_cache.dir

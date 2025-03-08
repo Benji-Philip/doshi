@@ -70,7 +70,7 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                   decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(15)),
                       color: Color(widget.notInList
-                          ? Colors.white.value
+                          ? Colors.white.toARGB32()
                           : widget
                               .currentCategories[widget.index].categoryColor)),
                   alignment: Alignment.center,
@@ -232,6 +232,7 @@ class _SlidableCategoryState extends ConsumerState<SlidableCategory>
                                   : widget
                                       .currentCategories[widget.index].category,
                           softWrap: true,
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.montserrat(
                               color: widget.notInList
                                   ? Theme.of(context).colorScheme.surface

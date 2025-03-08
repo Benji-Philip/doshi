@@ -47,7 +47,7 @@ class _OnboardingState extends State<Onboarding> {
       alignment: Alignment.center,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      color: Theme.of(context).colorScheme.surface.withOpacity(0.8),
+      color: Theme.of(context).colorScheme.surface.withAlpha((0.8*255).round()),
       child: FittedBox(
         alignment: Alignment.center,
         fit: BoxFit.scaleDown,
@@ -101,7 +101,7 @@ class _OnboardingState extends State<Onboarding> {
                                   dotColor: Theme.of(context)
                                       .colorScheme
                                       .primary
-                                      .withOpacity(0.3)),
+                                      .withAlpha((0.3*255).round())),
                             ),
                           ),
                         ),

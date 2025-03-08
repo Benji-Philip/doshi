@@ -64,7 +64,7 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
               width: MediaQuery.of(context).size.width * 0.8,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  color: Color(widget.subCategoryColor ?? Colors.white.value)),
+                  color: Color(widget.subCategoryColor ?? Colors.white.toARGB32())),
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -116,7 +116,7 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
                       }
                       HapticFeedback.lightImpact();
                       ref.read(categoryColor.notifier).update((state) =>
-                          Color(widget.subCategoryColor ?? Colors.white.value));
+                          Color(widget.subCategoryColor ?? Colors.white.toARGB32()));
                       ref
                           .read(categoryText.notifier)
                           .update((state) => widget.text);
@@ -168,7 +168,7 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
                 }
                 HapticFeedback.lightImpact();
                 ref.read(categoryColor.notifier).update((state) =>
-                    Color(widget.subCategoryColor ?? Colors.white.value));
+                    Color(widget.subCategoryColor ?? Colors.white.toARGB32()));
                 ref.read(categoryText.notifier).update((state) => widget.text);
                 Navigator.of(context).push(PageRouteBuilder(
                     opaque: false,
@@ -201,6 +201,7 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       widget.text,
+                          overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.montserrat(
                           color: widget.textColor ??
                               Theme.of(context).colorScheme.surface,
@@ -209,7 +210,7 @@ class _SlidableSubcategoryState extends ConsumerState<SlidableSubcategory>
                     ),
                   )),
             ),
-          ),
+          ),  
         ),
       ],
     );

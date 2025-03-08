@@ -40,8 +40,7 @@ List<Widget> thisMonthPage(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: () {
-            },
+            onTap: () {},
             // ignore: avoid_unnecessary_containers
             child: Container(
               height: spaceFromTop - 30,
@@ -51,7 +50,8 @@ List<Widget> thisMonthPage(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
-                  child: Text("Home",
+                  child: Text(
+                    "Home",
                     style: GoogleFonts.montserrat(
                         color: Colors.transparent,
                         fontSize: 36,
@@ -156,7 +156,8 @@ List<Widget> thisMonthPage(
                     Flexible(
                       flex: 3,
                       child: Padding(
-                        padding: EdgeInsets.only(right: ref.watch(showCamera)?12.0:0.0),
+                        padding: EdgeInsets.only(
+                            right: ref.watch(showCamera) ? 12.0 : 0.0),
                         child: GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
@@ -177,7 +178,7 @@ List<Widget> thisMonthPage(
                                 boxShadow: [
                                   BoxShadow(
                                     color: const Color.fromARGB(255, 0, 0, 0)
-                                        .withOpacity(0.3),
+                                        .withAlpha((0.3 * 255).round()),
                                     spreadRadius: 0,
                                     blurRadius: 20,
                                     offset: const Offset(0, 0),
@@ -238,8 +239,7 @@ List<Widget> thisMonthPage(
                                                   fontWeight: FontWeight.w700,
                                                   color: Theme.of(context)
                                                       .colorScheme
-                                                      .primary
-                                                      .withOpacity(1),
+                                                      .primary,
                                                 ),
                                               ),
                                             ),
@@ -304,9 +304,9 @@ List<Widget> thisMonthPage(
                                                   File(ref.read(selfiePath)))),
                                       boxShadow: [
                                         BoxShadow(
-                                          color:
-                                              const Color.fromARGB(255, 0, 0, 0)
-                                                  .withOpacity(0.3),
+                                          color: const Color.fromARGB(
+                                                  255, 0, 0, 0)
+                                              .withAlpha((0.3 * 255).round()),
                                           spreadRadius: 0,
                                           blurRadius: 20,
                                           offset: const Offset(0, 0),

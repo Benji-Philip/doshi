@@ -66,7 +66,7 @@ class _ScrollableBudgetSelectorState
                 color: Theme.of(context)
                     .colorScheme
                     .onTertiary
-                    .withOpacity(0.7), // Solid color background
+                    .withAlpha((0.7*255).round()), // Solid color background
                 borderRadius: BorderRadius.circular(15), // Curved corners
               ),
               child: FittedBox(

@@ -89,8 +89,11 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final watcher1 = ref.watch(entryDatabaseProvider);
+    // ignore: unused_local_variable
     final watcher2 = ref.watch(entriesGivenMonth);
+    // ignore: unused_local_variable
     final watcher3 = ref.watch(dateToDisplay);
     ref.listen(entryDatabaseProvider, (prev, next) {
       _initializeData(ref.read(dateToDisplay));
@@ -174,7 +177,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
         ),
         title: "$sumPercent%",
         value: double.parse(sumPercent),
-        color: Color(color ?? Colors.white.value),
+        color: Color(color ?? Colors.white.toARGB32()),
       );
     });
   }
@@ -230,7 +233,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                       width: 12,
                                       decoration: BoxDecoration(
                                         color:
-                                            Color(color ?? Colors.white.value),
+                                            Color(color ?? Colors.white.toARGB32()),
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(100)),
                                       ),
@@ -278,7 +281,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                                   color: Theme.of(context)
                                                       .colorScheme
                                                       .primary
-                                                      .withOpacity(0.7),
+                                                      .withAlpha((0.7*255).round()),
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.w700,
                                                 ),
@@ -304,7 +307,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
                                   style: GoogleFonts.montserrat(
                                     decorationColor:
                                         const Color.fromARGB(0, 255, 255, 255),
-                                    color: Color(color ?? Colors.white.value),
+                                    color: Color(color ?? Colors.white.toARGB32()),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
                                   ),

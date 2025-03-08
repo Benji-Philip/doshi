@@ -32,7 +32,7 @@ class DeleteBudgetDialogBox extends ConsumerWidget {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withOpacity(0.3),
+                                .withAlpha((0.3*255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(
@@ -191,7 +191,7 @@ class DeleteBudgetDialogBox extends ConsumerWidget {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withOpacity(0.3),
+                                .withAlpha((0.3*255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(
@@ -245,7 +245,7 @@ class DeleteBudgetDialogBox extends ConsumerWidget {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .primary
-                                          .withOpacity(0.7),
+                                          .withAlpha((0.7*255).round()),
                                       decorationColor: const Color.fromARGB(
                                           0, 255, 255, 255)),
                                 ),

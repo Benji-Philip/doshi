@@ -42,7 +42,7 @@ class _SubCatPieChartDialogState extends ConsumerState<SubCatPieChartDialog> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Colors.black.withOpacity(0.75),
+      color: Colors.black.withAlpha((0.75*255).round()),
       child: SingleChildScrollView(
         controller: _scrollController,
         child: Padding(

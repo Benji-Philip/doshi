@@ -63,7 +63,7 @@ class _AddSubCategoryState extends State<AddSubCategory> {
                                   HapticFeedback.lightImpact();
                                   showDialog(
                                       barrierColor:
-                                          Colors.black.withOpacity(0.8),
+                                          Colors.black.withAlpha((0.8*255).round()),
                                       context: context,
                                       builder: (context) =>
                                           const MyColorPicker());
@@ -152,7 +152,7 @@ class _AddSubCategoryState extends State<AddSubCategory> {
                                             .notifier)
                                         .addSubCategory(
                                             _subCategoryController.text,
-                                            ref.read(categoryColor).value,
+                                            ref.read(categoryColor).toARGB32(),
                                             ref.read(categoryText));
                                     Navigator.of(context).pop();
                                   }

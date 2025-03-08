@@ -33,7 +33,7 @@ class _EntrysInSubCatDialogState extends ConsumerState<EntrysInSubCatDialog> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Colors.black.withOpacity(0.5),
+      color: Colors.black.withAlpha((0.5*255).round()),
       child: SingleChildScrollView(
         controller: _scrollController,
         physics: const BouncingScrollPhysics(),

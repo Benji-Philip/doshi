@@ -30,7 +30,7 @@ def keystoreProperties = new Properties()
 
 android {
     namespace "com.beri.doshi"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {

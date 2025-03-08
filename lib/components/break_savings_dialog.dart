@@ -43,7 +43,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withOpacity(0.3),
+                                .withAlpha((0.3*255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(
@@ -208,7 +208,7 @@ class _BreakSavingsDialogState extends ConsumerState<BreakSavingsDialog> {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withOpacity(0.3),
+                                .withAlpha((0.3*255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(

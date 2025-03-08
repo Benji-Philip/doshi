@@ -38,7 +38,7 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withOpacity(0.3),
+                                .withAlpha((0.3*255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(
@@ -175,7 +175,7 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withOpacity(0.3),
+                                .withAlpha((0.3*255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(

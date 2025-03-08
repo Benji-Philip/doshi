@@ -129,8 +129,7 @@ class _MyTextFieldState extends ConsumerState<MyTextField> {
                         TextStyle(
                           color: Theme.of(context)
                               .colorScheme
-                              .primary
-                              .withOpacity(1),
+                              .primary,
                         ),
                     fontSize: widget.hintTextSize ?? myFontSize,
                     fontWeight: FontWeight.w700),
@@ -148,7 +147,7 @@ class _MyTextFieldState extends ConsumerState<MyTextField> {
                               color: Theme.of(context)
                                   .colorScheme
                                   .primary
-                                  .withOpacity(0.5),
+                                  .withAlpha((0.5*255).round()),
                               fontSize: myFontSize),
                       fontSize: widget.hintTextSize ?? myFontSize,
                       fontWeight: FontWeight.w700),

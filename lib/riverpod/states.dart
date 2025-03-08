@@ -40,9 +40,9 @@ final appOpenedTime =
 final backupRestoreSuccess = StateProvider((ref) => true);
 
 final categoryColorInt =
-    StateProvider((ref) => const Color.fromARGB(255, 255, 255, 255).value);
+    StateProvider((ref) => const Color.fromARGB(255, 255, 255, 255).toARGB32());
 final subCategoryColorInt =
-    StateProvider((ref) => const Color.fromARGB(255, 255, 255, 255).value);
+    StateProvider((ref) => const Color.fromARGB(255, 255, 255, 255).toARGB32());
 final entryDatabaseProvider =
     StateNotifierProvider<EntryDatabaseNotifier, List<Entry>>(
         (ref) => EntryDatabaseNotifier());
@@ -62,11 +62,11 @@ void setDefaultValues(WidgetRef ref) {
   ref.read(categoryText.notifier).update((state) => "Uncategorised");
   ref
       .read(categoryColorInt.notifier)
-      .update((state) => const Color.fromARGB(255, 255, 255, 255).value);
+      .update((state) => const Color.fromARGB(255, 255, 255, 255).toARGB32());
   ref.read(subCategoryText.notifier).update((state) => "Uncategorised");
   ref
       .read(subCategoryColorInt.notifier)
-      .update((state) => const Color.fromARGB(255, 255, 255, 255).value);
+      .update((state) => const Color.fromARGB(255, 255, 255, 255).toARGB32());
   ref.read(exceedVault.notifier).update((state) => false);
   ref.read(exceedSavings.notifier).update((state) => false);
   ref.read(isSavings.notifier).update((state) => false);

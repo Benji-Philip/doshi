@@ -3,14 +3,11 @@ import 'package:doshi/components/my_total_piechart.dart';
 import 'package:doshi/components/mybox.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/isar/entry.dart';
-import 'package:doshi/logic/sort_entries.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 List<Widget> analysisPageOnboarding(
   List<Entry> listOfExpenses,
@@ -77,6 +74,7 @@ List<Widget> analysisPageOnboarding(
       );
     }),
     Consumer(builder: (context, ref, child) {
+      // ignore: unused_local_variable
       final dateToDisp = ref.watch(dateToDisplay);
       return SliverToBoxAdapter(
         child: Padding(

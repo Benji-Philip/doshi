@@ -81,6 +81,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final watcher = ref.watch(entryDatabaseProvider);
     ref.listen(entryDatabaseProvider, (prev, next) {
       totalEntries =
@@ -206,7 +207,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
         ),
         title: "$sumPercent%",
         value: double.parse(sumPercent),
-        color: Color(color ?? Colors.white.value),
+        color: Color(color ?? Colors.white.toARGB32()),
       );
     });
   }
@@ -269,7 +270,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                         width: 12,
                                         decoration: BoxDecoration(
                                             color: Color(
-                                                color ?? Colors.white.value),
+                                                color ?? Colors.white.toARGB32()),
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(100))),
@@ -320,7 +321,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                                       color: Theme.of(context)
                                                           .colorScheme
                                                           .primary
-                                                          .withOpacity(0.7),
+                                                          .withAlpha((0.7*255).round()),
                                                       fontSize: 10,
                                                       fontWeight:
                                                           FontWeight.w700),
@@ -349,7 +350,7 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                         decorationColor: const Color.fromARGB(
                                             0, 255, 255, 255),
                                         color:
-                                            Color(color ?? Colors.white.value),
+                                            Color(color ?? Colors.white.toARGB32()),
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700),
                                   ),
