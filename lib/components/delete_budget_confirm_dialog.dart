@@ -237,7 +237,7 @@ class DeleteBudgetDialogBox extends ConsumerWidget {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  "Also deletes it's sub-categories!",
+                                  "Delete this budget and all it's entries?",
                                   softWrap: true,
                                   style: GoogleFonts.montserrat(
                                       fontSize: 54,

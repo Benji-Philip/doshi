@@ -1,0 +1,2 @@
+/home/benji/repos/doshi/android/app/.cxx/RelWithDebInfo/1j6b3a1u/x86_64/CMakeFiles/edit_cache.dir
+/home/benji/repos/doshi/android/app/.cxx/RelWithDebInfo/1j6b3a1u/x86_64/CMakeFiles/rebuild_cache.dir

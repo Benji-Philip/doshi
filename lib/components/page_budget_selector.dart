@@ -1,5 +1,6 @@
 import 'package:doshi/components/budget_selector.dart';
 import 'package:doshi/isar/budget.dart';
+import 'package:doshi/logic/budget_fix.dart';
 import 'package:doshi/pages/home_page.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class _ScrollableBudgetSelectorState
             onTap: () {
               HapticFeedback.heavyImpact();
               ref.read(budgetDatabaseProvider.notifier).fetchEntries();
+              BudgetFix().fixAppSetting(ref);
               showGeneralDialog(
                   pageBuilder: (context, anim1, anim2) {
                     return const Placeholder();
@@ -66,7 +68,7 @@ class _ScrollableBudgetSelectorState
                 color: Theme.of(context)
                     .colorScheme
                     .onTertiary
-                    .withAlpha((0.7*255).round()), // Solid color background
+                    .withAlpha((0.7 * 255).round()), // Solid color background
                 borderRadius: BorderRadius.circular(15), // Curved corners
               ),
               child: FittedBox(
