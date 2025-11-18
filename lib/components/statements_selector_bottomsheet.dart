@@ -110,7 +110,7 @@ class StatementsSelectorBottomsheet extends ConsumerWidget {
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              height: 60,
+                              height: 40,
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(25),
@@ -123,7 +123,7 @@ class StatementsSelectorBottomsheet extends ConsumerWidget {
                                   softWrap: true,
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white,
-                                      fontSize: 28,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w700),
                                 ),
                               ),
@@ -216,7 +216,7 @@ class StatementsSelectorBottomsheet extends ConsumerWidget {
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              height: 60,
+                              height: 40,
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(25),
@@ -229,7 +229,7 @@ class StatementsSelectorBottomsheet extends ConsumerWidget {
                                   softWrap: true,
                                   style: GoogleFonts.montserrat(
                                       color: Colors.white,
-                                      fontSize: 28,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w700),
                                 ),
                               ),
@@ -238,6 +238,13 @@ class StatementsSelectorBottomsheet extends ConsumerWidget {
                         ),
                       ),
                     ],
+                  ),
+                  Text(
+                    "Tip : Backup before importing in case you'd like to revert",
+                    style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.lightGreenAccent),
                   ),
                 ],
               ),

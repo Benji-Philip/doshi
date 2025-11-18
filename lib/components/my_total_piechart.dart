@@ -104,8 +104,8 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
             child: SizedBox(
               height: widget.width / 2,
               child: PieChart(
-                swapAnimationDuration: const Duration(milliseconds: 750),
-                swapAnimationCurve: Curves.easeInOut,
+                duration: const Duration(milliseconds: 750),
+                curve: Curves.easeInOut,
                 PieChartData(sections: pieChartSegments),
               ),
             ),

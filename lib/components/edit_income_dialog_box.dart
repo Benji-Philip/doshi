@@ -1,3 +1,5 @@
+import 'package:doshi/components/delete_dialog.dart';
+import 'package:doshi/components/edit_expense_dialog_box.dart';
 import 'package:doshi/components/user_input_dialog.dart';
 import 'package:doshi/logic/decimal_text_input_formatter.dart';
 import 'package:doshi/riverpod/states.dart';
@@ -21,7 +23,7 @@ class EditIncomeDialogBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Colors.black.withAlpha((0.5*255).round()),
+      color: Colors.black.withAlpha((0.5 * 255).round()),
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: ThisContainerFinal(id: id)),
@@ -29,21 +31,22 @@ class EditIncomeDialogBox extends StatelessWidget {
   }
 }
 
-class ThisContainerFinal extends StatefulWidget {
+class ThisContainerFinal extends ConsumerStatefulWidget {
   final Id id;
   const ThisContainerFinal({super.key, required this.id});
 
   @override
-  State<ThisContainerFinal> createState() => _ThisContainerFinalState();
+  ConsumerState<ThisContainerFinal> createState() => _ThisContainerFinalState();
 }
 
-class _ThisContainerFinalState extends State<ThisContainerFinal> {
+class _ThisContainerFinalState extends ConsumerState<ThisContainerFinal> {
   final _scrollController = ScrollController();
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -73,6 +76,47 @@ class _ThisContainerFinalState extends State<ThisContainerFinal> {
               )
             ],
           ),
+          Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: GestureDetector(
+              onTap: () async {
+                HapticFeedback.heavyImpact();
+                ref.read(deletedEntry.notifier).update((state) => false);
+                await showGeneralDialog(
+                    pageBuilder: (context, anim1, anim2) {
+                      return const Placeholder();
+                    },
+                    context: context,
+                    transitionBuilder: (context, anim1, anim2, child) {
+                      return Opacity(
+                          opacity: anim1.value,
+                          child: DeleteEntryDialogBox(
+                              useColorChange: false,
+                              analysisDialog: false,
+                              id: widget.id));
+                    },
+                    transitionDuration: const Duration(milliseconds: 200));
+                if (context.mounted && ref.read(deletedEntry)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 22),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Text(
+                  "Delete",
+                  style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      decoration: TextDecoration.none),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -187,23 +231,21 @@ class _ThisContainerOfTheDialogBoxState
                                             TextDecorationStyle.dashed))),
                             const TextSpan(text: " in credit"),
                             TextSpan(
-                                text:
-                                    DateFormat('dMMMM').format(dateTimeVar) !=
-                                            DateFormat('dMMMM')
-                                                .format(DateTime.now())
-                                        ? " on "
-                                        : " "),
+                                text: DateFormat('dMMMM').format(dateTimeVar) !=
+                                        DateFormat('dMMMM')
+                                            .format(DateTime.now())
+                                    ? " on "
+                                    : " "),
                             TextSpan(
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
                                   HapticFeedback.lightImpact();
-                                  final DateTime? picked =
-                                      await showDatePicker(
-                                          initialDate: DateTime.now(),
-                                          context: context,
-                                          firstDate: DateTime(
-                                              DateTime.now().year - 10),
-                                          lastDate: DateTime.now());
+                                  final DateTime? picked = await showDatePicker(
+                                      initialDate: DateTime.now(),
+                                      context: context,
+                                      firstDate:
+                                          DateTime(DateTime.now().year - 10),
+                                      lastDate: DateTime.now());
                                   setState(() {
                                     if (picked != null &&
                                         picked != dateTimeVar) {
@@ -213,11 +255,9 @@ class _ThisContainerOfTheDialogBoxState
                                 },
                               text: DateFormat('d MMM yy')
                                           .format(DateTime.now()) ==
-                                      DateFormat('d MMM yy')
-                                          .format(dateTimeVar)
+                                      DateFormat('d MMM yy').format(dateTimeVar)
                                   ? "today"
-                                  : DateFormat('d MMM yy')
-                                      .format(dateTimeVar),
+                                  : DateFormat('d MMM yy').format(dateTimeVar),
                               style: GoogleFonts.montserrat(
                                   fontWeight: FontWeight.w700,
                                   color: Colors.amber,
@@ -294,13 +334,12 @@ class _ThisContainerOfTheDialogBoxState
                             },
                             child: Container(
                                 alignment: Alignment.center,
-                                width:
-                                    MediaQuery.of(context).size.width / 3.1,
+                                width: MediaQuery.of(context).size.width / 3.1,
                                 height: 50,
                                 decoration: const BoxDecoration(
                                     color: Colors.redAccent,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(50))),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50))),
                                 child: const Icon(
                                   Icons.close_rounded,
                                   size: 40,
@@ -338,16 +377,14 @@ class _ThisContainerOfTheDialogBoxState
                                         backgroundColor: Colors.redAccent,
                                         content: Text(
                                           'Invalid amount',
-                                          style:
-                                              TextStyle(color: Colors.white),
+                                          style: TextStyle(color: Colors.white),
                                         )));
                                 Navigator.of(context).pop();
                               }
                             },
                             child: Container(
                                 alignment: Alignment.center,
-                                width:
-                                    MediaQuery.of(context).size.width / 3.1,
+                                width: MediaQuery.of(context).size.width / 3.1,
                                 height: 50,
                                 decoration: BoxDecoration(
                                     color:

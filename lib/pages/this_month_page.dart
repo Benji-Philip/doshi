@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/add_to_vault_dialog_box.dart';
 import 'package:doshi/components/bar_graph_weekly.dart';
 import 'package:doshi/components/page_budget_selector.dart';
@@ -39,24 +38,20 @@ List<Widget> thisMonthPage(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
-            onTap: () {},
-            // ignore: avoid_unnecessary_containers
-            child: Container(
-              height: spaceFromTop - 30,
-              color: Colors.transparent,
-              child: SizedBox(
-                width: width * 0.7,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Home",
-                    style: GoogleFonts.montserrat(
-                        color: Colors.transparent,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700),
-                  ),
+          Container(
+            height: spaceFromTop - 30,
+            color: Colors.transparent,
+            child: SizedBox(
+              width: width * 0.7,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Home",
+                  style: GoogleFonts.montserrat(
+                      color: Colors.transparent,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -67,44 +62,16 @@ List<Widget> thisMonthPage(
               padding: const EdgeInsets.only(top: 43.0, right: 20),
               child: Row(
                 children: [
-                  IgnorePointer(
-                    ignoring: true,
-                    child: GestureDetector(
-                      onTap: () {
-                        HapticFeedback.heavyImpact();
-                        showCurrencyPicker(
-                          context: context,
-                          showFlag: true,
-                          showCurrencyName: true,
-                          showCurrencyCode: true,
-                          onSelect: (Currency currency) {
-                            HapticFeedback.lightImpact();
-                            ref
-                                .read(appSettingsDatabaseProvider.notifier)
-                                .editSetting(
-                                    3, "CurrencySymbol", currency.symbol);
-                            ref
-                                .read(currencyProvider.notifier)
-                                .update((state) => currency.symbol);
-                          },
-                        );
-                        scrollController.animateTo(-80,
-                            duration: const Duration(milliseconds: 100),
-                            curve: Curves.easeInCubic);
-                      },
-                      child: Container(
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
                         height: 35,
                         constraints: const BoxConstraints(minWidth: 35),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             color: Colors.transparent,
                             border: Border.all(color: Colors.white)),
-                        child: Text(
-                          ref.watch(currencyProvider),
-                          style: const TextStyle(fontSize: 20),
-                        ),
-                      ),
-                    ),
+                        child: const Icon(Icons.replay_rounded)),
                   ),
                   GestureDetector(
                     onTap: () {

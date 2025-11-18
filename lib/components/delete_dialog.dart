@@ -1,3 +1,4 @@
+import 'package:doshi/components/edit_expense_dialog_box.dart';
 import 'package:doshi/components/entrys_in_subcat_dialog.dart';
 import 'package:doshi/components/subcat_piechart_dialog.dart';
 import 'package:doshi/isar/entry.dart';
@@ -38,7 +39,7 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withAlpha((0.3*255).round()),
+                                .withAlpha((0.3 * 255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(
@@ -175,7 +176,7 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                         boxShadow: [
                           BoxShadow(
                             color: const Color.fromARGB(255, 0, 0, 0)
-                                .withAlpha((0.3*255).round()),
+                                .withAlpha((0.3 * 255).round()),
                             spreadRadius: 0,
                             blurRadius: 20,
                             offset: const Offset(
@@ -335,6 +336,9 @@ class DeleteEntryDialogBox extends ConsumerWidget {
                                               style: TextStyle(
                                                   color: Colors.white),
                                             )));
+                                    ref
+                                        .read(deletedEntry.notifier)
+                                        .update((state) => true);
                                     Navigator.of(context).pop();
                                   },
                                   child: Container(

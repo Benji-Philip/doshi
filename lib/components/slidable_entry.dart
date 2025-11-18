@@ -45,8 +45,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
   }
 
   @override
-    void dispose() {
-      _slidableController.dispose();
+  void dispose() {
+    _slidableController.dispose();
     super.dispose();
   }
 
@@ -104,123 +104,37 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
             ),
             child: Slidable(
               controller: _slidableController,
-              endActionPane: ActionPane(
-                extentRatio: 0.5,
-                motion: const DrawerMotion(),
-                children: [
-                  SlidableAction(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: (context) {
-                      HapticFeedback.heavyImpact();
-                      ref.read(amountText.notifier).update((state) =>
-                          widget.currentEntries[widget.index].amount.toString());
-                      ref.read(dateTimeVar.notifier).update((state) =>
-                          widget.currentEntries[widget.index].dateTime);
-                      ref.read(categoryText.notifier).update((state) =>
-                          widget.currentEntries[widget.index].category ??
-                          "Uncategorised");
-                      ref.read(subCategoryText.notifier).update((state) =>
-                          widget.currentEntries[widget.index].subCategory ??
-                          "Uncategorised");
-                      ref.read(noteText.notifier).update((state) =>
-                          widget.currentEntries[widget.index].note ?? "");
-                      ref.read(isExpense.notifier).update((state) =>
-                          widget.currentEntries[widget.index].isExpense);
-                      ref.read(categoryColorInt.notifier).update((state) =>
-                          widget.currentEntries[widget.index].categoryColor ??
-                          Colors.white.toARGB32());
-                      ref.read(subCategoryColorInt.notifier).update((state) =>
-                          widget.currentEntries[widget.index].subCategoryColor ??
-                          Colors.white.toARGB32());
-                      if (widget.currentEntries[widget.index].isExpense == true) {
-                        ref.read(isExpense.notifier).update((state) => true);
-                        showGeneralDialog(
-                            pageBuilder: (context, anim1, anim2) {
-                              return const Placeholder();
-                            },
-                            context: context,
-                            transitionBuilder: (context, anim1, anim2, child) {
-                              return Opacity(
-                                  opacity: anim1.value,
-                                  child: widget.currentEntries.isNotEmpty &&
-                                          widget.index <
-                                              widget.currentEntries.length
-                                      ? EditEntryDialogBox(
-                                          useColorChange: widget.useColorChange,
-                                          analysisDialog: widget.analysisDialog,
-                                          id: widget
-                                              .currentEntries[widget.index].id,
-                                        )
-                                      : const Text(""));
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 200));
-                      } else {
-                        ref.read(isExpense.notifier).update((state) => false);
-                        showGeneralDialog(
-                            pageBuilder: (context, anim1, anim2) {
-                              return const Placeholder();
-                            },
-                            context: context,
-                            transitionBuilder: (context, anim1, anim2, child) {
-                              return Opacity(
-                                  opacity: anim1.value,
-                                  child: widget.currentEntries.isNotEmpty &&
-                                          widget.index <
-                                              widget.currentEntries.length
-                                      ? EditIncomeDialogBox(
-                                          id: widget
-                                              .currentEntries[widget.index].id,
-                                        )
-                                      : const Text(""));
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 200));
-                      }
-                    },
-                    backgroundColor: const Color(0xFF21B7CA),
-                    foregroundColor: Colors.white,
-                    icon: Icons.edit_rounded,
-                  ),
-                  SlidableAction(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: (context) async {
-                      HapticFeedback.heavyImpact();
-                      await showGeneralDialog(
-                          pageBuilder: (context, anim1, anim2) {
-                            return const Placeholder();
+              endActionPane: widget.analysisDialog
+                  ? null
+                  : ActionPane(
+                      extentRatio: 0.5,
+                      motion: const DrawerMotion(),
+                      children: [
+                        SlidableAction(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: (context) {
+                            editThisEntry(context);
                           },
-                          context: context,
-                          transitionBuilder: (context, anim1, anim2, child) {
-                            return Opacity(
-                                opacity: anim1.value,
-                                child: widget.currentEntries.isNotEmpty &&
-                                        widget.index <
-                                            widget.currentEntries.length
-                                    ? DeleteEntryDialogBox(
-                                        useColorChange: widget.useColorChange,
-                                        analysisDialog: widget.analysisDialog,
-                                        id: widget
-                                            .currentEntries[widget.index].id)
-                                    : const Text(""));
+                          backgroundColor: const Color(0xFF21B7CA),
+                          foregroundColor: Colors.white,
+                          icon: Icons.edit_rounded,
+                        ),
+                        SlidableAction(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: (context) async {
+                            await deleteThisEntry(context);
                           },
-                          transitionDuration: const Duration(milliseconds: 200));
-                    },
-                    backgroundColor: const Color(0xFFFE4A49),
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete_rounded,
-                  ),
-                ],
-              ),
+                          backgroundColor: const Color(0xFFFE4A49),
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete_rounded,
+                        ),
+                      ],
+                    ),
               child: GestureDetector(
                 onTap: () {
-                  HapticFeedback.lightImpact();
-                  if (openEnd) {
-                    _slidableController.openStartActionPane();
-                    openEnd = false;
-                  } else {
-                    _slidableController.openEndActionPane();
-                    openEnd = true;
+                  if (!widget.analysisDialog) {
+                    HapticFeedback.lightImpact();
+                    editThisEntry(context);
                   }
                 },
                 child: Container(
@@ -271,16 +185,15 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                             .currentEntries[
                                                                 widget.index]
                                                             .categoryColor ??
-                                                        Colors.white.toARGB32()),
+                                                        Colors.white
+                                                            .toARGB32()),
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(100))),
                                           ),
                                         ),
                                         SizedBox(
-                                          width:
-                                              MediaQuery.of(context).size.width /
-                                                  2.3,
+                                          width: widget.width / 2.3,
                                           child: Text(
                                             widget.currentEntries[widget.index]
                                                         .category ==
@@ -363,7 +276,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .primary
-                                                    .withAlpha((0.75*255).round()),
+                                                    .withAlpha(
+                                                        (0.75 * 255).round()),
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600),
                                           ),
@@ -378,46 +292,58 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                                         ? true
                                         : false,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 19.0),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 4, right: 9),
-                                            child: Container(
-                                              width: 3,
-                                              height: 10,
-                                              decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary
-                                                      .withAlpha((0.5*255).round()),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(5))),
+                                      padding:
+                                          const EdgeInsets.only(left: 19.0),
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 4, right: 9),
+                                              child: Container(
+                                                width: 3,
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary
+                                                        .withAlpha((0.5 * 255)
+                                                            .round()),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                5))),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: widget.width * 0.4,
-                                            child: Text(
-                                              widget.currentEntries[widget.index]
-                                                      .note ??
-                                                  '',
-                                              softWrap: true,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.montserrat(
-                                                  decorationColor:
-                                                      const Color.fromARGB(
-                                                          0, 255, 255, 255),
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary
-                                                      .withAlpha((0.75*255).round()),
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w600),
+                                            SizedBox(
+                                              width: widget.analysisDialog
+                                                  ? widget.width * 0.3
+                                                  : widget.width * 0.4,
+                                              child: Text(
+                                                widget
+                                                        .currentEntries[
+                                                            widget.index]
+                                                        .note ??
+                                                    '',
+                                                softWrap: true,
+                                                overflow: widget.analysisDialog
+                                                    ? TextOverflow.ellipsis
+                                                    : TextOverflow.visible,
+                                                style: GoogleFonts.montserrat(
+                                                    decorationColor:
+                                                        const Color.fromARGB(
+                                                            0, 255, 255, 255),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary
+                                                        .withAlpha((0.75 * 255)
+                                                            .round()),
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -441,8 +367,8 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
                               style: GoogleFonts.montserrat(
                                   decorationColor:
                                       const Color.fromARGB(0, 255, 255, 255),
-                                  color: widget
-                                          .currentEntries[widget.index].isExpense
+                                  color: widget.currentEntries[widget.index]
+                                          .isExpense
                                       ? Colors.redAccent
                                       : Colors.lightGreen,
                                   fontSize: 16,
@@ -460,5 +386,90 @@ class _SlidableEntryState extends ConsumerState<SlidableEntry>
         ),
       ],
     );
+  }
+
+  Future<void> deleteThisEntry(BuildContext context) async {
+    HapticFeedback.heavyImpact();
+    await showGeneralDialog(
+        pageBuilder: (context, anim1, anim2) {
+          return const Placeholder();
+        },
+        context: context,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return Opacity(
+              opacity: anim1.value,
+              child: widget.currentEntries.isNotEmpty &&
+                      widget.index < widget.currentEntries.length
+                  ? DeleteEntryDialogBox(
+                      useColorChange: widget.useColorChange,
+                      analysisDialog: widget.analysisDialog,
+                      id: widget.currentEntries[widget.index].id)
+                  : const Text(""));
+        },
+        transitionDuration: const Duration(milliseconds: 200));
+  }
+
+  void editThisEntry(BuildContext context) {
+    HapticFeedback.heavyImpact();
+    ref.read(amountText.notifier).update(
+        (state) => widget.currentEntries[widget.index].amount.toString());
+    ref
+        .read(dateTimeVar.notifier)
+        .update((state) => widget.currentEntries[widget.index].dateTime);
+    ref.read(categoryText.notifier).update((state) =>
+        widget.currentEntries[widget.index].category ?? "Uncategorised");
+    ref.read(subCategoryText.notifier).update((state) =>
+        widget.currentEntries[widget.index].subCategory ?? "Uncategorised");
+    ref
+        .read(noteText.notifier)
+        .update((state) => widget.currentEntries[widget.index].note ?? "");
+    ref
+        .read(isExpense.notifier)
+        .update((state) => widget.currentEntries[widget.index].isExpense);
+    ref.read(categoryColorInt.notifier).update((state) =>
+        widget.currentEntries[widget.index].categoryColor ??
+        Colors.white.toARGB32());
+    ref.read(subCategoryColorInt.notifier).update((state) =>
+        widget.currentEntries[widget.index].subCategoryColor ??
+        Colors.white.toARGB32());
+    if (widget.currentEntries[widget.index].isExpense == true) {
+      ref.read(isExpense.notifier).update((state) => true);
+      showGeneralDialog(
+          pageBuilder: (context, anim1, anim2) {
+            return const Placeholder();
+          },
+          context: context,
+          transitionBuilder: (context, anim1, anim2, child) {
+            return Opacity(
+                opacity: anim1.value,
+                child: widget.currentEntries.isNotEmpty &&
+                        widget.index < widget.currentEntries.length
+                    ? EditEntryDialogBox(
+                        useColorChange: widget.useColorChange,
+                        analysisDialog: widget.analysisDialog,
+                        id: widget.currentEntries[widget.index].id,
+                      )
+                    : const Text(""));
+          },
+          transitionDuration: const Duration(milliseconds: 200));
+    } else {
+      ref.read(isExpense.notifier).update((state) => false);
+      showGeneralDialog(
+          pageBuilder: (context, anim1, anim2) {
+            return const Placeholder();
+          },
+          context: context,
+          transitionBuilder: (context, anim1, anim2, child) {
+            return Opacity(
+                opacity: anim1.value,
+                child: widget.currentEntries.isNotEmpty &&
+                        widget.index < widget.currentEntries.length
+                    ? EditIncomeDialogBox(
+                        id: widget.currentEntries[widget.index].id,
+                      )
+                    : const Text(""));
+          },
+          transitionDuration: const Duration(milliseconds: 200));
+    }
   }
 }

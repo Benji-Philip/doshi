@@ -176,6 +176,7 @@ List<Widget> analysisPage(
                 children: [
                   Expanded(
                       child: MyPieChart(
+                    isDialogBox: true,
                     includeUncat: true,
                     useSubCat: false,
                     width: width,
@@ -188,8 +189,7 @@ List<Widget> analysisPage(
                   alignment: Alignment.center,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(15)),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
                       color: Theme.of(context).colorScheme.onTertiary),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

@@ -599,26 +599,21 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                         : 0,
                                                 child: Row(
                                                   children: [
-                                                    Container(
-                                                      height: 35,
-                                                      constraints:
-                                                          const BoxConstraints(
-                                                              minWidth: 35),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                              color: Colors
-                                                                  .transparent),
-                                                      child: Opacity(
-                                                        opacity: 0,
-                                                        child: Text(
-                                                          currency,
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 20),
-                                                        ),
-                                                      ),
+                                                    Opacity(
+                                                      opacity: 0,
+                                                      child: Container(
+                                                          height: 35,
+                                                          constraints:
+                                                              const BoxConstraints(
+                                                                  minWidth: 35),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                                  color: Colors
+                                                                      .transparent),
+                                                          child: const Icon(Icons
+                                                              .replay_rounded)),
                                                     ),
                                                     Container(
                                                       height: 35,

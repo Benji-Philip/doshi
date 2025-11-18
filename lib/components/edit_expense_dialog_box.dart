@@ -1,4 +1,5 @@
 import 'package:doshi/components/category_selector.dart';
+import 'package:doshi/components/delete_dialog.dart';
 import 'package:doshi/components/entrys_in_subcat_dialog.dart';
 import 'package:doshi/components/subcat_piechart_dialog.dart';
 import 'package:doshi/components/user_input_dialog.dart';
@@ -13,17 +14,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 
+final deletedEntry = StateProvider((ref) => false);
+
 class EditEntryDialogBox extends ConsumerStatefulWidget {
   final bool useColorChange;
   final bool analysisDialog;
   final Id id;
 
-  const EditEntryDialogBox({
-    super.key,
-    required this.id,
-    required this.analysisDialog,
-    required this.useColorChange
-  });
+  const EditEntryDialogBox(
+      {super.key,
+      required this.id,
+      required this.analysisDialog,
+      required this.useColorChange});
 
   @override
   ConsumerState<EditEntryDialogBox> createState() =>
@@ -40,11 +42,11 @@ class _AddExpenseDialogBoxState extends ConsumerState<EditEntryDialogBox> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Colors.black.withAlpha((0.5*255).round()),
+      color: Colors.black.withAlpha((0.5 * 255).round()),
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: ThisContainerFinal(
-                useColorChange: widget.useColorChange,
+            useColorChange: widget.useColorChange,
             analysisDialog: widget.analysisDialog,
             id: widget.id,
           )),
@@ -52,7 +54,7 @@ class _AddExpenseDialogBoxState extends ConsumerState<EditEntryDialogBox> {
   }
 }
 
-class ThisContainerFinal extends StatefulWidget {
+class ThisContainerFinal extends ConsumerStatefulWidget {
   final bool useColorChange;
   final bool analysisDialog;
   final Id id;
@@ -64,10 +66,10 @@ class ThisContainerFinal extends StatefulWidget {
   });
 
   @override
-  State<ThisContainerFinal> createState() => _ThisContainerFinalState();
+  ConsumerState<ThisContainerFinal> createState() => _ThisContainerFinalState();
 }
 
-class _ThisContainerFinalState extends State<ThisContainerFinal> {
+class _ThisContainerFinalState extends ConsumerState<ThisContainerFinal> {
   final _scrollController = ScrollController();
   @override
   void dispose() {
@@ -108,6 +110,47 @@ class _ThisContainerFinalState extends State<ThisContainerFinal> {
               )
             ],
           ),
+          Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: GestureDetector(
+              onTap: () async {
+                HapticFeedback.heavyImpact();
+                ref.read(deletedEntry.notifier).update((state) => false);
+                await showGeneralDialog(
+                    pageBuilder: (context, anim1, anim2) {
+                      return const Placeholder();
+                    },
+                    context: context,
+                    transitionBuilder: (context, anim1, anim2, child) {
+                      return Opacity(
+                          opacity: anim1.value,
+                          child: DeleteEntryDialogBox(
+                              useColorChange: widget.useColorChange,
+                              analysisDialog: widget.analysisDialog,
+                              id: widget.id));
+                    },
+                    transitionDuration: const Duration(milliseconds: 200));
+                if (context.mounted && ref.read(deletedEntry)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 22),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Text(
+                  "Delete",
+                  style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      decoration: TextDecoration.none),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -442,7 +485,7 @@ class _ThisContainerOfTheDialogBoxState
                                   ref.read(entriesGivenMonth.notifier).state = [
                                     ...temp2
                                   ];
-                                } else if(widget.useColorChange){
+                                } else if (widget.useColorChange) {
                                   List<Entry> temp1 =
                                       ref.read(entriesForSubCatDialog);
                                   int i = temp1.indexWhere(
@@ -490,8 +533,8 @@ class _ThisContainerOfTheDialogBoxState
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(50))),
                                 child: Icon(
-                                  Icons.check_rounded,
-                                  size: 40,
+                                  Icons.edit_rounded,
+                                  size: 32,
                                   color:
                                       Theme.of(context).colorScheme.onPrimary,
                                 )),
