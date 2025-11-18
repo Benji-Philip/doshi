@@ -105,6 +105,39 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     await fetchEntries();
   }
 
+  Future<void> addParsedGPayEntry(
+    int transactionID,
+    double amountEntry,
+    DateTime dateTimeEntry,
+    String categoryEntry,
+    String noteEntry,
+    bool isExpenseEntry,
+    int categoryColor,
+    bool isSavingsEntry,
+    String subCategoryEntry,
+    int subCategoryColor,
+  ) async {
+    //create new entry
+    final newEntry = Entry()
+      ..id = transactionID
+      ..amount = amountEntry
+      ..dateTime = dateTimeEntry
+      ..category = categoryEntry
+      ..note = noteEntry
+      ..isExpense = isExpenseEntry
+      ..categoryColor = categoryColor
+      ..isExpense = isExpenseEntry
+      ..isSavings = isSavingsEntry
+      ..subCategory = subCategoryEntry
+      ..subCategoryColor = subCategoryColor;
+
+    //save to database
+    await isar.writeTxn(() => isar.entrys.put(newEntry));
+
+    //update from database
+    await fetchEntries();
+  }
+
   //read/fetch & update state
   Future<void> fetchEntries() async {
     List<Entry> fetchedEntries = await isar.entrys.where().findAll();

@@ -1,0 +1,2 @@
+D:/repos/doshi/android/app/.cxx/Debug/25j24m2l/x86_64/CMakeFiles/edit_cache.dir
+D:/repos/doshi/android/app/.cxx/Debug/25j24m2l/x86_64/CMakeFiles/rebuild_cache.dir

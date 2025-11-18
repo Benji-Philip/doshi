@@ -1,14 +1,21 @@
+import 'dart:io';
+
+import 'package:clipboard/clipboard.dart';
 import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/category_selector.dart';
 import 'package:doshi/components/my_button.dart';
 import 'package:doshi/isar/entries_database.dart';
+import 'package:doshi/isar/entry.dart';
+import 'package:doshi/logic/gpay_statement_parser.dart';
 import 'package:doshi/pages/home_page.dart';
 import 'package:doshi/riverpod/states.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BackupRestoreDialog extends ConsumerStatefulWidget {
@@ -20,12 +27,13 @@ class BackupRestoreDialog extends ConsumerStatefulWidget {
 }
 
 class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
-  final String versionNumber = "1.1.3";
+  final String versionNumber = "1.2.0";
   final InAppPurchase _iap = InAppPurchase.instance;
   late List<ProductDetails> product;
   bool _iapAvailable = false;
   double scrollOffset = 0.0;
   final _scrollController = ScrollController();
+  List<Transaction> transactions = [];
 
   @override
   void initState() {
@@ -88,6 +96,108 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  int added = 0;
+                                  int skipped = 0;
+                                  HapticFeedback.heavyImpact();
+                                  try {
+                                    FilePickerResult? result =
+                                        await FilePicker.platform.pickFiles(
+                                      type: FileType.custom,
+                                      allowedExtensions: ['pdf'],
+                                    );
+                                    if (result != null) {
+                                      File file =
+                                          File(result.files.single.path!);
+                                      // Extract text from PDF using Syncfusion
+                                      final PdfDocument document = PdfDocument(
+                                          inputBytes: file.readAsBytesSync());
+                                      String pdfText =
+                                          PdfTextExtractor(document)
+                                              .extractText();
+                                      transactions = GpayStatementParser()
+                                          .parsePdfText(
+                                              pdfText.split('\n'), ref);
+                                      document.dispose();
+                                      for (var element in transactions) {
+                                        Entry? thisEntry = ref
+                                            .read(entryDatabaseProvider)
+                                            .where((x) =>
+                                                x.id == element.transactionId)
+                                            .firstOrNull;
+                                        if (thisEntry == null) {
+                                          ref
+                                              .read(entryDatabaseProvider
+                                                  .notifier)
+                                              .addParsedGPayEntry(
+                                                  element.transactionId,
+                                                  element.amount,
+                                                  element.dateTime,
+                                                  ref.read(categoryText),
+                                                  element.isExpense
+                                                      ? "To ${element.description}"
+                                                      : "From ${element.description}",
+                                                  element.isExpense,
+                                                  ref.read(categoryColorInt),
+                                                  false,
+                                                  ref.read(subCategoryText),
+                                                  ref.read(
+                                                      subCategoryColorInt));
+                                          added++;
+                                        } else {
+                                          skipped++;
+                                        }
+                                      }
+                                    }
+                                  } catch (e) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(e.toString())));
+                                      Navigator.of(context).pop();
+                                    }
+                                    return;
+                                  }
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        content: Text(added != 0 && skipped != 0
+                                            ? "Added $added Transactions And Skipped $skipped"
+                                            : added != 0
+                                                ? "Added $added Transactions"
+                                                : "Skipped $skipped Transactions")));
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: Colors.lightBlue),
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "GPay Statement",
+                                      softWrap: true,
+                                      style: GoogleFonts.montserrat(
+                                          color: Colors.white,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       Row(
                         children: [
                           Expanded(
