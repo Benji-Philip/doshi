@@ -8,13 +8,15 @@ class Transaction {
   final double amount;
   final bool isExpense;
   final int transactionId;
+  final String bank;
 
   Transaction(
       {required this.dateTime,
       required this.description,
       required this.amount,
       required this.isExpense,
-      required this.transactionId});
+      required this.transactionId,
+      required this.bank});
 
   @override
   String toString() {
@@ -31,7 +33,8 @@ class Transaction {
       'description': description,
       'amount': amount,
       'isExpense': isExpense,
-      'transactionID': transactionId
+      'transactionID': transactionId,
+      'bank': bank
     };
   }
 }
@@ -49,6 +52,7 @@ class GpayStatementParser {
       late int transactionId;
       String description = "";
       late double amount;
+      String bank = "";
       if (i != 0 && i < temp.length - 5) {
         String dateString =
             "${temp[i].trim()} ${temp[i + 1].trim()} ${temp[i + 2].trim()} ${temp[i + 3].trim()} ${temp[i + 4].trim()}";
@@ -75,6 +79,23 @@ class GpayStatementParser {
             while (!temp[i + j]
                     .trim()
                     .toLowerCase()
+                    .contains(isExpense ? "by" : "to") &&
+                i + j < temp.length - 1) {
+              j++;
+            }
+            int l = 0;
+            while (!temp[i + j + 1]
+                    .trim()
+                    .toLowerCase()
+                    .contains(ref.read(currencyProvider)) &&
+                l < 5) {
+              bank += temp[i + j + 1];
+              j++;
+              l++;
+            }
+            while (!temp[i + j]
+                    .trim()
+                    .toLowerCase()
                     .contains(ref.read(currencyProvider)) &&
                 i + j < temp.length - 1) {
               j++;
@@ -88,7 +109,9 @@ class GpayStatementParser {
                   description: description,
                   amount: amount,
                   isExpense: isExpense,
-                  transactionId: transactionId);
+                  transactionId: transactionId,
+                  bank: bank);
+              print(bank);
               transactions.add(tempTrans);
             } catch (e) {
               print(

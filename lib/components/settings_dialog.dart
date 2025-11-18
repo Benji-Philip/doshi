@@ -1,12 +1,12 @@
 import 'dart:io';
-
-import 'package:clipboard/clipboard.dart';
 import 'package:currency_picker/currency_picker.dart';
 import 'package:doshi/components/category_selector.dart';
 import 'package:doshi/components/my_button.dart';
+import 'package:doshi/components/statements_selector_bottomsheet.dart';
 import 'package:doshi/isar/entries_database.dart';
 import 'package:doshi/isar/entry.dart';
 import 'package:doshi/logic/gpay_statement_parser.dart';
+import 'package:doshi/logic/hdfc_statement_parser.dart';
 import 'package:doshi/pages/home_page.dart';
 import 'package:doshi/riverpod/states.dart';
 import 'package:file_picker/file_picker.dart';
@@ -33,7 +33,6 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
   bool _iapAvailable = false;
   double scrollOffset = 0.0;
   final _scrollController = ScrollController();
-  List<Transaction> transactions = [];
 
   @override
   void initState() {
@@ -102,81 +101,17 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: GestureDetector(
-                                onTap: () async {
-                                  int added = 0;
-                                  int skipped = 0;
-                                  HapticFeedback.heavyImpact();
-                                  try {
-                                    FilePickerResult? result =
-                                        await FilePicker.platform.pickFiles(
-                                      type: FileType.custom,
-                                      allowedExtensions: ['pdf'],
-                                    );
-                                    if (result != null) {
-                                      File file =
-                                          File(result.files.single.path!);
-                                      // Extract text from PDF using Syncfusion
-                                      final PdfDocument document = PdfDocument(
-                                          inputBytes: file.readAsBytesSync());
-                                      String pdfText =
-                                          PdfTextExtractor(document)
-                                              .extractText();
-                                      transactions = GpayStatementParser()
-                                          .parsePdfText(
-                                              pdfText.split('\n'), ref);
-                                      document.dispose();
-                                      for (var element in transactions) {
-                                        Entry? thisEntry = ref
-                                            .read(entryDatabaseProvider)
-                                            .where((x) =>
-                                                x.id == element.transactionId)
-                                            .firstOrNull;
-                                        if (thisEntry == null) {
-                                          ref
-                                              .read(entryDatabaseProvider
-                                                  .notifier)
-                                              .addParsedGPayEntry(
-                                                  element.transactionId,
-                                                  element.amount,
-                                                  element.dateTime,
-                                                  ref.read(categoryText),
-                                                  element.isExpense
-                                                      ? "To ${element.description}"
-                                                      : "From ${element.description}",
-                                                  element.isExpense,
-                                                  ref.read(categoryColorInt),
-                                                  false,
-                                                  ref.read(subCategoryText),
-                                                  ref.read(
-                                                      subCategoryColorInt));
-                                          added++;
-                                        } else {
-                                          skipped++;
-                                        }
-                                      }
-                                    }
-                                  } catch (e) {
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(e.toString())));
-                                      Navigator.of(context).pop();
-                                    }
-                                    return;
-                                  }
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                        content: Text(added != 0 && skipped != 0
-                                            ? "Added $added Transactions And Skipped $skipped"
-                                            : added != 0
-                                                ? "Added $added Transactions"
-                                                : "Skipped $skipped Transactions")));
-                                    Navigator.of(context).pop();
-                                  }
+                                onTap: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return StatementsSelectorBottomsheet();
+                                      });
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
                                   height: 60,
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(25),
                                       color: Colors.lightBlue),
@@ -184,7 +119,7 @@ class _CategoryListState extends ConsumerState<BackupRestoreDialog> {
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.center,
                                     child: Text(
-                                      "GPay Statement",
+                                      "Import Statement",
                                       softWrap: true,
                                       style: GoogleFonts.montserrat(
                                           color: Colors.white,

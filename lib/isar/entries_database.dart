@@ -105,7 +105,7 @@ class EntryDatabaseNotifier extends StateNotifier<List<Entry>> {
     await fetchEntries();
   }
 
-  Future<void> addParsedGPayEntry(
+  Future<void> addParsedEntry(
     int transactionID,
     double amountEntry,
     DateTime dateTimeEntry,
