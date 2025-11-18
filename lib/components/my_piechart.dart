@@ -103,7 +103,7 @@ class _MyPieChart extends ConsumerState<MyPieChart> {
     ref.listen(entriesGivenMonth, (prev, next) {
       if (widget.isDialogBox ?? false) {
         pieChartData = sortIntoSubCategories(
-            sortEntrysByParentCategory(widget.parentCategory!, next));
+            sortEntrysByParentCategory(widget.parentCategory??"Uncategorised", next));
       }
       _initializeData(ref.read(dateToDisplay));
       _updatePieChart();

@@ -48,7 +48,8 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
         ref.read(entryDatabaseProvider.notifier).theListOfTheExpenses;
     if (widget.isDialogBox ?? false) {
       subCatAnalysis = sortIntoSubCategories(sortEntrysByParentCategory(
-          widget.parentCategory!, ref.read(totalEntriesProvider)));
+          widget.parentCategory ?? "Uncategorised",
+          ref.read(totalEntriesProvider)));
     }
     _updatePieChartData();
   }
@@ -145,8 +146,9 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
         barrierDismissible: false,
         pageBuilder: (BuildContext context, _, __) {
           return SubCatPieChartDialog(
-            isTotal: true,
-              parentCategory: name ?? "Uncategorised", width: widget.width);
+              isTotal: true,
+              parentCategory: name ?? "Uncategorised",
+              width: widget.width);
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
@@ -269,8 +271,8 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                         height: 12,
                                         width: 12,
                                         decoration: BoxDecoration(
-                                            color: Color(
-                                                color ?? Colors.white.toARGB32()),
+                                            color: Color(color ??
+                                                Colors.white.toARGB32()),
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(100))),
@@ -321,7 +323,8 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                                       color: Theme.of(context)
                                                           .colorScheme
                                                           .primary
-                                                          .withAlpha((0.7*255).round()),
+                                                          .withAlpha((0.7 * 255)
+                                                              .round()),
                                                       fontSize: 10,
                                                       fontWeight:
                                                           FontWeight.w700),
@@ -349,8 +352,8 @@ class _MyPieChart extends ConsumerState<MyTotalPieChart> {
                                     style: GoogleFonts.montserrat(
                                         decorationColor: const Color.fromARGB(
                                             0, 255, 255, 255),
-                                        color:
-                                            Color(color ?? Colors.white.toARGB32()),
+                                        color: Color(
+                                            color ?? Colors.white.toARGB32()),
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700),
                                   ),
